@@ -81,3 +81,7 @@ CREATE TABLE utente(
 CREATE table faq( idFaq INT PRIMARY KEY AUTO_INCREMENT, titolo VARCHar (100), descrizione varchar (500) ); 
 ALTER TABLE segnalazione ADD tipoSegnalazione ENUM('discriminazione','volgaritá','molestia','truffa','spam','altro'); 
 ALTER TABLE chat ADD eliminata boolean; 
+
+ALTER TABLE messaggio ADD idChat INT NOT NULL;
+
+ALTER TABLE messaggio ADD CONSTRAINT  idChat FOREIGN KEY(idChat) REFERENCES chat(idChat) ON DELETE CASCADE
