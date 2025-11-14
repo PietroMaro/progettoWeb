@@ -12,7 +12,6 @@ require_once 'bootstrap.php';
 //$templateParams["titolomain"] = "Ultimi Articoli";
 //$templateParams["articoli"] = $dbh->getPosts(2);
 
-require 'pages/home.php';
+require './templates/baseTemplate.php';
 
 ?>
-
