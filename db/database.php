@@ -10,7 +10,7 @@ class Database
     private $servername = "localhost";
     private $username = "root";
     private $password = "";
-    private $dbname = "progettoWeb";
+    private $dbname = "unisell";
 
 
     private function __construct()

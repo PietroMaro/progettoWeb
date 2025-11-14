@@ -1,0 +1,38 @@
+:root {
+  --colore-principale: #17A24C;
+  --colore-hover: #218838;
+
+}
+
+nav > a > div {
+  width: 30px;
+  height: 30px;
+  background-color: var(--colore-principale);
+}
+
+nav div[id="navbarNav"] > ul:first-of-type > li > a {
+  color: var(--colore-principale) !important; 
+  font-weight: 500;
+  margin: 0 8px;
+}
+
+nav div[id="navbarNav"] > ul:first-of-type > li > a:hover {
+  color: var(--colore-hover) !important;
+}
+
+
+nav div[id="navbarNav"] > ul:last-of-type > li > a {
+  color: var(--colore-principale) !important;
+  font-weight: 500;
+  margin: 0 8px;
+  border: 2px solid var(--colore-principale);
+  border-radius: 5px;
+  padding: 6px 16px !important; 
+  transition: all 0.3s ease;
+}
+
+nav div[id="navbarNav"] > ul:last-of-type > li > a:hover {
+  background-color: var(--colore-principale);
+  color: #ffffff !important;
+}
+
