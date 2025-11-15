@@ -31,7 +31,7 @@ class productManager
         $userId = 1; //fino alla creazione del login
 
 
-        $sql = "INSERT INTO prodotto (nome, descrizione, prezzo, stato, ragioneRifiuto,fineAsta, idUtente, idAdmin) 
+        $sql = "INSERT INTO prodotto (nome, descrizione, prezzo, stato, ragioneRifiuto, fineAsta, idUtente, idAdmin) 
                 VALUES (?, ?, ?, ?, ?, ?,?,?)";
 
         $stmt = $this->db->prepare($sql);
