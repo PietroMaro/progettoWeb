@@ -66,9 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-        // --- Logica Asta (CORRETTA) ---
         const auctionSwitch = document.getElementById('auctionSwitch');
-        // CORRETTO: Cerca il 'data-role' sull'elemento <li>
         const auctionDateContainer = document.querySelector('li[data-role="auctionDateContainer"]');
         const auctionDateInput = document.getElementById('auctionEndDate');
 
@@ -84,9 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         });
 
 
-        // --- Logica Anteprima Immagini (CORRETTA) ---
         const fileInput = document.getElementById('fileUpload');
-        // CORRETTO: Cerca il 'data-role' sull'elemento <div>
         const previewWrapper = document.querySelector('div[data-role="image-preview-wrapper"]');
 
         fileInput.addEventListener('change', function (event) {

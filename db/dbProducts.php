@@ -58,7 +58,7 @@ class productManager
 
         $stmt = $this->db->prepare($sql);
 
-        foreach ($images['tmp_name'] as $key => $tmp_path) {
+        foreach ($images['tmp_name'] as $tmp_path) {
 
 
             $imageData = file_get_contents($tmp_path);
