@@ -21,11 +21,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['idProdotto'])) {
                 <article class="card h-100">
 
                     <img src="data:image/jpeg;base64,<?= base64_encode($product['immagineData']) ?>"
-                        class="card-img-top custom-card-img" alt="<?= htmlspecialchars($product['nome']) ?>">
+                        alt="<?= htmlspecialchars($product['nome']) ?>">
 
                     <header class="card-header d-flex justify-content-between align-items-center">
 
-                        <span class="text-success fw-bold">
+                        <span class="fw-bold">
                             <?php if (!empty($product['fineAsta'])): ?>
                                 Asta
                             <?php else: ?>
@@ -59,9 +59,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['idProdotto'])) {
                             <?php endif; ?>
                         </p>
 
-                        <div class="mt-auto d-flex gap-5 justify-content-end">
+                        <div class="mt-auto d-flex gap-2 justify-content-end">
 
-                            <a href="sell.php?edit_id=<?= $product['idProdotto'] ?>" class="btn btn-sm btn-warning">
+                            <a href="sellProductPage.php?edit_id=<?= $product['idProdotto'] ?>" class="btn btn-sm btn-warning">
                                 Modifica
                             </a>
 

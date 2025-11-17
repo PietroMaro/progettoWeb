@@ -8,7 +8,7 @@ $templateParams["titolo"] = "Unisell - Vetrina";
 $templateParams["nome"] = "./templates/showcaseTemplate.php";
 $templateParams["stylesheet"] = "css/showcasePage.css";
 
-$templateParams["products"] = $handler->getProductsByUserId();
+$templateParams["products"] = $handler->getProductsForUser();
 
 
 

@@ -14,6 +14,8 @@ class productManager
 
 
 
+
+
     public function saveProduct($formData, $loadedFile)
     {
 
@@ -54,32 +56,28 @@ class productManager
         $this->saveImages($productId, $loadedFile['images']);
     }
 
+
     public function saveImages($productId, $images)
     {
 
 
-
         $sql = "INSERT INTO immagini (immagine, idProdotto, idMessaggio) VALUES (?, ?, ?)";
-
         $stmt = $this->db->prepare($sql);
+        $idMessaggio = null;
 
-        foreach ($images['tmp_name'] as $tmp_path) {
-
-
-            $imageData = file_get_contents($tmp_path);
-
-
-            $stmt->execute([
-                $imageData,
-                $productId,
-                null
-            ]);
-
+        foreach ($images['tmp_name'] as $index => $tmp_path) {
+            if ($images['error'][$index] == 0 && !empty($tmp_path)) {
+                $imageData = file_get_contents($tmp_path);
+                $stmt->bind_param("sii", $imageData, $productId, $idMessaggio);
+                $stmt->execute();
+            }
         }
     }
 
 
-    public function getProductsByUserId()
+
+
+    public function getProductsForUser()
     {
 
         // $idUtente = $_SESSION['user_id'];
@@ -110,6 +108,8 @@ class productManager
     }
 
 
+    // Funzioni che fannp query composte (che usano le transazioni)
+
     public function deleteProduct($formData)
     {
 
@@ -119,9 +119,8 @@ class productManager
         $this->db->begin_transaction();
         try {
 
-            $sql_images = "DELETE FROM immagini WHERE idProdotto = ?";
-            $stmt_images = $this->db->prepare($sql_images);
-            $stmt_images->execute([$productId]);
+            $this->deleteImagesByProductId($productId);
+
 
             $sql_product = "DELETE FROM prodotto WHERE idProdotto = ?";
             $stmt_product = $this->db->prepare($sql_product);
@@ -137,7 +136,72 @@ class productManager
 
     }
 
+
+    public function saveOrUpdateProduct($formData, $loadedFile)
+    {
+        $productId = $formData['idProdotto']; 
+        $name = $formData['productName'];
+        $description = $formData['productDescription'];
+        $price = $formData['productPrice'];
+        $endDate = (isset($formData['isAuction']) && !empty($formData['auctionEndDate'])) ? $formData['auctionEndDate'] : null;
+
+       // $idUtente = $_SESSION['user_id'];
+        $userId = 1; //fino alla creazione del login
+
+        $this->db->begin_transaction();
+        try {
+            $sql = "UPDATE prodotto SET 
+                            nome = ?, 
+                            descrizione = ?, 
+                            prezzo = ?, 
+                            fineAsta = ?, 
+                            stato = 'attesa'  
+                        WHERE idProdotto = ? AND idUtente = ?"; 
+
+            $stmt = $this->db->prepare($sql);
+        
+            $stmt->bind_param("ssdsii", $name, $description, $price, $endDate, $productId, $userId);
+            $stmt->execute();
+
+   
+            if (isset($loadedFile['images']) && $loadedFile['images']['error'][0] == 0) {
+                $this->deleteImagesByProductId($productId);
+                $this->saveImages($productId, $loadedFile['images']);
+            }
+
+            $this->db->commit();
+
+        } catch (Exception $e) {
+            $this->db->rollback(); 
+            throw $e;
+        }
+    }
+
+
+    //Funzioni di utility
+
+    public function getProductById($productId)
+    {
+        $sql = "SELECT * FROM prodotto WHERE idProdotto = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("i", $productId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
+
+    public function deleteImagesByProductId($productId)
+    {
+        $sql = "DELETE FROM immagini WHERE idProdotto = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("i", $productId);
+        $stmt->execute();
+    }
+
 }
+
+
+
 
 
 ?>

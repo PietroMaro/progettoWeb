@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="col-12 col-md-10 col-lg-9">
 
             <form action="" method="POST" enctype="multipart/form-data"
-                class="card shadow-sm border-success p-4 p-md-5">
+                class="card shadow-sm p-4 p-md-5">
 
                 <h1 class="h2 text-center text-success fw-bold mb-4">Unisell</h1>
 
