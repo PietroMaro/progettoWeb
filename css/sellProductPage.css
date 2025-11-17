@@ -1,0 +1,24 @@
+div[data-role="image-preview-wrapper"] .img-fluid {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border: 1px solid var(--colore-bordo);
+}
+
+form>div>div>label[for="auctionSwitch"] {
+  cursor: pointer;
+}
+
+form>div>input[type="checkbox"][role="switch"] {
+  width: 3.5em;
+  height: 1.8em;
+  cursor: pointer;
+
+}
+
+form>div>input[type="checkbox"][role="switch"]:checked {
+  background-color: var(--colore-principale);
+  border-color: var(--colore-principale);
+
+
+}
