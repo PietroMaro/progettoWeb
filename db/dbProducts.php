@@ -108,7 +108,7 @@ class productManager
     }
 
 
-    // Funzioni che fannp query composte (che usano le transazioni)
+    // Funzioni che fanno query composte (che usano le transazioni)
 
     public function deleteProduct($formData)
     {
@@ -137,15 +137,15 @@ class productManager
     }
 
 
-    public function saveOrUpdateProduct($formData, $loadedFile)
+    public function updateProduct($formData, $loadedFile)
     {
-        $productId = $formData['idProdotto']; 
+        $productId = $formData['idProdotto'];
         $name = $formData['productName'];
         $description = $formData['productDescription'];
         $price = $formData['productPrice'];
-        $endDate = (isset($formData['isAuction']) && !empty($formData['auctionEndDate'])) ? $formData['auctionEndDate'] : null;
+        $endDate = (isset($formData['isAuction'])) ? $formData['auctionEndDate'] : null;
 
-       // $idUtente = $_SESSION['user_id'];
+        // $idUtente = $_SESSION['user_id'];
         $userId = 1; //fino alla creazione del login
 
         $this->db->begin_transaction();
@@ -156,14 +156,14 @@ class productManager
                             prezzo = ?, 
                             fineAsta = ?, 
                             stato = 'attesa'  
-                        WHERE idProdotto = ? AND idUtente = ?"; 
+                        WHERE idProdotto = ? AND idUtente = ?";
 
             $stmt = $this->db->prepare($sql);
-        
+
             $stmt->bind_param("ssdsii", $name, $description, $price, $endDate, $productId, $userId);
             $stmt->execute();
 
-   
+
             if (isset($loadedFile['images']) && $loadedFile['images']['error'][0] == 0) {
                 $this->deleteImagesByProductId($productId);
                 $this->saveImages($productId, $loadedFile['images']);
@@ -172,7 +172,7 @@ class productManager
             $this->db->commit();
 
         } catch (Exception $e) {
-            $this->db->rollback(); 
+            $this->db->rollback();
             throw $e;
         }
     }
