@@ -81,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="mb-3">
                     <label for="productPrice" class="form-label">Inserisci prezzo</label>
                     <input type="number" class="form-control" id="productPrice" name="productPrice"
-                        placeholder="Inserisci prezzo" min="0" step="0.01" required
+                        placeholder="Inserisci prezzo, massimo 9999€" min="0" max="9999" step="0.01" required
                         value="<?= htmlspecialchars($productToEdit['prezzo'] ?? '') ?>">
                 </div>
 

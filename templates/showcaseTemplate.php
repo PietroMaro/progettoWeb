@@ -61,7 +61,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['idProdotto'])) {
 
                         <div class="mt-auto d-flex gap-2 justify-content-end">
 
-                            <a href="sellProductPage.php?edit_id=<?= $product['idProdotto'] ?>" class="btn btn-sm btn-warning">
+                            <a href="sellProductPage.php?edit_id=<?= $product['idProdotto'] ?>"
+                                class="btn btn-sm btn-warning">
                                 Modifica
                             </a>
 

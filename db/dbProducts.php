@@ -80,7 +80,7 @@ class productManager
     public function getProductsForUser()
     {
 
-        // $idUtente = $_SESSION['user_id'];
+        // $userId = $_SESSION['user_id'];
         $userId = 1; //fino alla creazione del login
 
 
@@ -102,6 +102,81 @@ class productManager
         $stmt->execute([$userId]);
 
 
+        $result = $stmt->get_result();
+
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+
+    public function getFilteredProducts($filters)
+    {
+
+
+        // $userId = $_SESSION['user_id'];
+        $userId = 2; //fino alla creazione del login
+
+
+        $sql = "SELECT 
+                    p.idProdotto, 
+                    p.nome, 
+                    p.prezzo, 
+                    p.stato, 
+                    p.fineAsta, 
+                    (SELECT i.immagine FROM immagini i WHERE i.idProdotto = p.idProdotto LIMIT 1) AS immagineData
+                FROM 
+                    prodotto p
+                    
+                    WHERE 
+                    p.idUtente != ?";
+
+
+
+        $types = "i"; 
+        $params = [$userId];
+
+        if (!empty($filters['search'])) {
+            $sql .= " AND p.nome LIKE ?";
+            $types .= "s";
+            $params[] = "%" . $filters['search'] . "%";
+        }
+
+
+        if (!empty($filters['filter_type'])) {
+            if ($filters['filter_type'] === 'auction') {
+                $sql .= " AND p.fineAsta IS NOT NULL";
+
+            } elseif ($filters['filter_type'] === 'direct') {
+                $sql .= " AND p.fineAsta IS NULL";
+            }
+        }
+
+
+        $sort = $filters['sort'] ?? 'newest';
+
+        switch ($sort) {
+            case 'price_asc':
+                $sql .= " ORDER BY p.prezzo ASC";
+                break;
+            case 'price_desc':
+                $sql .= " ORDER BY p.prezzo DESC";
+                break;
+            case 'ending_soon':
+
+                $sql .= " ORDER BY (p.fineAsta IS NULL), p.fineAsta ASC";
+                break;
+            default:
+                $sql .= " ORDER BY p.idProdotto DESC";
+                break;
+        }
+
+
+        $stmt = $this->db->prepare($sql);
+
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+
+        $stmt->execute();
         $result = $stmt->get_result();
 
         return $result->fetch_all(MYSQLI_ASSOC);

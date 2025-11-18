@@ -8,26 +8,30 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-  <title><?php echo $templateParams["titolo"] ?></title>
+  <?php if (isset($templateParams)) {
+    extract($templateParams);
+  } ?>
+
+  <title><?= $titolo ?></title>
 
   <link rel="stylesheet" href="css/style.css">
 
-  <?php if (isset($templateParams["stylesheet"]) && !empty($templateParams["stylesheet"])): ?>
-    <link rel="stylesheet" href="<?= $templateParams["stylesheet"] ?>">
-  <?php endif; ?>
+
+  <link rel="stylesheet" href="<?= $stylesheet ?>">
+
 </head>
 
 <body>
 
   <?php
-  require_once __DIR__ . '/../utils/navbar.php';
+  require_once "utils/navbar.php";
   echo navbar();
-  ?>
 
-  <?php
-  if (isset($templateParams)) {
-    extract($templateParams);
+
+  if (isset($searchBar)) {
+    require($searchBar);
   }
+
   if (isset($nome)) {
     require($nome);
   }
