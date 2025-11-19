@@ -17,7 +17,7 @@ CREATE TABLE utente(
     idSegnalazione INT PRIMARY KEY AUTO_INCREMENT,
     testo VARCHAR(100) NOT NULL,
     stato ENUM('aperta', 'approvata', 'rifiutata') NOT NULL,
-    idAdmin INT NOT NULL,
+    idAdmin INT,
     FOREIGN KEY(idAdmin) REFERENCES admin(idAdmin) ON DELETE SET NULL
 ); CREATE TABLE prodotto(
     idProdotto INT PRIMARY KEY AUTO_INCREMENT,
