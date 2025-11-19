@@ -1,0 +1,44 @@
+header div>div>div {
+    transition: transform 0.6s ease-in-out;
+    background-color: var(--colore-sfondo);
+    height: 60vh
+}
+
+
+section button {
+    transition: transform 0.2s;
+    letter-spacing: 2px;
+}
+
+
+section button:hover {
+    transform: scale(1.02);
+}
+
+
+header img {
+
+    object-fit: contain;
+    object-position: center;
+}
+
+section img {
+
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+
+}
+
+section p {
+
+    line-height: 1.6;
+}
+
+
+
+@media screen and (min-width:768px) {
+    .border-end-md {
+        border-right: 1px solid #dee2e6;
+    }
+}

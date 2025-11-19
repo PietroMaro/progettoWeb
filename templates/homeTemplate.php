@@ -4,7 +4,7 @@
         <?php foreach ($products as $product): ?>
 
             <div class="col-12 col-md-4 mb-4">
-                <a href="product.php?id=<?= $product['idProdotto'] ?>" class="text-decoration-none text-dark">
+                <a href="singleProductPage.php?id=<?= $product['idProdotto'] ?>" class="text-decoration-none text-dark">
 
                     <article class="card h-100 card-hover ">
 

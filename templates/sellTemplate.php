@@ -107,6 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="mb-3" data-role="auctionDateContainer" style="display: none;">
                     <label for="auctionEndDate" class="form-label">Inserisci la data e ora di fine dell'asta</label>
                     <input type="datetime-local" class="form-control" id="auctionEndDate" name="auctionEndDate"
+                        min="<?= date('Y-m-d\TH:i', strtotime('+15 minutes')) ?>"
                         value="<?= !empty($productToEdit['fineAsta']) ? date('Y-m-d\TH:i', strtotime($productToEdit['fineAsta'])) : '' ?>">
                 </div>
 
@@ -141,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 auctionDateContainer.style.display = 'none';
                 auctionDateInput.required = false;
-                
+
             }
         });
 

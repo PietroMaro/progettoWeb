@@ -124,14 +124,16 @@ class productManager
                     p.fineAsta, 
                     (SELECT i.immagine FROM immagini i WHERE i.idProdotto = p.idProdotto LIMIT 1) AS immagineData
                 FROM 
-                    prodotto p
+                    prodotto p 
                     
                     WHERE 
-                    p.idUtente != ?";
+                   p.idUtente != ?";  // AND p.stato IN ('esposto', 'asta') dopo che l'admin sara stato fatto
 
 
 
-        $types = "i"; 
+
+
+        $types = "i";
         $params = [$userId];
 
         if (!empty($filters['search'])) {
@@ -179,7 +181,7 @@ class productManager
         $stmt->execute();
         $result = $stmt->get_result();
 
-        return $result->fetch_all(MYSQLI_ASSOC);
+        return $result->fetch_all(mode: MYSQLI_ASSOC);
     }
 
 
@@ -271,6 +273,42 @@ class productManager
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param("i", $productId);
         $stmt->execute();
+    }
+    public function getProfileImageByProductId($productId)
+    {
+
+        $sql = "SELECT i.immagine 
+            FROM prodotto p
+            JOIN utente u ON p.idUtente = u.idUtente
+            JOIN immagini i ON u.idImmagine = i.idImmagine
+            WHERE p.idProdotto = ?";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param('i', $productId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row['immagine'];
+
+    }
+
+    public function getImagesByrProductId($productId)
+    {
+
+        $sql = "SELECT i.immagine 
+            FROM immagini i
+            WHERE i.idProdotto = ?";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param('i', $productId);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        return $result->fetch_all(mode: MYSQLI_ASSOC);
+
     }
 
 }
