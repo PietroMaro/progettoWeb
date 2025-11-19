@@ -16,14 +16,13 @@ if (isset($_GET['sort'])) {
 }
 
 
-$products = $handler->getFilteredProducts($filters);
-
 
 $templateParams["titolo"] = "Unisell - Home";
 $templateParams["nome"] = "./templates/homeTemplate.php";
 $templateParams["stylesheet"] = "css/homePage.css";
 $templateParams["searchBar"] = "utils/searchBar.php"; 
-$templateParams["products"] = $products;
+$templateParams["products"] = $handler->getFilteredProducts($filters);
+
 
 require './templates/baseTemplate.php';
 ?>
