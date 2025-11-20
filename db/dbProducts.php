@@ -13,14 +13,10 @@ class productManager
             $this->db = Database::getInstance()->getConnection();
         } catch (Exception $e) {
 
-            error_log("Errore connessione DB: " . $e->getMessage());
+            error_log("Errore di connessione al database: " . $e->getMessage());
             $this->db = null;
         }
     }
-
-
-
-
 
     public function saveProduct($formData, $loadedFile)
     {
@@ -105,8 +101,6 @@ class productManager
         }
 
         try {
-
-
 
 
             // $userId = $_SESSION['user_id'];
@@ -231,7 +225,6 @@ class productManager
 
 
 
-    // Funzioni che fanno query composte (che usano le transazioni)
 
     public function deleteProduct($formData)
     {
@@ -389,6 +382,8 @@ class productManager
         $stmt->bind_param("i", $imageId);
         $stmt->execute();
     }
+
+
 
 }
 

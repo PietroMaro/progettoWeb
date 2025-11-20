@@ -78,7 +78,7 @@
 
                             <div class="mt-4 pt-4 border-top">
                                 <button type="button"
-                                    class="btn btn-success btn-lg w-100 rounded-pill py-3 fw-bold fs-4 shadow-sm text-uppercase tracking-wide hover-scale">
+                                    class="btn btn-success btn-lg w-100 rounded-pill">
                                     Contatta il venditore
                                 </button>
                             </div>

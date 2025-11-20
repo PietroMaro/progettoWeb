@@ -88,3 +88,13 @@ ALTER TABLE messaggio ADD CONSTRAINT  idChat FOREIGN KEY(idChat) REFERENCES chat
 
 ALTER TABLE prodotto
 MODIFY COLUMN fineAsta DATETIME;
+
+ALTER TABLE prodotto
+MODIFY COLUMN stato ENUM(
+    'attesa',
+    'esposto',
+    'asta',
+    'venduto',
+    'rifiutato',
+    'astaDeserta'
+) NOT NULL;
