@@ -24,6 +24,14 @@ form>div>input[type="checkbox"][role="switch"]:checked {
 }
 
 form {
-  border: 3px solid var(--colore-principale) !important; 
+  border: 3px solid var(--colore-principale) !important;
   border-radius: 15px !important;
+}
+
+img {
+  max-height: 120px;
+}
+
+form>div:nth-last-child(2) {
+  display: none;
 }

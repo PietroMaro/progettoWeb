@@ -1,94 +1,75 @@
 <main class="container my-4">
+    <?php if (empty($products)): ?>
 
-    <div class="row gx-md-3">
-        <?php foreach ($products as $product): ?>
+        <div class="alert alert-warning text-center p-5">
+            <h3>Nessun prodotto disponibile</h3>
+            <p>Al momento non ci sono prodotti da visualizzare o il servizio è temporaneamente non disponibile.</p>
+            <button onclick="location.reload()" class="btn btn-outline-secondary mt-3">Riprova</button>
+        </div>
 
-            <div class="col-12 col-md-4 mb-4">
-                <a href="singleProductPage.php?id=<?= $product['idProdotto'] ?>" class="text-decoration-none text-dark">
-
-                    <article class="card h-100 card-hover ">
-
-                        <img src="data:image/jpeg;base64,<?= base64_encode($product['immagineData']) ?>"
-                            class="card-img-top" alt="<?= htmlspecialchars($product['nome']) ?>">
-
-                        <div class="card-body d-flex flex-column p-3">
-
-                            <header class="mb-3">
-
-                                <div class=" text-success ">
-                                    <?php if (!empty($product['fineAsta'])): ?>
-                                        <h2 class="fs-2">Asta</h2>
-                                    <?php else: ?>
-                                        <h2 class="fs-2">Vendita diretta</h2>
-                                    <?php endif; ?>
+    <?php else: ?>
 
 
-                                </div>
+
+        <div class="row gx-md-3">
+            <?php foreach ($products as $product): ?>
+
+                <div class="col-12 col-md-4 mb-4">
+                    <a href="singleProductPage.php?id=<?= $product['idProdotto'] ?>" class="text-decoration-none text-dark">
+
+                        <article class="card h-100 card-hover ">
+
+                            <img src="data:image/jpeg;base64,<?= base64_encode($product['immagineData']) ?>"
+                                class="card-img-top" alt="<?= htmlspecialchars($product['nome']) ?>">
+
+                            <div class="card-body d-flex flex-column p-3">
+
+                                <header class="mb-3">
+
+                                    <div class=" text-success ">
+                                        <?php if (!empty($product['fineAsta'])): ?>
+                                            <h2 class="fs-2">Asta</h2>
+                                        <?php else: ?>
+                                            <h2 class="fs-2">Vendita diretta</h2>
+                                        <?php endif; ?>
 
 
-                                <h3 class="card-title fs-4  mb-3  text-capitalize">
-                                    <?= htmlspecialchars($product['nome']) ?>
+                                    </div>
+
+
+                                    <h3 class="card-title fs-4  mb-3  text-capitalize">
+                                        <?= htmlspecialchars($product['nome']) ?>
                                     </h3>
 
                                     <?php if (!empty($product['fineAsta'])): ?>
                                         <h4 class=" fs-5  mb-0">Finisce tra:</h4>
-                                        <div class="auction-timer fs-5  text-success " data-deadline="<?= $product['fineAsta'] ?>"></div>
+                                        <div class="auction-timer fs-5  text-success " data-deadline="<?= $product['fineAsta'] ?>">
+                                        </div>
                                     <?php endif; ?>
-                            </header>
-                            <div class=" pt-3 border-top">
-                                <span class="fs-4 fw-bold text-dark d-block">
-                                    <?= number_format($product['prezzo'], 2) ?> €
-                                </span>
-                                <?php if (!empty($product['fineAsta'])): ?>
-                                    <small class="text-muted" style="font-size: 0.8rem">Offerta attuale</small>
-                                <?php endif; ?>
+                                </header>
+                                <div class=" pt-3 border-top">
+                                    <span class="fs-4 fw-bold text-dark d-block">
+                                        <?= number_format($product['prezzo'], 2) ?> €
+                                    </span>
+                                    <?php if (!empty($product['fineAsta'])): ?>
+                                        <small class="text-muted">Offerta attuale</small>
+                                    <?php endif; ?>
+                                </div>
+
+
+
                             </div>
 
+                        </article>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </main>
+
+<?php endif; ?>
 
 
-                        </div>
-
-                    </article>
-                </a>
-            </div>
-        <?php endforeach; ?>
-    </div>
-</main>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-
-        function updateTimers() {
-            const timers = document.querySelectorAll('.auction-timer');
-            const now = new Date().getTime();
-
-            timers.forEach(timer => {
-
-                const deadlineStr = timer.getAttribute('data-deadline').replace(" ", "T");
-                const deadline = new Date(deadlineStr).getTime();
-
-                const distance = deadline - now;
-
-                if (distance < 0) {
-                    timer.innerHTML = "SCADUTA";
-                    timer.classList.remove('text-success');
-                    timer.classList.add('text-danger');
-                } else {
-                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-
-                    let output = "";
-                    if (days > 0) output += `${days}g `;
-                    output += `${hours}h ${minutes}m`;
-
-                    timer.innerHTML = output;
-                }
-            });
-        }
 
 
-        updateTimers();
-        setInterval(updateTimers, 60000);
-    });
-</script>
+<script src="scripts/homePageScript.js"></script>
