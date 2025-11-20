@@ -4,16 +4,28 @@
 $handler = new productManager();
 
 $productToEdit = null;
+$existingImages = [];
 $isEditing = false;
 
-if (isset($_GET['edit_id'])) {
-    $productId = (int) $_GET['edit_id'];
-    $productToEdit = $handler->getProductById($productId);
 
-    if ($productToEdit) {
+
+if (isset($_GET['edit_id'])) {
+
+    try {
+        $productId = (int) $_GET['edit_id'];
+        $productToEdit = $handler->getProductById($productId);
+
+
         $isEditing = true;
+        $existingImages = $handler->getImagesByProductId($productId);
+
+    } catch (Exception $e) {
+        $e->getMessage();
+        $erroreMsg = "Impossibile salvare il prodotto. Controlla i dati o riprova più tardi.";
     }
 }
+
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
@@ -31,11 +43,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     } catch (Exception $e) {
         $e->getMessage();
+        $erroreMsg = "Impossibile salvare il prodotto. Controlla i dati o riprova più tardi.";
     }
 }
 ?>
 
 <main class="container my-5">
+
+    <?php if (!empty($erroreMsg)): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Attenzione!</strong> <?= htmlspecialchars($erroreMsg) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
     <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-9">
 
@@ -56,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             Vuoi che il prodotto sia venduto con un'asta?
                         </label>
                         <small class="form-text text-muted d-block">
-                            In questo caso il prezzo inserito sarà considerato la base d'asta
+                            In questo caso il prezzo inserito sarà considerato la base d'asta.
                         </small>
                     </div>
                     <input class="form-check-input" type="checkbox" role="switch" id="auctionSwitch" name="isAuction"
@@ -86,29 +106,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Aggiungi immagini</label>
+                    <?php if ($isEditing && !empty($existingImages)): ?>
+                        <div class="card p-3 mb-3 bg-light">
+                            <p class="small text-muted mb-2">Seleziona le immagini che vuoi <strong>eliminare</strong>:</p>
+                            <div class="row row-cols-2 row-cols-md-4 g-3">
+                                <?php foreach ($existingImages as $img): ?>
+                                    <div class="col position-relative">
+                                        <div class="card h-100 border-0 shadow-sm">
+                                            <div class="position-absolute top-0 end-0 p-1">
+                                                <div class="form-check">
+                                                    <input class="form-check-input border-danger" type="checkbox"
+                                                        name="delete_images[]" value="<?= $img['idImmagine'] ?>"
+                                                        id="img-<?= $img['idImmagine'] ?>">
+                                                </div>
+                                            </div>
 
-                    <?php if ($isEditing): ?>
-                        <div class="alert alert-info py-2 px-3 mb-2 small">
-                            <i class="bi bi-info-circle"></i> Caricando nuove immagini sostituirai quelle esistenti.
+                                            <label for="img-<?= $img['idImmagine'] ?>" class="cursor-pointer h-100">
+                                                <img src="data:image/jpeg;base64,<?= base64_encode($img['immagine']) ?>"
+                                                    class="card-img-top h-100 object-fit-cover rounded" alt="Immagine prodotto">
+                                            </label>
+
+
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
                     <?php endif; ?>
 
-                    <div data-role="image-preview-wrapper" class="row row-cols-4 g-2 mb-3">
-                    </div>
+                    <label class="form-label">Aggiungi nuove immagini</label>
+                    <div data-role="image-preview-wrapper" class="row row-cols-4 g-2 mb-3"></div>
 
                     <label for="fileUpload" class="btn btn-outline-success w-100">
-                        <?= $isEditing ? 'Sostituisci immagini' : 'Aggiungi immagini' ?>
+                        <i class="bi bi-cloud-upload"></i>
+                        <?= $isEditing ? 'Carica altre foto' : 'Carica foto' ?>
                     </label>
-                    <input type="file" id="fileUpload" name="images[]" multiple accept="image/*" class="d-none"
-                        <?= !$isEditing ? 'required' : '' ?>>
-                </div>
 
-                <div class="mb-3" data-role="auctionDateContainer" style="display: none;">
+                    <input type="file" id="fileUpload" name="images[]" multiple accept="image/*" class="d-none"
+                        <?= (!$isEditing) ? 'required' : '' ?>>
+                </div>
+                <div class="mb-3" data-role="auctionDateContainer">
                     <label for="auctionEndDate" class="form-label">Inserisci la data e ora di fine dell'asta</label>
                     <input type="datetime-local" class="form-control" id="auctionEndDate" name="auctionEndDate"
                         min="<?= date('Y-m-d\TH:i', strtotime('+15 minutes')) ?>"
-                        value="<?= !empty($productToEdit['fineAsta']) ? date('Y-m-d\TH:i', strtotime($productToEdit['fineAsta'])) : '' ?>">
+                        value="<?php if(!empty($productToEdit['fineAsta'])){ echo date('Y-m-d\TH:i', strtotime($productToEdit['fineAsta'])); } ?>">
                 </div>
 
                 <div class="row g-2 mt-4">
@@ -128,53 +169,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </main>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
+<script src="scripts/sellPageScript.js"></script>
 
-        const auctionSwitch = document.getElementById('auctionSwitch');
-        const auctionDateContainer = document.querySelector('div[data-role="auctionDateContainer"]');
-        const auctionDateInput = document.getElementById('auctionEndDate');
-
-        auctionSwitch.addEventListener('change', function () {
-            if (this.checked) {
-                auctionDateContainer.style.display = 'block';
-                auctionDateInput.required = true;
-            } else {
-                auctionDateContainer.style.display = 'none';
-                auctionDateInput.required = false;
-
-            }
-        });
-
-        if (auctionSwitch.checked) {
-            auctionSwitch.dispatchEvent(new Event('change'));
-        }
-
-        const fileInput = document.getElementById('fileUpload');
-        const previewWrapper = document.querySelector('div[data-role="image-preview-wrapper"]');
-
-        fileInput.addEventListener('change', function (event) {
-            previewWrapper.innerHTML = '';
-
-            if (event.target.files && event.target.files.length > 0) {
-                const files = Array.from(event.target.files).slice(0, 4);
-
-                files.forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const col = document.createElement('div');
-                        col.className = 'col';
-
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.className = 'img-fluid rounded';
-
-                        col.appendChild(img);
-                        previewWrapper.appendChild(col);
-                    }
-                    reader.readAsDataURL(file);
-                });
-            }
-        });
-    });
-</script>
