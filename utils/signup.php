@@ -1,13 +1,16 @@
 <?php
-function signUpForm()
+function signUpForm($alertHtml)
 {
+    //TODO mettere un immagine locale
     $profileIcon = '<svg id="profile-placeholder" xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="#1a1a1a" class="bi bi-person-fill" viewBox="0 0 16 16"><path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>';
 
     return <<<HTML
     <div id="register-container" class="d-none">
         <h1 class="unisell-title" style="font-size: 2rem; margin-bottom: 1.5rem;">Crea Account</h1>
         
-        <form action="register.php" method="POST" enctype="multipart/form-data">
+        $alertHtml
+        
+        <form action="" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
             
             <div class="row mb-3">
                 
@@ -60,17 +63,12 @@ function signUpForm()
                 <input type="password" class="form-control" id="reg-password" name="password" required placeholder="Inserisci la tua password">
             </div>
 
-            <div class="mb-4">
-                <label for="reg-password-confirm" class="form-label">Ripeti Password</label>
-                <input type="password" class="form-control" id="reg-password-confirm" name="confirm_password" required placeholder="Inserisci la tua password">
-            </div>
-
             <button type="submit" class="btn btn-unisell-primary">Sign Up</button>
         </form>
 
         <div class="register-link">
             Hai già un account? 
-            <a href="#" onclick="switchView('login'); return false;">Accedi</a>
+            <a href="#" onclick="switchView('login'); resetLoginModal(); return false;">Accedi</a>
         </div>
     </div>
 

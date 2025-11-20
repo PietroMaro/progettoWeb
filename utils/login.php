@@ -2,7 +2,7 @@
 require_once __DIR__ . "/signup.php";
 
 global $dbError; 
-
+$activeView = 'login'; 
 try {
     $dbHandler = new UserManager();
 } catch (Exception $e) {
@@ -13,27 +13,76 @@ try {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $isLogin = !isset($_POST['nome']);
     if ($dbHandler) {
+      if($isLogin){
+        $activeView = 'login'; 
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
         try {
-            $userId = $dbHandler->login($email, $password);
+            $userId = $dbHandler->login($email, $password, false);
             if ($userId) {
-                if (session_status() === PHP_SESSION_NONE) session_start();
-                $_SESSION['user_id'] = $userId; 
-                header("Location: index.php");
-                exit(); 
+                activateLoginSession($userId, false);
             } else {
-                $dbError = "Email o Password errati.";
+                $userId = $dbHandler->login($email, $password, true);
+                if ($userId) {
+                  activateLoginSession($userId, true);
+                }else{
+                  $dbError = "Email o Password errati.";
+                }
             }
         } catch (Exception $e) {
             $dbError = "Errore tecnico durante il login.";
         }
+    }
+    else{
+      $activeView = 'register'; 
+      $nomeForm = $_POST['nome'] ?? '';
+      $cognome = $_POST['cognome'] ?? '';
+      $username = $_POST['username'] ?? '';
+      $descrizione = $_POST['descrizione'] ?? '';
+      $email = $_POST['email'] ?? '';
+      $password = $_POST['password'] ?? '';
+      $propic = $_FILES['propic'] ?? null;
+      try {
+          $dbHandler->registerUser(
+              $propic, 
+              $nomeForm , 
+              $cognome, 
+              $username, 
+              $descrizione, 
+              $email, 
+              $password
+          );
+          $userId = $dbHandler->login($email, $password, false);
+          if ($userId) {
+              activateLoginSession($userId, false);
+          } else {
+              header("Location: index.php");
+              exit();
+          }
+      } catch (Exception $e) {
+          if ($e->getMessage() === "Questa email è già registrata.") {
+              $dbError = "L'email inserita è già in uso. Scegline un'altra.";
+          } else {
+              $dbError = "Errore tecnico durante la registrazione. Riprova più tardi.";
+          }
+      }
     } 
+  }
 }
-function loginForm($errorMessage = null)
+
+function activateLoginSession($userId, $isAdmin){
+  if (session_status() === PHP_SESSION_NONE) session_start();
+  $_SESSION['user_id'] = $userId; 
+  $_SESSION['login_success'] = true;
+  $_SESSION['is_admin'] = $isAdmin;
+  header("Location: index.php");
+  exit();
+}
+
+function loginForm($errorMessage = null, $view = 'login')
 {
-    $signUpForm = signUpForm();
     $alertHtml = "";
     $autoOpenScript = "";
     $isPostRequest = ($_SERVER["REQUEST_METHOD"] === "POST");
@@ -50,10 +99,15 @@ function loginForm($errorMessage = null)
                 document.addEventListener('DOMContentLoaded', function() {
                     var myModal = new bootstrap.Modal(document.getElementById('loginModal'));
                     myModal.show();
+
+                    if ('$view' === 'register') {
+                        switchView('register');
+                    }
                 });
             </script>
         JS;
     }
+    $signUpForm = signUpForm($alertHtml);
 
     return <<<HTML
       <link rel="stylesheet" href="css/style.css"> 
@@ -87,7 +141,7 @@ function loginForm($errorMessage = null)
 
                 <div class="register-link">
                   Non hai un account? 
-                  <a href="#" onclick="switchView('register'); return false;">Registrati</a>
+                  <a href="#" onclick="switchView('register'); resetLoginModal(); return false;">Registrati</a>
                 </div>
               </div>
               
@@ -113,16 +167,14 @@ function loginForm($errorMessage = null)
       }
 
       function resetLoginModal() {
-          const errorAlert = document.querySelector('#loginModal .alert');
-          if (errorAlert) {
-              errorAlert.remove();
-          }
+        const errorAlerts = document.querySelectorAll('#loginModal .alert');
+        errorAlerts.forEach(alert => alert.remove());
           
-          const form = document.querySelector('#loginModal form');
-          if (form) {
-              form.classList.remove('was-validated');
-              form.reset();
-          }
+        const form = document.querySelector('#loginModal form');
+        if (form) {
+            form.classList.remove('was-validated');
+            form.reset();
+        }
       }
 
       (function () {

@@ -2,8 +2,41 @@
 require_once "utils/login.php";
 function navbar()
 {
-    global $dbError ;
-    $modalHtml = loginForm($dbError);
+    global $dbError;
+    global $activeView; 
+    $modalHtml = loginForm($dbError,$activeView);
+
+    $toastHtml = 
+    <<<HTML
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+          <div id="loginToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header text-white" style="background-color: var(--colore-principale);">
+              <strong class="me-auto">Unisell</strong>
+              <small>Ora</small>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+              Login effettuato con successo! 👋
+            </div>
+          </div>
+        </div>
+    HTML;
+
+    $toastScript = "";
+    if (isset($_SESSION['login_success']) && $_SESSION['login_success'] === true) {
+      $toastScript = 
+      <<<JS
+      <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var toastEl = document.getElementById('loginToast');
+        var toast = new bootstrap.Toast(toastEl);
+        toast.show();
+        });
+      </script>
+      JS;
+      unset($_SESSION['login_success']);
+    }
+
     return <<<HTML
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
       <div class="container-fluid">
@@ -49,6 +82,9 @@ function navbar()
     </nav>
 
     $modalHtml
+
+    $toastHtml
+    $toastScript
   HTML;
 }
 ?>
