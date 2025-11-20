@@ -1,4 +1,15 @@
 <main class="container my-4">
+<?php if (empty($products)): ?>
+
+    <div class="alert alert-warning text-center p-5">
+        <h3>Nessun prodotto disponibile</h3>
+        <p>Al momento non ci sono prodotti da visualizzare o il servizio è temporaneamente non disponibile.</p>
+        <button onclick="location.reload()" class="btn btn-outline-secondary mt-3">Riprova</button>
+    </div>
+
+<?php else: ?>
+
+
 
     <div class="row gx-md-3">
         <?php foreach ($products as $product): ?>
@@ -8,8 +19,8 @@
 
                     <article class="card h-100 card-hover ">
 
-                        <img src="data:image/jpeg;base64,<?= base64_encode($product['immagineData']) ?>"
-                            class="card-img-top" alt="<?= htmlspecialchars($product['nome']) ?>">
+                        <img src="data:image/jpeg;base64,<?= base64_encode($product['immagineData']) ?>" class="card-img-top"
+                            alt="<?= htmlspecialchars($product['nome']) ?>">
 
                         <div class="card-body d-flex flex-column p-3">
 
@@ -28,12 +39,13 @@
 
                                 <h3 class="card-title fs-4  mb-3  text-capitalize">
                                     <?= htmlspecialchars($product['nome']) ?>
-                                    </h3>
+                                </h3>
 
-                                    <?php if (!empty($product['fineAsta'])): ?>
-                                        <h4 class=" fs-5  mb-0">Finisce tra:</h4>
-                                        <div class="auction-timer fs-5  text-success " data-deadline="<?= $product['fineAsta'] ?>"></div>
-                                    <?php endif; ?>
+                                <?php if (!empty($product['fineAsta'])): ?>
+                                    <h4 class=" fs-5  mb-0">Finisce tra:</h4>
+                                    <div class="auction-timer fs-5  text-success " data-deadline="<?= $product['fineAsta'] ?>">
+                                    </div>
+                                <?php endif; ?>
                             </header>
                             <div class=" pt-3 border-top">
                                 <span class="fs-4 fw-bold text-dark d-block">
@@ -53,7 +65,12 @@
             </div>
         <?php endforeach; ?>
     </div>
-</main>
+    </main>
+
+<?php endif; ?>
+
+
+
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {

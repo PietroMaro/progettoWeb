@@ -1,22 +1,19 @@
 <section class="container mb-4">
-    <form action="index.php" method="GET"> 
-        
+    <form action="index.php" method="GET">
+
         <div class="card shadow-sm border-0 bg-light">
             <div class="card-body p-3">
                 <div class="row g-3 align-items-center">
 
                     <div class="col-12 col-md-5">
                         <div class="input-group">
-                           
-                            <input type="text" class="form-control border-start-0 ps-0" 
-                                   name="search" 
-                                   placeholder="Cerca un prodotto" 
-                                   value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+                            <input type="text" class="form-control border-start-0 ps-0" name="search"
+                                placeholder="Cerca un prodotto" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
                         </div>
                     </div>
 
                     <div class="col-6 col-md-3">
-                        <select class="form-select" name="filter_type">
+                        <select class="form-select" name="filter_type" id="filterType">
                             <option value="all" <?= (isset($_GET['filter_type']) && $_GET['filter_type'] == 'all') ? 'selected' : '' ?>>
                                 Tutto
                             </option>
@@ -30,7 +27,7 @@
                     </div>
 
                     <div class="col-6 col-md-3">
-                        <select class="form-select" name="sort">
+                        <select class="form-select" name="sort" id="sortSelect">
                             <option value="newest" <?= (isset($_GET['sort']) && $_GET['sort'] == 'newest') ? 'selected' : '' ?>>
                                 Più recenti
                             </option>
@@ -40,7 +37,7 @@
                             <option value="price_desc" <?= (isset($_GET['sort']) && $_GET['sort'] == 'price_desc') ? 'selected' : '' ?>>
                                 Prezzo: Alto &rarr; Basso
                             </option>
-                            <option value="ending_soon" <?= (isset($_GET['sort']) && $_GET['sort'] == 'ending_soon') ? 'selected' : '' ?>>
+                            <option value="ending_soon" id="optionEndingSoon" <?= (isset($_GET['sort']) && $_GET['sort'] == 'ending_soon') ? 'selected' : '' ?>>
                                 In scadenza
                             </option>
                         </select>
@@ -57,4 +54,32 @@
         </div>
 
     </form>
-</main>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterType = document.getElementById('filterType');
+        const sortSelect = document.getElementById('sortSelect');
+        const optionEndingSoon = document.getElementById('optionEndingSoon');
+
+        function toggleEndingSoonOption() {
+            if (filterType.value === 'direct') {
+                optionEndingSoon.hidden = true;
+                optionEndingSoon.disabled = true; 
+
+               
+                if (sortSelect.value === 'ending_soon') {
+                    sortSelect.value = 'newest';
+                }
+            } else {
+                optionEndingSoon.hidden = false;
+                optionEndingSoon.disabled = false;
+            }
+        }
+
+        filterType.addEventListener('change', toggleEndingSoonOption);
+
+        
+        toggleEndingSoonOption();
+    });
+</script>

@@ -1,5 +1,5 @@
 <?php
-require_once  'db/database.php';
+require_once 'db/database.php';
 
 
 class productManager
@@ -9,7 +9,13 @@ class productManager
 
     public function __construct()
     {
-        $this->db = Database::getInstance()->getConnection();
+        try {
+            $this->db = Database::getInstance()->getConnection();
+        } catch (Exception $e) {
+
+            error_log("Errore connessione DB: " . $e->getMessage());
+            $this->db = null;
+        }
     }
 
 
@@ -19,41 +25,54 @@ class productManager
     public function saveProduct($formData, $loadedFile)
     {
 
-        $name = $formData['productName'];
-        $description = $formData['productDescription'];
-        $price = $formData['productPrice'];
-
-        if (isset($formData['isAuction'])) {
-            $endDate = $formData['auctionEndDate'];
-
-        } else {
-            $endDate = null;
+        if ($this->db === null) {
+            throw new Exception("Servizio temporaneamente non disponibile.");
         }
+        $this->db->begin_transaction();
 
-        // $idUtente = $_SESSION['user_id'];
-        $userId = 1; //fino alla creazione del login
+        try {
+            $name = $formData['productName'];
+            $description = $formData['productDescription'];
+            $price = $formData['productPrice'];
+
+            if (isset($formData['isAuction'])) {
+                $endDate = $formData['auctionEndDate'];
+
+            } else {
+                $endDate = null;
+            }
+
+            // $idUtente = $_SESSION['user_id'];
+            $userId = 1; //fino alla creazione del login
 
 
 
 
-        $sql = "INSERT INTO prodotto (nome, descrizione, prezzo, stato, ragioneRifiuto, fineAsta, idUtente, idAdmin) 
+            $sql = "INSERT INTO prodotto (nome, descrizione, prezzo, stato, ragioneRifiuto, fineAsta, idUtente, idAdmin) 
                 VALUES (?, ?, ?, ?, ?, ?,?,?)";
 
-        $stmt = $this->db->prepare($sql);
+            $stmt = $this->db->prepare($sql);
 
-        $stmt->execute([
-            $name,
-            $description,
-            $price,
-            'attesa',
-            null,
-            $endDate,
-            $userId,
-            null
-        ]);
+            $stmt->execute([
+                $name,
+                $description,
+                $price,
+                'attesa',
+                null,
+                $endDate,
+                $userId,
+                null
+            ]);
 
-        $productId = $this->db->insert_id;
-        $this->saveImages($productId, $loadedFile['images']);
+            $productId = $this->db->insert_id;
+            $this->saveImages($productId, $loadedFile['images']);
+
+            $this->db->commit();
+
+        } catch (Exception $e) {
+            $this->db->rollback();
+            throw $e;
+        }
     }
 
 
@@ -80,11 +99,21 @@ class productManager
     public function getProductsForUser()
     {
 
-        // $userId = $_SESSION['user_id'];
-        $userId = 1; //fino alla creazione del login
+
+        if ($this->db === null) {
+            return [];
+        }
+
+        try {
 
 
-        $sql = "SELECT 
+
+
+            // $userId = $_SESSION['user_id'];
+            $userId = 1; //fino alla creazione del login
+
+
+            $sql = "SELECT 
                     p.idProdotto, 
                     p.nome, 
                     p.prezzo, 
@@ -98,25 +127,36 @@ class productManager
                 ORDER BY 
                     p.idProdotto DESC";
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$userId]);
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$userId]);
 
 
-        $result = $stmt->get_result();
+            $result = $stmt->get_result();
 
-        return $result->fetch_all(MYSQLI_ASSOC);
+            return $result->fetch_all(MYSQLI_ASSOC);
+
+        } catch (Exception $e) {
+            error_log("Error in getProductsForUser: " . $e->getMessage());
+            return [];
+
+        }
     }
 
 
     public function getFilteredProducts($filters)
     {
 
+        if ($this->db === null) {
+            return [];
+        }
+
+
 
         // $userId = $_SESSION['user_id'];
         $userId = 2; //fino alla creazione del login
 
-
-        $sql = "SELECT 
+        try {
+            $sql = "SELECT 
                     p.idProdotto, 
                     p.nome, 
                     p.prezzo, 
@@ -133,62 +173,72 @@ class productManager
 
 
 
-        $types = "i";
-        $params = [$userId];
+            $types = "i";
+            $params = [$userId];
 
-        if (!empty($filters['search'])) {
-            $sql .= " AND p.nome LIKE ?";
-            $types .= "s";
-            $params[] = "%" . $filters['search'] . "%";
-        }
-
-
-        if (!empty($filters['filter_type'])) {
-            if ($filters['filter_type'] === 'auction') {
-                $sql .= " AND p.fineAsta IS NOT NULL";
-
-            } elseif ($filters['filter_type'] === 'direct') {
-                $sql .= " AND p.fineAsta IS NULL";
+            if (!empty($filters['search'])) {
+                $sql .= " AND p.nome LIKE ?";
+                $types .= "s";
+                $params[] = "%" . $filters['search'] . "%";
             }
+
+
+            if (!empty($filters['filter_type'])) {
+                if ($filters['filter_type'] === 'auction') {
+                    $sql .= " AND p.fineAsta IS NOT NULL";
+
+                } elseif ($filters['filter_type'] === 'direct') {
+                    $sql .= " AND p.fineAsta IS NULL";
+                }
+            }
+
+
+            $sort = $filters['sort'] ?? 'newest';
+
+            switch ($sort) {
+                case 'price_asc':
+                    $sql .= " ORDER BY p.prezzo ASC";
+                    break;
+                case 'price_desc':
+                    $sql .= " ORDER BY p.prezzo DESC";
+                    break;
+                case 'ending_soon':
+
+                    $sql .= " ORDER BY (p.fineAsta IS NULL), p.fineAsta ASC";
+                    break;
+                default:
+                    $sql .= " ORDER BY p.idProdotto DESC";
+                    break;
+            }
+
+
+            $stmt = $this->db->prepare($sql);
+
+            if (!empty($params)) {
+                $stmt->bind_param($types, ...$params);
+            }
+
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            return $result->fetch_all(mode: MYSQLI_ASSOC);
+
+        } catch (Exception $e) {
+            error_log("Error in getFilteredProducts: " . $e->getMessage());
+            return [];
         }
-
-
-        $sort = $filters['sort'] ?? 'newest';
-
-        switch ($sort) {
-            case 'price_asc':
-                $sql .= " ORDER BY p.prezzo ASC";
-                break;
-            case 'price_desc':
-                $sql .= " ORDER BY p.prezzo DESC";
-                break;
-            case 'ending_soon':
-
-                $sql .= " ORDER BY (p.fineAsta IS NULL), p.fineAsta ASC";
-                break;
-            default:
-                $sql .= " ORDER BY p.idProdotto DESC";
-                break;
-        }
-
-
-        $stmt = $this->db->prepare($sql);
-
-        if (!empty($params)) {
-            $stmt->bind_param($types, ...$params);
-        }
-
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        return $result->fetch_all(mode: MYSQLI_ASSOC);
     }
+
 
 
     // Funzioni che fanno query composte (che usano le transazioni)
 
     public function deleteProduct($formData)
     {
+
+        if ($this->db === null) {
+            throw new Exception("Servizio temporaneamente non disponibile.");
+        }
 
         $productId = $formData['idProdotto'];
 
@@ -216,38 +266,41 @@ class productManager
 
     public function updateProduct($formData, $loadedFile)
     {
+
+        if ($this->db === null) {
+            throw new Exception("Servizio non disponibile.");
+        }
+
         $productId = $formData['idProdotto'];
         $name = $formData['productName'];
         $description = $formData['productDescription'];
         $price = $formData['productPrice'];
         $endDate = (isset($formData['isAuction'])) ? $formData['auctionEndDate'] : null;
 
-        // $idUtente = $_SESSION['user_id'];
-        $userId = 1; //fino alla creazione del login
+
+        // $userId = $_SESSION['user_id'];
+        $userId = 1;
 
         $this->db->begin_transaction();
         try {
-            $sql = "UPDATE prodotto SET 
-                            nome = ?, 
-                            descrizione = ?, 
-                            prezzo = ?, 
-                            fineAsta = ?, 
-                            stato = 'attesa'  
-                        WHERE idProdotto = ? AND idUtente = ?";
-
+            $sql = "UPDATE prodotto SET nome=?, descrizione=?, prezzo=?, fineAsta=?, stato='attesa' WHERE idProdotto=? AND idUtente=?";
             $stmt = $this->db->prepare($sql);
-
             $stmt->bind_param("ssdsii", $name, $description, $price, $endDate, $productId, $userId);
             $stmt->execute();
 
 
+            if (isset($formData['delete_images']) && is_array($formData['delete_images'])) {
+                foreach ($formData['delete_images'] as $imgId) {
+                    $this->deleteImageById($imgId);
+                }
+            }
+
+
             if (isset($loadedFile['images']) && $loadedFile['images']['error'][0] == 0) {
-                $this->deleteImagesByProductId($productId);
                 $this->saveImages($productId, $loadedFile['images']);
             }
 
             $this->db->commit();
-
         } catch (Exception $e) {
             $this->db->rollback();
             throw $e;
@@ -259,6 +312,11 @@ class productManager
 
     public function getProductById($productId)
     {
+
+        if ($this->db === null) {
+            error_log("getProductById fallito: Database non connesso.");
+            return null;
+        }
         $sql = "SELECT * FROM prodotto WHERE idProdotto = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param("i", $productId);
@@ -277,38 +335,59 @@ class productManager
     public function getProfileImageByProductId($productId)
     {
 
-        $sql = "SELECT i.immagine 
+        if ($this->db === null) {
+            return null;
+        }
+
+        try {
+
+            $sql = "SELECT i.immagine 
             FROM prodotto p
             JOIN utente u ON p.idUtente = u.idUtente
             JOIN immagini i ON u.idImmagine = i.idImmagine
             WHERE p.idProdotto = ?";
 
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->bind_param('i', $productId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        return $row['immagine'];
+            $stmt = $this->db->prepare($sql);
+            $stmt->bind_param('i', $productId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            return $row['immagine'];
+
+        } catch (Exception $e) {
+            error_log("Error in getProfileImageByProductId: " . $e->getMessage());
+            return null;
+        }
 
     }
 
-    public function getImagesByrProductId($productId)
+    public function getImagesByProductId($productId)
     {
 
-        $sql = "SELECT i.immagine 
-            FROM immagini i
-            WHERE i.idProdotto = ?";
+        if ($this->db === null) {
+            return [];
+        }
 
+        try {
+            $sql = "SELECT idImmagine, immagine FROM immagini WHERE idProdotto = ?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bind_param('i', $productId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            return $result->fetch_all(MYSQLI_ASSOC);
+        } catch (Exception $e) {
+            error_log("Error: " . $e->getMessage());
+            return [];
+        }
+    }
 
+    public function deleteImageById($imageId)
+    {
+        $sql = "DELETE FROM immagini WHERE idImmagine = ?";
         $stmt = $this->db->prepare($sql);
-        $stmt->bind_param('i', $productId);
+        $stmt->bind_param("i", $imageId);
         $stmt->execute();
-
-        $result = $stmt->get_result();
-
-        return $result->fetch_all(mode: MYSQLI_ASSOC);
-
     }
 
 }
