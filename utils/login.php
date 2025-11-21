@@ -77,7 +77,7 @@ function activateLoginSession($userId, $isAdmin){
   $_SESSION['user_id'] = $userId; 
   $_SESSION['login_success'] = true;
   $_SESSION['is_admin'] = $isAdmin;
-  header("Location: index.php");
+  header(header: "Location: index.php");
   exit();
 }
 

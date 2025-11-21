@@ -2,7 +2,7 @@
 require_once 'bootstrap.php';
 $products = [];
 try {
-    $handler = new productManager();
+    $handler = new ProductManager();
     $filters = [];
     if (isset($_GET['search'])) {
         $filters['search'] = $_GET['search'];

@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-<main class="container my-5">
+<div class="container my-5">
 
     <?php if (!empty($erroreMsg)): ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -167,7 +167,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </form>
         </div>
     </div>
-</main>
+</div>
 
 <script src="scripts/sellPageScript.js"></script>
 

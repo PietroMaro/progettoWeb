@@ -1,4 +1,4 @@
-<main class="container my-4">
+<div class="container my-4">
     <?php if (empty($products)): ?>
 
         <div class="alert alert-warning text-center p-5">
@@ -65,7 +65,7 @@
                 </div>
             <?php endforeach; ?>
         </div>
-    </main>
+    </div>
 
 <?php endif; ?>
 

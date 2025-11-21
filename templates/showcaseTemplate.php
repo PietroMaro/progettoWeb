@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['idProdotto'])) {
 
 
 
-<main class="container my-4">
+<div class="container my-4">
 
     <?php if (empty($products)): ?>
 
@@ -97,4 +97,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['idProdotto'])) {
 
     <?php endif; ?>
 
-</main>
+</div>

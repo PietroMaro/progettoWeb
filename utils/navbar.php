@@ -1,13 +1,60 @@
 <?php
 require_once "utils/login.php";
+
 function navbar()
 {
-    global $dbError;
-    global $activeView; 
-    $modalHtml = loginForm($dbError,$activeView);
+  global $dbError;
+  global $activeView;
 
-    $toastHtml = 
-    <<<HTML
+  $isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
+
+  $menuItems = "";
+  if ($isAdmin) {
+    $menuItems = <<<HTML
+            <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="segnalazioni.php">Segnalazioni</a></li>
+            <li class="nav-item"><a class="nav-link" href="chat.php">Chat</a></li>
+        HTML;
+  } else {
+    $menuItems = <<<HTML
+            <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="sellProductPage.php">Vendi</a></li>
+            <li class="nav-item"><a class="nav-link" href="showcasePage.php">Vetrina</a></li>
+            <li class="nav-item"><a class="nav-link" href="profilePage.php">Profilo</a></li>
+            <li class="nav-item"><a class="nav-link" href="faq.php">FAQ</a></li>
+        HTML;
+  }
+
+ 
+  $isLoggedIn = isset($_SESSION['uid']) || $isAdmin;
+
+  $accountButton = "";
+  if (!$isLoggedIn) {
+    $accountButton = <<<HTML
+            <li class="nav-item">
+                <button 
+                  type="button" 
+                  class="nav-link btn btn-outline-success btn-sm" 
+                  data-bs-toggle="modal" 
+                  data-bs-target="#loginModal" 
+                  onclick="resetLoginModal()"
+                >
+                   Sign In &rarr;
+                </button>
+             </li>
+        HTML;
+  } else {
+
+    $accountButton = <<<HTML
+            <li class="nav-item">
+                <a href="utils/logout.php" class="nav-link btn btn-outline-danger btn-sm">Logout</a>
+            </li>
+        HTML;
+  }
+
+  $modalHtml = loginForm($dbError, $activeView);
+
+  $toastHtml = <<<HTML
         <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
           <div id="loginToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header text-white" style="background-color: var(--colore-principale);">
@@ -16,16 +63,15 @@ function navbar()
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
             <div class="toast-body">
-              Login effettuato con successo! 👋
+              Login effettuato con successo!
             </div>
           </div>
         </div>
     HTML;
 
-    $toastScript = "";
-    if (isset($_SESSION['login_success']) && $_SESSION['login_success'] === true) {
-      $toastScript = 
-      <<<JS
+  $toastScript = "";
+  if (isset($_SESSION['login_success']) && $_SESSION['login_success'] === true) {
+    $toastScript = <<<JS
       <script>
       document.addEventListener('DOMContentLoaded', function() {
         var toastEl = document.getElementById('loginToast');
@@ -34,10 +80,10 @@ function navbar()
         });
       </script>
       JS;
-      unset($_SESSION['login_success']);
-    }
+    unset($_SESSION['login_success']);
+  }
 
-    return <<<HTML
+  return <<<HTML
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
       <div class="container-fluid">
         
@@ -56,25 +102,11 @@ function navbar()
         <div class="collapse navbar-collapse" id="navbarNav">
           
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="sellProductPage.php">Vendi</a></li>
-            <li class="nav-item"><a class="nav-link" href="showcasePage.php">Vetrina</a></li>
-            <li class="nav-item"><a class="nav-link" href="profile.php">Profilo</a></li>
-            <li class="nav-item"><a class="nav-link" href="faq.php">FAQ</a></li>
+            $menuItems
           </ul>
           
           <ul class="navbar-nav ms-auto">
-             <li class="nav-item">
-                <button 
-                  type="button" 
-                  class="nav-link btn btn-outline-success btn-sm" 
-                  data-bs-toggle="modal" 
-                  data-bs-target="#loginModal" 
-                  onclick="resetLoginModal()"
-                >
-                   Sign In &rarr;
-                </button>
-             </li>
+             $accountButton
           </ul>
 
         </div>
@@ -82,7 +114,6 @@ function navbar()
     </nav>
 
     $modalHtml
-
     $toastHtml
     $toastScript
   HTML;

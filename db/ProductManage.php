@@ -2,7 +2,7 @@
 require_once 'db/database.php';
 
 
-class productManager
+class ProductManager
 {
 
     private $db;

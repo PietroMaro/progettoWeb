@@ -1,4 +1,4 @@
-<main class="container-fluid d-flex justify-content-center my-4">
+<div class="container-fluid d-flex justify-content-center my-4">
 
     <?php if (isset($fatalError)): ?>
 
@@ -77,8 +77,7 @@
                             </div>
 
                             <div class="mt-4 pt-4 border-top">
-                                <button type="button"
-                                    class="btn btn-success btn-lg w-100 rounded-pill">
+                                <button type="button" class="btn btn-success btn-lg w-100 rounded-pill">
                                     Contatta il venditore
                                 </button>
                             </div>
@@ -91,4 +90,4 @@
         </div>
 
     <?php endif; ?>
-</main>
+</div>

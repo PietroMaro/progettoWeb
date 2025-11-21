@@ -23,19 +23,31 @@
 
 <body>
 
-  <?php
-  require_once "utils/navbar.php";
-  echo navbar();
+  <header>
+    <?php
+
+    require_once "utils/navbar.php";
+    echo navbar();
 
 
-  if (isset($searchBar)) {
-    require($searchBar);
-  }
 
-  if (isset($nome)) {
-    require($nome);
-  }
-  ?>
+
+
+    if (isset($searchBar)) {
+      require($searchBar);
+    }
+    ?>
+
+  </header>
+
+  <main>
+    <?php
+
+    if (isset($nome)) {
+      require($nome);
+    }
+    ?>
+  </main>
 
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

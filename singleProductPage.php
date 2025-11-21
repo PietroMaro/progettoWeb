@@ -1,7 +1,7 @@
 <?php
 require_once 'bootstrap.php';
 
-$handler = new productManager();
+$handler = new ProductManager();
 
 $fatalError = null;
 
