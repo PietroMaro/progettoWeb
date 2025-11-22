@@ -5,61 +5,76 @@ class UserManager
     private $db;
     public function __construct()
     {
-        $this->db = Database::getInstance()->getConnection();
+        try {
+            $this->db = Database::getInstance()->getConnection();
+        } catch (Exception $e) {
+
+            error_log("Errore di connessione al database: " . $e->getMessage());
+            $this->db = null;
+        }
     }
 
 
     public function getUserInfo($userId)
     {
 
+        if ($this->db === null) {
+            return null;
+        }
 
+        try {
 
-        $queryUser = "SELECT u.nome, u.cognome, u.email, u.username, u.descrizione, i.immagine 
+            $queryUser = "SELECT u.nome, u.cognome, u.email, u.username, u.descrizione, i.immagine 
                   FROM utente u 
                   LEFT JOIN immagini i ON u.idImmagine = i.idImmagine 
                   WHERE u.idUtente = ?";
 
-        $stmt = $this->db->prepare($queryUser);
-        $stmt->bind_param("i", $userId);
-        $stmt->execute();
-        $result = $stmt->get_result();
+            $stmt = $this->db->prepare($queryUser);
+            $stmt->bind_param("i", $userId);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-        if ($result->num_rows === 0) {
-            return null;
-        }
+            if ($result->num_rows === 0) {
+                return null;
+            }
 
-        $userData = $result->fetch_assoc();
+            $userData = $result->fetch_assoc();
 
-        if (!empty($userData['immagine'])) {
-            $userData['imgSrc'] = "data:image/jpeg;base64," . base64_encode($userData['immagine']);
-        }
-        unset($userData['immagine']);
+            if (!empty($userData['immagine'])) {
+                $userData['imgSrc'] = "data:image/jpeg;base64," . base64_encode($userData['immagine']);
+            }
+            unset($userData['immagine']);
 
 
 
-        $queryProd = "SELECT p.idProdotto, p.nome, 
+            $queryProd = "SELECT p.idProdotto, p.nome, 
                          (SELECT immagine FROM immagini WHERE idProdotto = p.idProdotto LIMIT 1) as immagine
                   FROM prodotto p 
                   WHERE p.idUtente = ? AND p.stato = 'venduto'
                   ORDER BY p.fineAsta DESC";
 
-        $stmtProd = $this->db->prepare($queryProd);
-        $stmtProd->bind_param("i", $userId);
-        $stmtProd->execute();
-        $resProd = $stmtProd->get_result();
+            $stmtProd = $this->db->prepare($queryProd);
+            $stmtProd->bind_param("i", $userId);
+            $stmtProd->execute();
+            $resProd = $stmtProd->get_result();
 
-        $soldProducts = [];
-        while ($row = $resProd->fetch_assoc()) {
-            $row['imgSrc'] = "data:image/jpeg;base64," . base64_encode($row['immagine']);
+            $soldProducts = [];
+            while ($row = $resProd->fetch_assoc()) {
+                $row['imgSrc'] = "data:image/jpeg;base64," . base64_encode($row['immagine']);
 
-            unset($row['immagine']);
+                unset($row['immagine']);
 
-            $soldProducts[] = $row;
+                $soldProducts[] = $row;
+            }
+
+            $userData['soldProducts'] = $soldProducts;
+
+            return $userData;
+
+        } catch (Exception $e) {
+            error_log("Error: " . $e->getMessage());
+            return null;
         }
-
-        $userData['soldProducts'] = $soldProducts;
-
-        return $userData;
     }
 
 
