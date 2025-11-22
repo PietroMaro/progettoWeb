@@ -21,12 +21,13 @@ function navbar()
             <li class="nav-item"><a class="nav-link" href="sellProductPage.php">Vendi</a></li>
             <li class="nav-item"><a class="nav-link" href="showcasePage.php">Vetrina</a></li>
             <li class="nav-item"><a class="nav-link" href="profilePage.php">Profilo</a></li>
+            <li class="nav-item"><a class="nav-link" href="chat.php">Chat</a></li>
             <li class="nav-item"><a class="nav-link" href="faq.php">FAQ</a></li>
         HTML;
   }
 
- 
-  $isLoggedIn = isset($_SESSION['uid']) || $isAdmin;
+
+  $isLoggedIn = isset($_SESSION['user_id']) || $isAdmin;
 
   $accountButton = "";
   if (!$isLoggedIn) {
