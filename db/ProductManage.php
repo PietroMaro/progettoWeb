@@ -384,6 +384,30 @@ class ProductManager
     }
 
 
+    public function getUserIdByProductId($productId)
+    {
+        try {
+            $query = "SELECT idUtente FROM prodotto WHERE idProdotto = ?";
+
+
+            $stmt = $this->db->prepare($query);
+
+            $stmt->bind_param("i", $productId);
+
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            $stmt->close();
+            return $row['idUtente'];
+
+
+        } catch (Exception $e) {
+
+
+            error_log("Error: " . $e->getMessage());
+            return null;
+        }
+    }
 
 }
 

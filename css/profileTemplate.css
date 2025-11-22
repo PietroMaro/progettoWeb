@@ -1,0 +1,19 @@
+header img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border: 2px solid var(--colore-principale) !important;
+
+}
+
+header>div>div {
+
+    border-radius: 20px;
+    border: 2px solid var(--colore-principale) !important;
+}
+
+aside img {
+
+    height: 120px;
+    object-fit: contain;
+}

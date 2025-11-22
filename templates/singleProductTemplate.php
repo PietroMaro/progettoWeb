@@ -53,9 +53,14 @@
                         <div class="col-md-3 d-flex flex-column align-items-center text-center border-end-md mb-4 mb-md-0">
 
                             <div class="avatar-container mb-3">
+                                <a href="profilePage.php?userId=<?= $sellerId; ?>">
 
-                                <img src="data:image/jpeg;base64,<?= base64_encode($profileImg); ?>"
-                                    class="rounded-circle border border-3 border-success p-1" alt="Venditore" />
+
+
+                                    <img src="data:image/jpeg;base64,<?= base64_encode($profileImg); ?>"
+                                        class="rounded-circle border border-3 border-success p-1" alt="Venditore" />
+                                </a>
+
                             </div>
 
                             <h2 class="text-success fw-bold display-6 mb-0">
