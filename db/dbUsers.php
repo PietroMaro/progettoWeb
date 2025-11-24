@@ -1,5 +1,5 @@
 <?php
-require_once 'db/database.php';
+require_once __DIR__ . '/database.php';
 class UserManager
 {
     private $db;

@@ -2,6 +2,7 @@
 require_once 'bootstrap.php';
 
 $handler = new ProductManager();
+$isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
 
 $fatalError = null;
 
@@ -22,7 +23,7 @@ try {
     $templateParams["product"] = $prodottoTrovato;
     $templateParams["sellerId"] = $handler->getUserIdByProductId($productId);
     $templateParams["profileImg"] = $handler->getProfileImageByProductId($productId);
-    
+
     $templateParams["productImages"] = $handler->getImagesByProductId($productId);
 
 } catch (Exception $e) {

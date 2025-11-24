@@ -1,6 +1,8 @@
 <?php
 require_once 'bootstrap.php';
 $products = [];
+
+$isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
 try {
     $handler = new ProductManager();
     $filters = [];
@@ -13,7 +15,7 @@ try {
     if (isset($_GET['sort'])) {
         $filters['sort'] = $_GET['sort'];
     }
-    $products = $handler->getFilteredProducts($filters);
+    $products = $handler->getFilteredProducts($filters, $isAdmin);
 } catch (Exception $e) {
     global $dbError;
     if (empty($dbError)) {
