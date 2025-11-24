@@ -6,6 +6,5 @@ $templateParams["nome"] = "./templates/faqTemplate.php";
 $templateParams["stylesheet"] = "./css/faq.css";
 
 
-
 require './templates/baseTemplate.php';
 ?>

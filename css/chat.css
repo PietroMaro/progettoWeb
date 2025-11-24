@@ -1,0 +1,268 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; 
+    background-color: #d1d7db;
+}
+#chat-app {
+    display: flex;
+    height: calc(100vh - 60px); 
+    width: 100vw;
+    background-color: white;
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+#chat-app aside {
+    width: 30%;
+    min-width: 300px;
+    border-right: 1px solid #e9edef;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+#chat-app aside ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+#chat-app aside li {
+    border-bottom: 1px solid #f0f2f5;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#chat-app aside li:hover {
+    background-color: #f5f6f6;
+}
+
+#chat-app aside li[aria-current="true"] {
+    background-color: #f0f2f5;
+}
+
+#chat-app aside button {
+    all: unset;
+    width: 100%;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+#chat-app aside .text-info {
+    flex-grow: 1;
+    margin-left: 15px;
+    overflow: hidden;
+}
+
+#chat-app aside .name-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3px;
+}
+
+#chat-app aside strong {
+    color: #111b21;
+    font-weight: 500;
+}
+
+#chat-app aside time {
+    font-size: 12px;
+    color: #667781;
+}
+
+#chat-app aside small {
+    color: #667781;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#chat-app main {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    background-color: #efeae2;
+    position: relative;
+}
+
+#chat-app main::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+    opacity: 0.4;
+    z-index: 0;
+    pointer-events: none;
+}
+
+#chat-app header {
+    padding: 10px 16px;
+    background-color: #f0f2f5;
+    border-bottom: 1px solid #e9edef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1;
+}
+
+#chat-app header .user-info {
+    display: flex;
+    align-items: center;
+}
+
+#chat-app header h2 {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+    color: #111b21;
+}
+
+#chat-app header nav button {
+    background: none;
+    border: none;
+    color: #54656f;
+    font-size: 20px;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+#chat-app section[aria-label="Cronologia messaggi"] {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    z-index: 1;
+}
+
+#chat-app article {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+#chat-app article > div {
+    padding: 6px 7px 8px 9px;
+    border-radius: 7.5px;
+    box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+    max-width: 65%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+#chat-app article p {
+    margin: 0 0 4px 0;
+    font-size: 14.2px;
+    line-height: 19px;
+    color: #111b21;
+}
+
+#chat-app article time {
+    font-size: 11px;
+    color: #667781;
+    align-self: flex-end;
+}
+
+#chat-app article[data-type="received"] {
+    justify-content: flex-start;
+}
+#chat-app article[data-type="received"] > div {
+    background-color: white;
+    border-top-left-radius: 0;
+}
+
+#chat-app article[data-type="sent"] {
+    justify-content: flex-end;
+}
+#chat-app article[data-type="sent"] > div {
+    background-color: #d9fdd3;
+    border-top-right-radius: 0;
+}
+
+#chat-app .msg-meta {
+    display: flex;
+    align-self: flex-end;
+    align-items: center;
+    gap: 4px;
+}
+
+#chat-app .msg-meta i {
+    font-size: 10px;
+    color: #53bdeb;
+}
+
+#chat-app footer {
+    background-color: #f0f2f5;
+    padding: 10px 16px;
+    z-index: 1;
+}
+
+#chat-app footer form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#chat-app footer button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #54656f;
+    cursor: pointer;
+    padding: 5px;
+}
+
+#chat-app footer label {
+    position: absolute;
+    width: 1px; height: 1px; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0);
+}
+
+#chat-app footer input[type="text"] {
+    flex-grow: 1;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 15px;
+    outline: none;
+}
+
+#chat-app footer input[type="text"]:focus {
+    background-color: white;
+}
+
+#chat-app aside div[aria-hidden="true"], 
+#chat-app header div[aria-hidden="true"] {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+#chat-app div[aria-hidden="true"] img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid white;
+    position: absolute;
+    object-fit: cover;
+}
+
+#chat-app div[aria-hidden="true"] img:first-of-type {
+    top: 0;
+    right: 0;
+    z-index: 1;
+}
+
+#chat-app div[aria-hidden="true"] img:last-of-type {
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+}

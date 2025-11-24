@@ -17,12 +17,17 @@ class UserManager
 
     public function getUserInfo($userId)
     {
-        $queryUser = "SELECT u.nome, u.cognome, u.email, u.username, u.descrizione, i.immagine 
-                  FROM utente u 
-                  LEFT JOIN immagini i ON u.idImmagine = i.idImmagine 
-                  WHERE u.idUtente = ?";
+        try {
+            $queryUser = "SELECT u.nome, u.cognome, u.email, u.username, u.descrizione, i.immagine 
+                          FROM utente u 
+                          LEFT JOIN immagini i ON u.idImmagine = i.idImmagine 
+                          WHERE u.idUtente = ?";
 
             $stmt = $this->db->prepare($queryUser);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $this->db->error);
+            }
+            
             $stmt->bind_param("i", $userId);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -38,38 +43,41 @@ class UserManager
             }
             unset($userData['immagine']);
 
-
-
             $queryProd = "SELECT p.idProdotto, p.nome, 
-                         (SELECT immagine FROM immagini WHERE idProdotto = p.idProdotto LIMIT 1) as immagine
-                  FROM prodotto p 
-                  WHERE p.idUtente = ? AND p.stato = 'venduto'
-                  ORDER BY p.fineAsta DESC";
+                                 (SELECT immagine FROM immagini WHERE idProdotto = p.idProdotto LIMIT 1) as immagine
+                          FROM prodotto p 
+                          WHERE p.idUtente = ? AND p.stato = 'venduto'
+                          ORDER BY p.fineAsta DESC";
 
             $stmtProd = $this->db->prepare($queryProd);
+            if (!$stmtProd) {
+                throw new Exception("Prepare Prod failed: " . $this->db->error);
+            }
+
             $stmtProd->bind_param("i", $userId);
             $stmtProd->execute();
             $resProd = $stmtProd->get_result();
 
             $soldProducts = [];
             while ($row = $resProd->fetch_assoc()) {
-                $row['imgSrc'] = "data:image/jpeg;base64," . base64_encode($row['immagine']);
+                if (!empty($row['immagine'])) {
+                     $row['imgSrc'] = "data:image/jpeg;base64," . base64_encode($row['immagine']);
+                } else {
+                     $row['imgSrc'] = null; // Handle cases with no image
+                }
 
                 unset($row['immagine']);
-
                 $soldProducts[] = $row;
             }
 
             $userData['soldProducts'] = $soldProducts;
 
             return $userData;
-
         } catch (Exception $e) {
             error_log("Error: " . $e->getMessage());
             return null;
         }
-    }
-
+    } 
 
     // id | null
     public function login($email, $password, $isAdmin): ?int

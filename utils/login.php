@@ -13,7 +13,10 @@ try {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $isLogin = !isset($_POST['nome']);
+    if(isset($_POST['new_selected_chat_list_id'])){
+      return;
+    }
+    $isLogin = !isset($_POST['nome']) ;
     if ($dbHandler) {
       if($isLogin){
         $activeView = 'login'; 
