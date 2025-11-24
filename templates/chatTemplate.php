@@ -118,31 +118,7 @@ HTML;
 
 <?php
     function currentChat(){
-        $header = "";
-        if(isset($_SESSION['idChatSelected'])){
-            $blobUser = $_SESSION['userBlobChatSelected'] ?? null;
-            $blobProduct= $_SESSION['productBlobChatSelected'] ?? null;
-            $nameUser = $_SESSION['userNameChatSelected'] ?? null;
-            $header = <<<HTML
-                <header>
-                    <div class="user-info">
-                        <div aria-hidden="true">
-                            <img src={$blobProduct} alt="">
-                            <img src={$blobUser} alt="">
-                        </div>
-                        <h2>{$nameUser}</h2>
-                    </div>
-                    <nav>
-                        <button type="button" aria-label="Cerca">
-                            <i class="fas fa-search"></i>
-                        </button>
-                        <button type="button" aria-label="Allega">
-                            <i class="fas fa-paperclip"></i>
-                        </button>
-                    </nav>
-                </header>
-            HTML;
-        }
+        $header = currentChatHeader();
         return <<<HTML
             <main role="main" aria-label="Conversazione corrente">
                 {$header}
@@ -186,6 +162,34 @@ HTML;
                         </form>
                     </footer>
                 </main>
+        HTML;
+    }
+
+    function currentChatHeader(){
+        if(!isset($_SESSION['idChatSelected'])){
+            return "";
+        }
+        $blobUser = $_SESSION['userBlobChatSelected'] ?? null;
+        $blobProduct= $_SESSION['productBlobChatSelected'] ?? null;
+        $nameUser = $_SESSION['userNameChatSelected'] ?? null;
+        return <<<HTML
+            <header>
+                <div class="user-info">
+                    <div aria-hidden="true">
+                        <img src={$blobProduct} alt="">
+                        <img src={$blobUser} alt="">
+                    </div>
+                    <h2>{$nameUser}</h2>
+                </div>
+                <nav>
+                    <button type="button" aria-label="Cerca">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button type="button" aria-label="Allega">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                </nav>
+            </header>
         HTML;
     }
 ?>

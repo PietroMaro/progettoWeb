@@ -23,12 +23,6 @@ class UserManager
                   FROM utente u 
                   LEFT JOIN immagini i ON u.idImmagine = i.idImmagine 
                   WHERE u.idUtente = ?";
-        try {
-            $queryUser = "SELECT u.nome, u.cognome, u.email, u.username, u.descrizione, i.immagine 
-                          FROM utente u 
-                          LEFT JOIN immagini i ON u.idImmagine = i.idImmagine 
-                          WHERE u.idUtente = ?";
-
             $stmt = $this->db->prepare($queryUser);
             if (!$stmt) {
                 throw new Exception("Prepare failed: " . $this->db->error);
@@ -82,8 +76,8 @@ class UserManager
         } catch (Exception $e) {
             error_log("Error: " . $e->getMessage());
             return null;
-        }
-    } 
+        } 
+    }
 
     // id | null
     public function login($email, $password, $isAdmin): ?int
