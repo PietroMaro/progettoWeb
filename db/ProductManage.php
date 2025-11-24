@@ -38,8 +38,7 @@ class ProductManager
                 $endDate = null;
             }
 
-            // $idUtente = $_SESSION['user_id'];
-            $userId = 1; //fino alla creazione del login
+            $userId = $_SESSION['user_id'];
 
 
 
@@ -103,8 +102,8 @@ class ProductManager
         try {
 
 
-            // $userId = $_SESSION['user_id'];
-            $userId = 1; //fino alla creazione del login
+            $userId = $_SESSION['user_id'];
+
 
 
             $sql = "SELECT 
@@ -146,8 +145,14 @@ class ProductManager
 
 
 
-        // $userId = $_SESSION['user_id'];
-        $userId = 2; //fino alla creazione del login
+        if (isset($_SESSION['user_id'])) {
+            $userId = $_SESSION['user_id'];
+        } else {
+
+            $userId = 0;
+
+        }
+
 
         try {
             $sql = "SELECT 
@@ -271,8 +276,7 @@ class ProductManager
         $endDate = (isset($formData['isAuction'])) ? $formData['auctionEndDate'] : null;
 
 
-        // $userId = $_SESSION['user_id'];
-        $userId = 1;
+        $userId = $_SESSION['user_id'];
 
         $this->db->begin_transaction();
         try {

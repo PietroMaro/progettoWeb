@@ -17,7 +17,9 @@ class UserManager
 
     public function getUserInfo($userId)
     {
-        $queryUser = "SELECT u.nome, u.cognome, u.email, u.username, u.descrizione, i.immagine 
+
+        try {
+            $queryUser = "SELECT u.nome, u.cognome, u.email, u.username, u.descrizione, i.immagine 
                   FROM utente u 
                   LEFT JOIN immagini i ON u.idImmagine = i.idImmagine 
                   WHERE u.idUtente = ?";

@@ -22,6 +22,7 @@ try {
     $templateParams["product"] = $prodottoTrovato;
     $templateParams["sellerId"] = $handler->getUserIdByProductId($productId);
     $templateParams["profileImg"] = $handler->getProfileImageByProductId($productId);
+    
     $templateParams["productImages"] = $handler->getImagesByProductId($productId);
 
 } catch (Exception $e) {

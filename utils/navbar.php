@@ -7,6 +7,9 @@ function navbar()
   global $activeView;
 
   $isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
+  $isUser = isset($_SESSION['user_id']);
+
+
 
   $menuItems = "";
   if ($isAdmin) {
@@ -15,7 +18,7 @@ function navbar()
             <li class="nav-item"><a class="nav-link" href="segnalazioni.php">Segnalazioni</a></li>
             <li class="nav-item"><a class="nav-link" href="chat.php">Chat</a></li>
         HTML;
-  } else {
+  } else if ($isUser) {
     $menuItems = <<<HTML
             <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="sellProductPage.php">Vendi</a></li>
@@ -24,6 +27,12 @@ function navbar()
             <li class="nav-item"><a class="nav-link" href="chat.php">Chat</a></li>
             <li class="nav-item"><a class="nav-link" href="faq.php">FAQ</a></li>
         HTML;
+  } else {
+    $menuItems = <<<HTML
+          <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="faq.php">FAQ</a></li>
+      HTML;
+
   }
 
 
