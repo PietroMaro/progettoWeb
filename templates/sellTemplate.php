@@ -8,7 +8,6 @@ $existingImages = [];
 $isEditing = false;
 
 
-
 if (isset($_GET['edit_id'])) {
 
     try {

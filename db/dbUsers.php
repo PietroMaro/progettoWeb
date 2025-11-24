@@ -1,5 +1,5 @@
 <?php
-require_once 'db/database.php';
+require_once __DIR__ . '/database.php';
 class UserManager
 {
     private $db;
@@ -17,6 +17,12 @@ class UserManager
 
     public function getUserInfo($userId)
     {
+
+        try {
+            $queryUser = "SELECT u.nome, u.cognome, u.email, u.username, u.descrizione, i.immagine 
+                  FROM utente u 
+                  LEFT JOIN immagini i ON u.idImmagine = i.idImmagine 
+                  WHERE u.idUtente = ?";
         try {
             $queryUser = "SELECT u.nome, u.cognome, u.email, u.username, u.descrizione, i.immagine 
                           FROM utente u 

@@ -1,5 +1,5 @@
 <?php
-require_once 'db/database.php';
+require_once __DIR__ . '/database.php';
 
 
 class ProductManager
@@ -38,8 +38,7 @@ class ProductManager
                 $endDate = null;
             }
 
-            // $idUtente = $_SESSION['user_id'];
-            $userId = 1; //fino alla creazione del login
+            $userId = $_SESSION['user_id'];
 
 
 
@@ -103,8 +102,8 @@ class ProductManager
         try {
 
 
-            // $userId = $_SESSION['user_id'];
-            $userId = 1; //fino alla creazione del login
+            $userId = $_SESSION['user_id'];
+
 
 
             $sql = "SELECT 
@@ -137,7 +136,7 @@ class ProductManager
     }
 
 
-    public function getFilteredProducts($filters)
+    public function getFilteredProducts($filters, $isAdmin)
     {
 
         if ($this->db === null) {
@@ -146,11 +145,33 @@ class ProductManager
 
 
 
-        // $userId = $_SESSION['user_id'];
-        $userId = 2; //fino alla creazione del login
+        if (isset($_SESSION['user_id']) && !$isAdmin) {
+            $userId = $_SESSION['user_id'];
+        } else {
+            $userId = -1;
+        }
+
 
         try {
-            $sql = "SELECT 
+
+            if ($isAdmin) {
+
+                $sql = "SELECT 
+                    p.idProdotto, 
+                    p.nome, 
+                    p.prezzo, 
+                    p.stato, 
+                    p.fineAsta, 
+                    (SELECT i.immagine FROM immagini i WHERE i.idProdotto = p.idProdotto LIMIT 1) AS immagineData
+                FROM 
+                    prodotto p 
+                    
+                    WHERE 
+                   p.idUtente != ?  AND p.stato IN ('attesa')";
+
+            } else {
+
+                $sql = "SELECT 
                     p.idProdotto, 
                     p.nome, 
                     p.prezzo, 
@@ -162,6 +183,11 @@ class ProductManager
                     
                     WHERE 
                    p.idUtente != ?";  // AND p.stato IN ('esposto', 'asta') dopo che l'admin sara stato fatto
+
+
+            }
+
+
 
 
 
@@ -271,8 +297,7 @@ class ProductManager
         $endDate = (isset($formData['isAuction'])) ? $formData['auctionEndDate'] : null;
 
 
-        // $userId = $_SESSION['user_id'];
-        $userId = 1;
+        $userId = $_SESSION['user_id'];
 
         $this->db->begin_transaction();
         try {
@@ -300,8 +325,58 @@ class ProductManager
         }
     }
 
+    public function changeProductStatus($productId, $decision, $rejectionReason = null)
+    {
+
+        $adminId = $_SESSION['user_id'];
+        $newStatus = '';
+        $reasonToSave = null;
+
+        if ($decision === 'approve') {
+
+            $queryCheck = "SELECT fineAsta FROM prodotto WHERE idProdotto = ?";
+            $stmt = $this->db->prepare($queryCheck);
+
+            $stmt->bind_param("i", $productId);
+
+            $stmt->execute();
+
+            $result = $stmt->get_result();
+            $product = $result->fetch_assoc();
+
+            $stmt->close();
+
+            if ($product && !empty($product['fineAsta'])) {
+                $newStatus = 'asta';
+            } else {
+                $newStatus = 'esposto';
+            }
+
+        } else {
+            $newStatus = 'rifiutato';
+            $reasonToSave = $rejectionReason;
+        }
+
+        $queryUpdate = "UPDATE prodotto 
+                    SET stato = ?, 
+                        ragioneRifiuto = ?,
+                        idAdmin = ?
+                    WHERE idProdotto = ?";
+
+        $stmt = $this->db->prepare($queryUpdate);
+
+        $stmt->bind_param("ssii", $newStatus, $reasonToSave, $adminId, $productId);
+
+        $esito = $stmt->execute();
+
+        $stmt->close();
+
+        return $esito;
+    }
 
     //Funzioni di utility
+
+
 
     public function getProductById($productId)
     {

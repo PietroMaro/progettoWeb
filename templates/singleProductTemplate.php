@@ -80,12 +80,66 @@
 
                                 </p>
                             </div>
-
                             <div class="mt-4 pt-4 border-top">
-                                <button type="button" class="btn btn-success btn-lg w-100 rounded-pill">
-                                    Contatta il venditore
-                                </button>
+
+                                <?php if ($isAdmin): ?>
+
+                                    <form action="utils/changeStatus.php" method="POST" id="adminActionForm">
+                                        <input type="hidden" name="id_oggetto" value="<?= $productId; ?>">
+
+                                        <div class="d-flex gap-2 w-100">
+
+                                            <button type="button" class="btn btn-danger btn-lg flex-grow-1 rounded-pill"
+                                                data-bs-toggle="modal" data-bs-target="#rejectModal">
+                                                Rifiuta
+                                            </button>
+
+                                            <button type="submit" name="decision" value="approve"
+                                                class="btn btn-success btn-lg flex-grow-1 rounded-pill">
+                                                Approva
+                                            </button>
+                                        </div>
+
+                                        <div class="modal fade" id="rejectModal" tabindex="-1"
+                                            aria-labelledby="rejectModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="rejectModalLabel">Motivazione Rifiuto</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label for="ragioneRifiuto" class="form-label">Perché stai
+                                                                rifiutando questo prodotto?</label>
+                                                            <textarea class="form-control" id="ragioneRifiuto"
+                                                                name="ragione_rifiuto" rows="3" maxlength="200"
+                                                                placeholder="Massimo 200 caratteri..."></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Annulla</button>
+                                                        <button type="submit" name="decision" value="reject"
+                                                            class="btn btn-danger">Conferma Rifiuto</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </form>
+
+                                <?php else: ?>
+
+                                    <button type="button" class="btn btn-success btn-lg w-100 rounded-pill">
+                                        Contatta il venditore
+                                    </button>
+
+                                <?php endif; ?>
+
                             </div>
+
                         </div>
 
                     </div>
