@@ -1,9 +1,58 @@
 <?php
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        if(!isset($_POST['new_selected_chat_list_id'])){
-          return;
+    $chatBlocksHtml = "";
+    $idChatSelected = null;
+    $dbHandler = null; 
+    try {
+        $dbHandler = new ChatManager();
+    } catch (Exception $e) {
+        $chatBlocksHtml = errorBlock();
+    }
+?>
+
+<?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['is_new_chat_message'])) {
+        
+        if(!$dbHandler){
+            return; 
         }
 
+        $idSender = $_SESSION['user_id'] ?? null;
+        $idChat = $_SESSION['idChatSelected'] ?? null; 
+        $messageContent = $_POST['chat-message'] ?? null;
+        
+        $immage_blob = null;
+        if (isset($_FILES['chat-image']) && $_FILES['chat-image']['error'] == UPLOAD_ERR_OK) {
+            
+            $immage_blob = file_get_contents($_FILES['chat-image']['tmp_name']);
+            
+            if ($immage_blob === FALSE || $immage_blob === "") {
+                 error_log("Failed to read image content or file was empty for chat ID: " . $idChat);
+                 $immage_blob = null; 
+            }
+        }
+        
+        if ($idSender !== null && $idChat !== null) {
+            
+            $hasContent = (!empty($messageContent) || $immage_blob !== null);
+            
+            if ($hasContent) {
+                try {
+                    $dbHandler->addMessage($idSender, $idChat, $messageContent, $immage_blob);
+                    $_POST['chat-image'] = null;
+                    $_POST['chat-message'] = null;
+                } catch (Exception $e) {
+                    error_log("Error adding message: " . $e->getMessage());
+                }
+            }
+        } else {
+            error_log("Missing required IDs for new chat message.");
+        }
+    }
+?>
+
+<?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['new_selected_chat_list_id'])) {
+        
         if(isset($_POST['new_selected_chat_id'])){$_SESSION['idChatSelected'] = $_POST['new_selected_chat_id'];}
         if(isset($_POST['new_selected_chat_list_id'])){$_SESSION['listIdChatSelected'] = $_POST['new_selected_chat_list_id'];}
         if(isset($_POST['new_selected_chat_product_name'])){$_SESSION['productNameChatSelected'] = $_POST['new_selected_chat_product_name'];}
@@ -12,16 +61,8 @@
         if(isset($_POST['new_selected_chat_user_blob'])){$_SESSION['userBlobChatSelected'] = $_POST['new_selected_chat_user_blob'];}
     }
 ?>
-<?php
-    $chatBlocksHtml = "";
-    $idChatSelected = null;
-    try {
-        $dbHandler = new ChatManager();
-    } catch (Exception $e) {
-        $dbHandler = null;
-        $chatBlocksHtml = errorBlock();
-    }
 
+<?php
     if($dbHandler){
         try {
             $userChats = $dbHandler->getUserChats($_SESSION['user_id']);
@@ -31,7 +72,7 @@
             } else {
                 $listIdChat = 0;
                 foreach ($userChats as $chatData) {
-                    $blobUtente   = $chatData['immageNotYou'] ?? '';       
+                    $blobUtente   = $chatData['immageNotYou'] ?? '';     
                     $blobProdotto = $chatData['immageProdotto'] ?? '';   
                     $nomeUtente   = $chatData['nomeNotYou'] ?? ''; 
                     $nomeProdotto = $chatData['nomeProdotto'] ?? ''; 
@@ -72,7 +113,6 @@ function chatBlock($blobUtente, $blobProdotto, $nomeUtente, $nomeProdotto, $chat
     <li {$currentAttr}>
         <form action="" method="POST" style="margin: 0; padding: 0; display: block;">
             
-
             <input type="hidden" name="new_selected_chat_id" value="{$chatId}">
             <input type="hidden" name="new_selected_chat_list_id" value="{$chatListId}">
             <input type="hidden" name="new_selected_chat_product_name" value="{$nomeProdotto}">
@@ -100,68 +140,102 @@ function chatBlock($blobUtente, $blobProdotto, $nomeUtente, $nomeProdotto, $chat
 }
 function noChatBlock() {
     return <<<HTML
-    <div class="alert alert-warning text-center p-5" style="background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; border-radius: 5px;">
+    <div class="alert alert-warning text-center p-5" style="background-color: #fff3cd; color:rgb(0, 0, 0); border: 1px solid #ffeeba; border-radius: 5px;">
         <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Nessuna Chat disponibile</h2>
-        <p style="margin-bottom: 1.5rem;">Al momento hai chat aperte, aspetta di esserre contattato se sei un venditore, o esplora i prodotti se vuoi contattare qualcuno</p>
+        <p style="margin-bottom: 1.5rem;">Al momento non hai chat aperte, aspetta di esserre contattato se sei un venditore, o esplora i prodotti se vuoi contattare qualcuno</p>
     </div>
 HTML;
 }
 function errorBlock() {
     return <<<HTML
-    <div class="alert alert-warning text-center p-5" style="background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; border-radius: 5px;">
+    <div class="alert alert-warning text-center p-5" style="background-color: #fff3cd; color:rgb(0, 0, 0); border: 1px solid #ffeeba; border-radius: 5px;">
         <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Nessuna Chat disponibile</h2>
-        <p style="margin-bottom: 1.5rem;">Al il servizio è temporaneamente non disponibile. Ci scusiamo per il disagio.</p>
+        <p style="margin-bottom: 1.5rem;">Al momento il servizio è temporaneamente non disponibile. Ci scusiamo per il disagio.</p>
     </div>
 HTML;
 }
 ?>
 
 <?php
+
+    function noChatSelectBlock() {
+        return <<<HTML
+        <div class="alert alert-warning text-center p-5" style="background-color:rgb(211, 211, 211); color:rgb(0, 0, 0); border: 1px solid #ffeeba; border-radius: 5px;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Nessuna Chat disponibile</h2>
+            <p style="margin-bottom: 1.5rem;">Seleziona una chat per visualizzare i messaggi</p>
+        </div>
+        HTML;
+    }
+
     function currentChat(){
         $header = currentChatHeader();
+        $body = currentChatBody();
+        $footer = currentChatFooter();
         return <<<HTML
             <main role="main" aria-label="Conversazione corrente">
-                {$header}
-                    <section aria-live="polite" aria-label="Cronologia messaggi">
-                        <article data-type="received">
-                            <div>
-                                <p>Ciao! Come va?</p>
-                                <time datetime="10:30">10:30</time>
-                            </div>
-                        </article>
-                        <article data-type="sent">
-                            <div>
-                                <p>Tutto bene! Ho appena finito il login.</p>
-                                <div class="msg-meta">
-                                    <time datetime="10:32">10:32</time>
-                                    <i class="fas fa-check-double" aria-label="Letto"></i>
-                                </div>
-                            </div>
-                        </article>
-                         <article data-type="received">
-                            <div>
-                                <p>Ottimo lavoro!</p>
-                                <time datetime="10:33">10:33</time>
-                            </div>
-                        </article>
-                    </section>
-                    <footer>
-                        <form action="" method="POST">
-                            <button type="button" aria-label="Emoji">
-                                <i class="far fa-smile"></i>
-                            </button>
-                            <button type="button" aria-label="Allega">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                            <label for="message-input">Scrivi un messaggio</label>
-                            <input type="text" id="message-input" name="message" placeholder="Scrivi un messaggio" autocomplete="off">
+                        {$header}
+                        {$body} 
+                       {$footer} 
+                    </main>
+        HTML;
+    }
 
-                            <button type="submit" aria-label="Invia">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </form>
-                    </footer>
-                </main>
+    function currentChatBody(){
+        try {
+            $dbHandler = new ChatManager();
+        } catch (Exception $e) {
+            $dbHandler = null;
+        }
+
+        if (!isset($_SESSION['idChatSelected'])) {
+            return noChatSelectBlock(); 
+        } else {
+            $idChat = $_SESSION['idChatSelected'];
+            $result= "";
+            try {
+                $history = $dbHandler->getChatHistory($idChat);
+                if(empty($history)){
+                    $result = noMessagesBlock();
+                }else{
+                    foreach($history as $row){
+                        $isMine = ($row['idMandante'] != $_SESSION['user_id']);
+                        $image_data = $row['image'] ?? null;
+                        $messageProgressivo = $row['progressivo'] ?? null;
+                        if($row['type'] === 'message'){
+                            $result .= singleChatMessage($isMine,$row['content'],$image_data,$messageProgressivo);
+                        }
+                    }
+                }
+            } catch (Throwable $e) {
+                $result .= "<div style='color:red; padding: 20px;'>Error: " . $e->getMessage() . "</div>";
+            }
+            return <<<HTML
+                <section aria-live="polite" aria-label="Cronologia messaggi">
+                    {$result}
+                </section>
+            HTML;
+        }
+    }
+
+    function singleChatMessage($isMine, $content, $image_data = null, $messageProgressivo = 0){
+        $whoSent = $isMine ? "sent" : "received";
+        $imageHtml = '';
+        if ($image_data !== null && $image_data !== '') {
+            $base64Image = base64_encode($image_data);
+            $mimeType = 'image/jpeg'; 
+            $imageSrc = 'data:' . $mimeType . ';base64,' . $base64Image;
+            $imageHtml = <<<IMG
+                <img src="{$image_data}" alt="Immagine allegata" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 5px;">
+            IMG;
+        }
+        $textHtml = !empty($content) ? "<p>{$content}</p>" : '';
+        return <<<HTML
+            <article data-type={$whoSent} data-progressivo={$messageProgressivo}>
+                <div>
+                    {$imageHtml}
+                    {$textHtml}
+                </div>
+            </article>
         HTML;
     }
 
@@ -192,6 +266,179 @@ HTML;
             </header>
         HTML;
     }
+
+    function currentChatFooter(){
+        if(!isset($_SESSION['idChatSelected'])){
+            return "";
+        }
+        return <<<HTML
+            <footer>
+                <form id="chat-form" action="" method="POST" enctype="multipart/form-data">
+
+                    <div id="chat-input-container"> 
+
+                        <div id="image-preview" style="display: none;">
+                            <img id="preview-image" src="" alt="Selected Photo" style="max-height: 50px; border-radius: 4px; object-fit: cover;">
+                            <button type="button" id="remove-image-btn" aria-label="Rimuovi immagine">
+                                <i class="bi-x-circle-fill"></i>
+                            </button>
+                        </div>
+
+                        <input type="file" id="image-upload" name="chat-image" accept="image/*" style="display: none;">
+
+                        <label for="message-input">Scrivi un messaggio</label>
+                        <input type="text" id="message-input" name="chat-message" placeholder="Scrivi un messaggio" autocomplete="off">
+                    </div>
+
+                    <label for="image-upload" class="input-trigger-btn" aria-label="Allega Foto/Immagine">
+                        <i class="bi-camera"></i> 
+                    </label>
+
+                    <input type="hidden" name="is_new_chat_message" value="true">
+
+                    <button type="submit" aria-label="Invia Messaggio">
+                        <i class="bi-send"></i>
+                    </button>
+                </form>
+            </footer>
+        HTML;
+    }
+
+    function noMessagesBlock() {
+        return <<<HTML
+        <div class="alert alert-warning text-center p-5" style="background-color:rgb(199, 199, 199); color:rgb(0, 0, 0); border: 1px solid #ffeeba; border-radius: 5px;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Nessun messagio</h2>
+            <p style="margin-bottom: 1.5rem;">Al momento non ci sono messaggi in questa chat, non essere timido :)</p>
+        </div>
+    HTML;
+    }
+    
+    function errorChatBlock() {
+        return <<<HTML
+        <div class="alert alert-warning text-center p-5" style="background-color: #fff3cd; color:rgb(0, 0, 0); border: 1px solid #ffeeba; border-radius: 5px;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Chat non disponibile</h2>
+            <p style="margin-bottom: 1.5rem;">Al momento il servizio è temporaneamente non disponibile. Ci scusiamo per il disagio.</p>
+        </div>
+        HTML;
+    }
 ?>
 
 
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const messageContainer = document.querySelector('main section[aria-label="Cronologia messaggi"]');
+    if (messageContainer) {
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+    }
+    const chatForm = document.getElementById('chat-form');
+    const fileInput = document.getElementById('image-upload');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = chatForm.querySelector('[type="submit"]'); 
+    const previewContainer = document.getElementById('image-preview');
+    const previewImage = document.getElementById('preview-image');
+    const removeBtn = document.getElementById('remove-image-btn');
+    function checkFormValidity() {
+        const hasText = messageInput.value.trim().length > 0;
+        const hasImage = fileInput.files.length > 0;
+        sendButton.disabled = !(hasText || hasImage);
+    }
+    checkFormValidity();
+    messageInput.addEventListener('input', checkFormValidity);
+    fileInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewContainer.style.display = 'flex';
+            }
+            reader.readAsDataURL(file);
+        } else {
+            previewContainer.style.display = 'none';
+        }
+        checkFormValidity(); 
+        messageInput.focus();
+    });
+    removeBtn.addEventListener('click', (e) => {
+        e.preventDefault(); 
+        fileInput.value = ''; 
+        previewContainer.style.display = 'none';
+        previewImage.src = '';
+        checkFormValidity();
+    });
+});
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    let lastReceivedProgressivo = 0;
+    const POLLING_INTERVAL = 1000; 
+    const messageContainer = document.querySelector('main section[aria-label="Cronologia messaggi"]');
+    const idChat = <?php echo json_encode($_SESSION['idChatSelected'] ?? null); ?>;
+    const initializeLastProgressivo = () => {
+        const messages = messageContainer.querySelectorAll('article');
+        messages.forEach(msg => {
+            const prog = parseInt(msg.dataset.progressivo);
+            if (!isNaN(prog) && prog > lastReceivedProgressivo) {
+                lastReceivedProgressivo = prog;
+            }
+        });
+    };
+    const renderMessage = (row, idCurrentUser) => {
+        const isMine = (row.idMandante != idCurrentUser);
+        let content = row.content || '';
+        let image_data = row.immage_blob || null;
+        const whoSent = isMine ? "sent" : "received";
+        let imageHtml = '';
+        
+        if (image_data !== null && image_data !== '') {
+            const base64Image = btoa(String.fromCharCode.apply(null, new Uint8Array(image_data)));
+            const mimeType = 'image/jpeg'; // **DANGER: Ensure this matches stored type**
+            const imageSrc = `data:${mimeType};base64,${base64Image}`;
+            
+            imageHtml = `<img src="${imageSrc}" alt="Immagine allegata" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 5px;">`;
+        }
+        const textHtml = content ? `<p>${content}</p>` : '';
+        return `
+            <article data-type="${whoSent}" data-progressivo="${row.progressivo}">
+                <div>
+                    ${imageHtml}
+                    ${textHtml}
+                </div>
+            </article>
+        `;
+    };
+    const pollForNewMessages = async () => {
+        if (!messageContainer || !idChat) {
+            return; 
+        }
+        try {
+            const response = await fetch(`../utils/getMessages.php?last_prog=${lastReceivedProgressivo}`);
+            const data = await response.json();
+            if (data.messages && data.messages.length > 0) {
+                const currentUserId = <?php echo json_encode($_SESSION['user_id'] ?? 0); ?>;
+                data.messages.forEach(msg => {
+                    const newMessageHtml = renderMessage(msg, currentUserId);
+                    messageContainer.insertAdjacentHTML('beforeend', newMessageHtml);
+                    if (msg.progressivo > lastReceivedProgressivo) {
+                        lastReceivedProgressivo = msg.progressivo;
+                    }
+                });
+                messageContainer.scrollTop = messageContainer.scrollHeight;
+            }
+        } catch (error) {
+            console.error('Polling failed:', error);
+        }
+        setTimeout(pollForNewMessages, POLLING_INTERVAL);
+    };
+    if (messageContainer) {
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+        initializeLastProgressivo();
+        if (idChat !== null) {
+            pollForNewMessages();
+        }
+    }
+
+});
+</script>

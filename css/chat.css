@@ -1,3 +1,6 @@
+/* ------------------------------------------- */
+/* --- 1. GENERAL STRUCTURE & SIDEBAR CSS --- */
+/* ------------------------------------------- */
 body {
     margin: 0;
     padding: 0;
@@ -81,6 +84,10 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+/* ------------------------------------------- */
+/* --- 2. MAIN CHAT AREA & MESSAGE CSS --- */
+/* ------------------------------------------- */
 
 #chat-app main {
     width: 70%;
@@ -197,6 +204,10 @@ body {
     color: #53bdeb;
 }
 
+/* ------------------------------------------- */
+/* --- 3. FOOTER & INPUT/PREVIEW FIXES --- */
+/* ------------------------------------------- */
+
 #chat-app footer {
     background-color: #f0f2f5;
     padding: 10px 16px;
@@ -209,13 +220,22 @@ body {
     gap: 10px;
 }
 
-#chat-app footer button {
+/* FIX: Combine button and new label trigger styles */
+#chat-app footer button,
+#chat-app footer .input-trigger-btn { 
     background: none;
     border: none;
     font-size: 24px;
     color: #54656f;
     cursor: pointer;
     padding: 5px;
+    
+    /* Ensure the label behaves like a flex item */
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    line-height: 1; 
+    flex-shrink: 0;
 }
 
 #chat-app footer label {
@@ -224,8 +244,17 @@ body {
     overflow: hidden; clip: rect(0,0,0,0);
 }
 
+/* FIX: New container for input and preview to manage flex growth */
+#chat-app footer #chat-input-container {
+    flex-grow: 1; /* <-- This makes the container take up space */
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* FIX: Input field now needs its flex-grow *inside* the container */
 #chat-app footer input[type="text"] {
-    flex-grow: 1;
+    flex-grow: 1; /* <-- Stretches the text box within the container */
     border: none;
     border-radius: 8px;
     padding: 9px 12px;
@@ -236,6 +265,65 @@ body {
 #chat-app footer input[type="text"]:focus {
     background-color: white;
 }
+
+/* Styles for the image preview area */
+#chat-app footer #image-preview {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #e9edef; 
+    border-radius: 8px;
+    gap: 10px;
+}
+
+#chat-app footer #image-preview img {
+    max-height: 50px;
+    width: auto;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+#chat-app footer #remove-image-btn {
+    all: unset;
+    cursor: pointer;
+    font-size: 18px; 
+    color: #8696a0;
+    margin-left: auto;
+}
+
+#chat-app footer label.input-trigger-btn { 
+    /* Overrides position: absolute; and the 1x1 size */
+    position: relative !important; 
+    width: 30px !important;
+    height: 30px !important;
+    margin: 0 !important;
+    padding: 5px !important;
+    overflow: visible !important;
+    clip: auto !important;
+    
+    /* Ensure flex item behavior */
+    display: flex !important; 
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    
+    /* Apply button aesthetics */
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #54656f;
+    font-size: 24px;
+    line-height: 1; 
+}
+
+/* 2. ENSURE ICON COLOR/SIZE (as a backup) */
+#chat-app footer label.input-trigger-btn i.bi-camera {
+    color: #54656f !important;
+    font-size: 24px !important;
+}
+/* ------------------------------------------- */
+/* --- 4. AVATAR STYLING --- */
+/* ------------------------------------------- */
 
 #chat-app aside div[aria-hidden="true"], 
 #chat-app header div[aria-hidden="true"] {

@@ -13,7 +13,12 @@ try {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if(isset($_POST['new_selected_chat_list_id'])){
+    if(
+      isset($_POST['new_selected_chat_list_id']) ||
+      isset($_POST['productName']) || 
+      isset($_POST['chat-image']) || 
+      isset($_POST['chat-message']) 
+    ){
       return;
     }
     $isLogin = !isset($_POST['nome']) ;

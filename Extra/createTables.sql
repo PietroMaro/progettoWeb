@@ -83,8 +83,13 @@ ALTER TABLE segnalazione ADD tipoSegnalazione ENUM('discriminazione','volgaritá
 ALTER TABLE chat ADD eliminata boolean; 
 
 ALTER TABLE messaggio ADD idChat INT NOT NULL;
-
 ALTER TABLE messaggio ADD CONSTRAINT  idChat FOREIGN KEY(idChat) REFERENCES chat(idChat) ON DELETE CASCADE;
+
+ALTER TABLE messaggio ADD idMandante INT NOT NULL;
+ALTER TABLE messaggio ADD CONSTRAINT  idMandante FOREIGN KEY(idMandante) REFERENCES utente(idUtente) ON DELETE CASCADE;
+
+ALTER TABLE offertaChat ADD idMandante INT NOT NULL;
+ALTER TABLE offertaChat ADD CONSTRAINT  idMandanteOffertaChat FOREIGN KEY(idMandante) REFERENCES utente(idUtente) ON DELETE CASCADE;
 
 ALTER TABLE prodotto
 MODIFY COLUMN fineAsta DATETIME;
