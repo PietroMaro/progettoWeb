@@ -182,7 +182,7 @@ class ProductManager
                     prodotto p 
                     
                     WHERE 
-                   p.idUtente != ?";  // AND p.stato IN ('esposto', 'asta') dopo che l'admin sara stato fatto
+                   p.idUtente != ? AND p.stato IN ('esposto', 'asta')";
 
 
             }
