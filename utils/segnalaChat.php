@@ -5,16 +5,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['segnalazione_chat'])) 
         return; 
     }
 
-    try{
+    //try{
         $dbHandler->addNewSegnalazione(
             $_POST['segnalazione_chat'],
             $_POST['segnalazione_desc'],
             $_SESSION['user_id'],
+            $_SESSION['idChatSelected']
         );
         $_SESSION['report_sent'] = true;
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
-    } catch (Exception $e) {}
+    //} catch (Exception $e) {}
 }
 function segnalaChatModal(){
     return <<<HTML

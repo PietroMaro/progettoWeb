@@ -10,26 +10,66 @@ class FaqManager
 
     public function getFaqs(): array
     {
-    $sql = "SELECT titolo, descrizione FROM faq";
+        $sql = "SELECT titolo, descrizione FROM faq";
 
-    $stmt = $this->db->prepare($sql);
-    if (!$stmt) {
-        throw new Exception("Errore Database (Prepare): " . $this->db->error);
+        $stmt = $this->db->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Errore Database (Prepare): " . $this->db->error);
+        }
+
+        if (!$stmt->execute()) {
+            throw new Exception("Errore Database (Execute): " . $stmt->error);
+        }
+
+        $result = $stmt->get_result();
+        $faqs = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $faqs[$row['titolo']] = $row['descrizione'];
+        }
+
+        return $faqs;
     }
 
-    if (!$stmt->execute()) {
-        throw new Exception("Errore Database (Execute): " . $stmt->error);
+    public function deleteFaqByTitle(string $titolo) : void {
+        if ($this->db === null) {
+            throw new Exception("Database connection is missing.");
+        }
+
+        $sql = "DELETE FROM faq WHERE titolo = ?";
+
+        $stmt = $this->db->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Prepare failed (delete faq): " . $this->db->error);
+        }
+        $stmt->bind_param("s", $titolo);
+
+        if (!$stmt->execute()) {
+            throw new Exception("Execute failed (delete faq): " . $stmt->error);
+        }
+
+        $stmt->close();
     }
 
-    $result = $stmt->get_result();
-    $faqs = [];
+    public function addFaq(string $titolo, string $descrizione) : void {
+        if ($this->db === null) {
+            throw new Exception("Database connection is missing.");
+        }
 
-    while ($row = $result->fetch_assoc()) {
-        $faqs[$row['titolo']] = $row['descrizione'];
+        $sql = "INSERT INTO faq (titolo, descrizione) VALUES (?, ?)";
+
+        $stmt = $this->db->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Prepare failed (addFaq): " . $this->db->error);
+        }
+
+        $stmt->bind_param("ss", $titolo, $descrizione);
+
+        if (!$stmt->execute()) {
+            throw new Exception("Execute failed (addFaq): " . $stmt->error);
+        }
+
+        $stmt->close();
     }
-
-    return $faqs;
-}
-
 }
 ?>

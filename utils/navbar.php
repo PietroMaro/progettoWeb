@@ -16,7 +16,7 @@ function navbar()
     $menuItems = <<<HTML
             <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="segnalazioni.php">Segnalazioni</a></li>
-            <li class="nav-item"><a class="nav-link" href="chat.php">Chat</a></li>
+            <li class="nav-item"><a class="nav-link" href="faqAdmin.php">faq</a></li>
         HTML;
   } else if ($isUser) {
     $menuItems = <<<HTML

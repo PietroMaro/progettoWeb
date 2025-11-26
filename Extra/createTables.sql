@@ -94,6 +94,9 @@ ALTER TABLE offertaChat ADD CONSTRAINT  idMandanteOffertaChat FOREIGN KEY(idMand
 ALTER TABLE segnalazione ADD idMandante INT NOT NULL;
 ALTER TABLE segnalazione ADD CONSTRAINT  idMandanteSegnalazione FOREIGN KEY(idMandante) REFERENCES utente(idUtente) ON DELETE CASCADE;
 
+ALTER TABLE segnalazione ADD idChat INT NOT NULL;
+ALTER TABLE segnalazione ADD CONSTRAINT  idChatSegnalazione FOREIGN KEY(idChat) REFERENCES Chat(idChat) ON DELETE CASCADE;
+
 ALTER TABLE prodotto
 MODIFY COLUMN fineAsta DATETIME;
 

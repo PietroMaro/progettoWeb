@@ -49,6 +49,58 @@ class ChatManager
         }
     }
 
+    public function getOpenReports(){
+        try {
+            $query = "
+                SELECT 
+                    s.*, 
+                    c.idUtente1, 
+                    c.idUtente2, 
+                    c.idProdotto
+                FROM segnalazione s
+                JOIN chat c ON s.idChat = c.idChat
+                WHERE s.stato = 'aperta'
+            ";
+
+            $stmt = $this->db->prepare($query);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $this->db->error);
+            }
+
+            if (!$stmt->execute()) {
+                throw new Exception("Execute failed: " . $stmt->error);
+            }
+
+            $result = $stmt->get_result();
+            $reports = [];
+
+            while ($row = $result->fetch_assoc()) {
+                $idReporter = $row['idMandante'];
+                $idReported = ($row['idUtente1'] == $idReporter) ? $row['idUtente2'] : $row['idUtente1'];
+                $row['idReporter']    = $idReporter;
+                $row['nomeReporter']  = $this->getNomeUtenteFromId($idReporter);
+                $row['imageReporter'] = $this->getImmageOfUserFromId($idReporter);
+                $row['idReported']    = $idReported;
+                $row['nomeReported']  = $this->getNomeUtenteFromId($idReported);
+                $row['imageReported'] = $this->getImmageOfUserFromId($idReported);
+                if (isset($row['idProdotto'])) {
+                    $row['nomeProdotto']   = $this->getNomeProdottoFromId($row['idProdotto']);
+                    $row['imageProdotto']  = $this->getImmageOfProdottoFromId($row['idProdotto']);
+                } else {
+                    $row['nomeProdotto']   = "Prodotto sconosciuto";
+                    $row['imageProdotto']  = null;
+                }
+
+                $reports[] = $row;
+            }
+
+            return $reports;
+
+        } catch (Exception $e) {
+            throw new Exception("Error fetching open reports: " . $e->getMessage());
+        }
+    }
+
     // Blob of the immage
     private function getImmageOfUserFromId($userId): ?string {
         $sql = "SELECT i.immagine 
@@ -275,10 +327,10 @@ class ChatManager
     }
 
 
-    public function addNewSegnalazione(String $tipoSegnalazione, String $testo, int $idMandante) : void {
+    public function addNewSegnalazione(String $tipoSegnalazione, String $testo, int $idMandante, int $idChat) : void {
         $sql_offer = "
-            INSERT INTO segnalazione (tipoSegnalazione, testo, idMandante, stato) 
-            VALUES (?, ?, ?, ?)
+            INSERT INTO segnalazione (tipoSegnalazione, testo, idMandante, stato, idChat) 
+            VALUES (?, ?, ?, ?, ?)
         ";
 
         $stmt_off = $this->db->prepare($sql_offer);
@@ -287,7 +339,7 @@ class ChatManager
         }
 
         $stato = "aperta";
-        $stmt_off->bind_param("ssis", $tipoSegnalazione, $testo, $idMandante,$stato);
+        $stmt_off->bind_param("ssisi", $tipoSegnalazione, $testo, $idMandante,$stato,$idChat);
 
         if (!$stmt_off->execute()) {
             throw new Exception("Execute failed (offertaChat): " . $stmt_off->error);
