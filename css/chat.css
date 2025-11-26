@@ -55,26 +55,9 @@ body {
     box-sizing: border-box;
 }
 
-#chat-app aside .text-info {
-    flex-grow: 1;
-    margin-left: 15px;
-    overflow: hidden;
-}
-
-#chat-app aside .name-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 3px;
-}
-
 #chat-app aside strong {
     color: #111b21;
     font-weight: 500;
-}
-
-#chat-app aside time {
-    font-size: 12px;
-    color: #667781;
 }
 
 #chat-app aside small {
@@ -117,27 +100,6 @@ body {
     z-index: 1;
 }
 
-#chat-app header .user-info {
-    display: flex;
-    align-items: center;
-}
-
-#chat-app header h2 {
-    font-size: 16px;
-    font-weight: 500;
-    margin: 0;
-    color: #111b21;
-}
-
-#chat-app header nav button {
-    background: none;
-    border: none;
-    color: #54656f;
-    font-size: 20px;
-    margin-left: 20px;
-    cursor: pointer;
-}
-
 #chat-app section[aria-label="Cronologia messaggi"] {
     flex-grow: 1;
     overflow-y: auto;
@@ -170,12 +132,6 @@ body {
     color: #111b21;
 }
 
-#chat-app article time {
-    font-size: 11px;
-    color: #667781;
-    align-self: flex-end;
-}
-
 #chat-app article[data-type="received"] {
     justify-content: flex-start;
 }
@@ -190,18 +146,6 @@ body {
 #chat-app article[data-type="sent"] > div {
     background-color: #d9fdd3;
     border-top-right-radius: 0;
-}
-
-#chat-app .msg-meta {
-    display: flex;
-    align-self: flex-end;
-    align-items: center;
-    gap: 4px;
-}
-
-#chat-app .msg-meta i {
-    font-size: 10px;
-    color: #53bdeb;
 }
 
 /* ------------------------------------------- */

@@ -79,6 +79,21 @@ function navbar()
         </div>
     HTML;
 
+  $toastSegnalazione = <<<HTML
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+          <div id="reportToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header text-white" style="background-color: var(--colore-rosso);">
+              <strong class="me-auto">Unisell</strong>
+              <small>Ora</small>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+              Segnalazione mandata 
+            </div>
+          </div>
+        </div>
+  HTML;
+
   $toastScript = "";
   if (isset($_SESSION['login_success']) && $_SESSION['login_success'] === true) {
     $toastScript = <<<JS
@@ -91,6 +106,17 @@ function navbar()
       </script>
       JS;
     unset($_SESSION['login_success']);
+  } else if(isset($_SESSION['report_sent']) && $_SESSION['report_sent'] === true){
+      $toastScript = <<<JS
+      <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var toastEl = document.getElementById('reportToast');
+        var toast = new bootstrap.Toast(toastEl);
+        toast.show();
+        });
+      </script>
+      JS;
+    unset($_SESSION['report_sent']);
   }
 
   return <<<HTML
@@ -125,6 +151,7 @@ function navbar()
 
     $modalHtml
     $toastHtml
+    $toastSegnalazione
     $toastScript
   HTML;
 }

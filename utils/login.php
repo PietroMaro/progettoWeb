@@ -15,9 +15,12 @@ try {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if(
       isset($_POST['new_selected_chat_list_id']) ||
-      isset($_POST['productName']) || 
-      isset($_POST['chat-image']) || 
-      isset($_POST['chat-message']) 
+      isset($_POST['productName']) ||
+      isset($_POST['chat-image']) ||
+      isset($_POST['chat-message'])  ||
+      isset($_POST['is_new_chat_message']) || 
+      isset($_POST['new_offerta_chat']) ||
+      isset($_POST['segnalazione_chat'])
     ){
       return;
     }

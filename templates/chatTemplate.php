@@ -10,6 +10,9 @@
 ?>
 
 <?php
+
+    require_once __DIR__ . '/../utils/offertaChat.php';
+    require_once __DIR__ . '/../utils/segnalaChat.php';
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['is_new_chat_message'])) {
         
         if(!$dbHandler){
@@ -102,8 +105,10 @@
         </ul>
     </aside>
     <?=currentChat()?>
-    
 </div>
+
+<?=offertaChatModal()?>
+<?=segnalaChatModal()?>
 
 <?php
 function chatBlock($blobUtente, $blobProdotto, $nomeUtente, $nomeProdotto, $chatId ,$chatListId ,$isSelected){
@@ -170,12 +175,16 @@ HTML;
     function currentChat(){
         $header = currentChatHeader();
         $body = currentChatBody();
-        $footer = currentChatFooter();
+        $footer = currentChatFooter(); 
+
+        if($body == errorBlock()){
+            $footer = "";
+        }
         return <<<HTML
             <main role="main" aria-label="Conversazione corrente">
                         {$header}
                         {$body} 
-                       {$footer} 
+                        {$footer} 
                     </main>
         HTML;
     }
@@ -193,6 +202,9 @@ HTML;
             $idChat = $_SESSION['idChatSelected'];
             $result= "";
             try {
+                if(!$dbHandler){
+                    return errorBlock();
+                }
                 $history = $dbHandler->getChatHistory($idChat);
                 if(empty($history)){
                     $result = noMessagesBlock();
@@ -203,6 +215,8 @@ HTML;
                         $messageProgressivo = $row['progressivo'] ?? null;
                         if($row['type'] === 'message'){
                             $result .= singleChatMessage($isMine,$row['content'],$image_data,$messageProgressivo);
+                        } else if($row['type'] === 'offer'){
+                            $result .= singleChatOffer($isMine,$row['content'],$messageProgressivo);
                         }
                     }
                 }
@@ -225,7 +239,7 @@ HTML;
             $mimeType = 'image/jpeg'; 
             $imageSrc = 'data:' . $mimeType . ';base64,' . $base64Image;
             $imageHtml = <<<IMG
-                <img src="{$image_data}" alt="Immagine allegata" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 5px;">
+                <img src="{$image_data}" alt="C'è stato un errore nel caricare l'immagine, ci scusiamo per il disagio. Prova a ricarcare la pagina" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 5px;">
             IMG;
         }
         $textHtml = !empty($content) ? "<p>{$content}</p>" : '';
@@ -239,6 +253,51 @@ HTML;
         HTML;
     }
 
+    function singleChatOffer($isMine, $content, $messageProgressivo = 0){
+        $whoSent = $isMine ? "sent" : "received";
+    
+        if (!$isMine) {
+            $headerText = "La tua offerta";
+            $icon = '<i class="fas fa-arrow-up text-secondary"></i>';
+            $footerHtml = <<<HTML
+                <div class="mt-2 pt-2 border-top border-secondary-subtle text-muted small fst-italic text-center">
+                    <i class="fas fa-clock me-1"></i> In attesa di risposta...
+                </div>
+            HTML;
+        } else {
+            $headerText = "Offerta ricevuta";
+            $icon = '<i class="fas fa-tag text-success"></i>';
+            $footerHtml = <<<HTML
+                <div class="mt-3">
+                    <button type="button" class="btn btn-success btn-sm w-100 fw-bold shadow-sm" style="border-radius: 20px;">
+                        Accetta Offerta
+                    </button>
+                </div>
+            HTML;
+        }
+    
+        return <<<HTML
+        <article data-type="{$whoSent}" data-progressivo="{$messageProgressivo}">
+            <div style="min-width: 220px;">
+                
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <small class="fw-bold text-uppercase text-secondary" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+                        {$headerText}
+                    </small>
+                    {$icon}
+                </div>
+    
+                <div class="text-center py-1">
+                    <span class="display-6 fw-bold text-dark">€ {$content}</span>
+                </div>
+    
+                {$footerHtml}
+    
+            </div>
+        </article>
+        HTML;
+    }
+
     function currentChatHeader(){
         if(!isset($_SESSION['idChatSelected'])){
             return "";
@@ -247,23 +306,26 @@ HTML;
         $blobProduct= $_SESSION['productBlobChatSelected'] ?? null;
         $nameUser = $_SESSION['userNameChatSelected'] ?? null;
         return <<<HTML
-            <header>
-                <div class="user-info">
-                    <div aria-hidden="true">
-                        <img src={$blobProduct} alt="">
-                        <img src={$blobUser} alt="">
-                    </div>
-                    <h2>{$nameUser}</h2>
+        <header class="d-flex justify-content-between align-items-center p-3 border-bottom bg-white">
+            <div class="user-info d-flex align-items-center">
+                <div aria-hidden="true" class="d-flex align-items-center gap-2 me-3">
+                    <img src="{$blobProduct}" alt="ALT" class="rounded-circle border">
+                    <img src="{$blobUser}" alt="ALT" class="rounded-circle border border-2 border-white">
                 </div>
-                <nav>
-                    <button type="button" aria-label="Cerca">
-                        <i class="fas fa-search"></i>
-                    </button>
-                    <button type="button" aria-label="Allega">
-                        <i class="fas fa-paperclip"></i>
-                    </button>
-                </nav>
-            </header>
+                <h2 class="h5 m-0">{$nameUser}</h2>
+            </div>
+
+            <nav class="d-flex gap-2">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalOfferta">
+                    Offerta
+                </button>
+
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalSegnala">
+                    Segnala
+                </button>
+            </nav>
+
+        </header>
         HTML;
     }
 
@@ -376,6 +438,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const POLLING_INTERVAL = 1000; 
     const messageContainer = document.querySelector('main section[aria-label="Cronologia messaggi"]');
     const idChat = <?php echo json_encode($_SESSION['idChatSelected'] ?? null); ?>;
+    const currentUserId = <?php echo json_encode($_SESSION['user_id'] ?? 0); ?>;
+    const base64ToBlob = (base64, mimeType = 'image/jpeg') => {
+        try {
+            const byteCharacters = atob(base64);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: mimeType });
+            return URL.createObjectURL(blob);
+        } catch (e) {
+            console.error("Failed to convert base64 to blob", e);
+            return null;
+        }
+    };
+
     const initializeLastProgressivo = () => {
         const messages = messageContainer.querySelectorAll('article');
         messages.forEach(msg => {
@@ -385,21 +464,62 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     };
+
     const renderMessage = (row, idCurrentUser) => {
-        const isMine = (row.idMandante != idCurrentUser);
-        let content = row.content || '';
-        let image_data = row.immage_blob || null;
-        const whoSent = isMine ? "sent" : "received";
-        let imageHtml = '';
-        
-        if (image_data !== null && image_data !== '') {
-            const base64Image = btoa(String.fromCharCode.apply(null, new Uint8Array(image_data)));
-            const mimeType = 'image/jpeg'; // **DANGER: Ensure this matches stored type**
-            const imageSrc = `data:${mimeType};base64,${base64Image}`;
-            
-            imageHtml = `<img src="${imageSrc}" alt="Immagine allegata" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 5px;">`;
+        const isMine = (row.idMandante == idCurrentUser); 
+        const whoSent = !isMine ? "sent" : "received";
+    
+        if (row.type === 'offer') {
+            let headerText, icon, footerHtml;
+
+            if (isMine) {
+                headerText = "La tua offerta";
+                icon = '<i class="fas fa-arrow-up text-secondary"></i>';
+                footerHtml = `
+                    <div class="mt-2 pt-2 border-top border-secondary-subtle text-muted small fst-italic text-center">
+                        <i class="fas fa-clock me-1"></i> In attesa di risposta...
+                    </div>`;
+            } else {
+                headerText = "Offerta ricevuta";
+                icon = '<i class="fas fa-tag text-success"></i>';
+                footerHtml = `
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-success btn-sm w-100 fw-bold shadow-sm" style="border-radius: 20px;">
+                            Accetta Offerta
+                        </button>
+                    </div>`;
+            }
+
+            return `
+            <article data-type="${whoSent}" data-progressivo="${row.progressivo}">
+                <div style="min-width: 220px;">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <small class="fw-bold text-uppercase text-secondary" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+                            ${headerText}
+                        </small>
+                        ${icon}
+                    </div>
+                    <div class="text-center py-1">
+                        <span class="display-6 fw-bold text-dark">€ ${row.content}</span>
+                    </div>
+                    ${footerHtml}
+                </div>
+            </article>`;
         }
+
+        let content = row.content || '';
+        let base64String = row.immage_blob || null; 
+        let imageHtml = '';
+    
+        if (base64String) {
+            const blobUrl = base64ToBlob(base64String, 'image/jpeg');
+            if (blobUrl) {
+                imageHtml = `<img src="${blobUrl}" alt="Immagine" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 5px;">`;
+            }
+        }
+
         const textHtml = content ? `<p>${content}</p>` : '';
+
         return `
             <article data-type="${whoSent}" data-progressivo="${row.progressivo}">
                 <div>
@@ -409,18 +529,29 @@ document.addEventListener('DOMContentLoaded', () => {
             </article>
         `;
     };
+
     const pollForNewMessages = async () => {
         if (!messageContainer || !idChat) {
             return; 
         }
         try {
             const response = await fetch(`../utils/getMessages.php?last_prog=${lastReceivedProgressivo}`);
+            if(!response.ok){ 
+                return
+                `       
+                    <div class="alert alert-warning text-center p-5" style="background-color: #fff3cd; color:rgb(0, 0, 0); border: 1px solid #ffeeba; border-radius: 5px;">
+                        <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Chat non disponibile</h2>
+                        <p style="margin-bottom: 1.5rem;">Al momento il servizio è temporaneamente non disponibile. Ci scusiamo per il disagio.</p>
+                    </div>
+                `; 
+                //throw new Error("Network response was not ok");
+            }
             const data = await response.json();
             if (data.messages && data.messages.length > 0) {
-                const currentUserId = <?php echo json_encode($_SESSION['user_id'] ?? 0); ?>;
                 data.messages.forEach(msg => {
                     const newMessageHtml = renderMessage(msg, currentUserId);
                     messageContainer.insertAdjacentHTML('beforeend', newMessageHtml);
+                    
                     if (msg.progressivo > lastReceivedProgressivo) {
                         lastReceivedProgressivo = msg.progressivo;
                     }
@@ -439,6 +570,5 @@ document.addEventListener('DOMContentLoaded', () => {
             pollForNewMessages();
         }
     }
-
 });
 </script>
