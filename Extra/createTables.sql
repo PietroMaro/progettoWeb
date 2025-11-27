@@ -109,3 +109,11 @@ MODIFY COLUMN stato ENUM(
     'rifiutato',
     'astaDeserta'
 ) NOT NULL;
+
+CREATE TABLE ban(
+    idBan INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(40) NOT NULL,
+    PASSWORD VARCHAR(20) NOT NULL,
+    testo VARCHAR(100) NOT NULL,
+    stato ENUM('aperta', 'approvata', 'rifiutata') NOT NULL
+)

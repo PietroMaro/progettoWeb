@@ -393,6 +393,92 @@ class ChatManager
         return $result;
     }
 
+    public function deleteSegnalazione(int $idAdmin, int $idChat, String $type, int $idMandante, String $message) : void {
+        if ($this->db === null) {
+            throw new Exception("Database connection is missing.");
+        }
+        $sql_msg = "UPDATE segnalazione SET stato = 'rifiutata', idAdmin = ? WHERE idChat = ? AND tipoSegnalazione = ? AND idMandante  = ? AND testo = ?";
+        $stmt_msg = $this->db->prepare($sql_msg);
+        if (!$stmt_msg) {
+            throw new Exception("Prepare failed (delete msg): " . $this->db->error);
+        }
+        $stmt_msg->bind_param("iisis",$idAdmin ,$idChat, $type, $idMandante, $message);
+        if (!$stmt_msg->execute()) {
+            throw new Exception("Execute failed (delete msg): " . $stmt_msg->error);
+        }
+        $stmt_msg->close();
+    }
+
+    public function banUserFromSegnalazione(int $idAdmin, int $idChat, String $type, int $idMandante, String $message, int $idReported) : void {
+        if ($this->db === null) {
+            throw new Exception("Database connection is missing.");
+        }
+        $this->db->begin_transaction();
+        try {
+            $sql_user = "SELECT email, PASSWORD FROM utente WHERE idUtente = ?";
+            $stmt_user = $this->db->prepare($sql_user);
+            if (!$stmt_user) {
+                throw new Exception("Prepare failed (get user): " . $this->db->error);
+            }
+            $stmt_user->bind_param("i", $idReported);
+            $stmt_user->execute();
+            $res_user = $stmt_user->get_result()->fetch_assoc();
+            $stmt_user->close();
+            if (!$res_user) {
+                throw new Exception("User to ban not found.");
+            }
+            $email = $res_user['email'];
+            $pass  = $res_user['PASSWORD'];
+            $sql_find_report = "SELECT idSegnalazione FROM segnalazione WHERE idChat = ? AND tipoSegnalazione = ? AND idMandante = ? AND testo = ?";
+            $stmt_find = $this->db->prepare($sql_find_report);
+            if (!$stmt_find) {
+                throw new Exception("Prepare failed (find report): " . $this->db->error);
+            }
+            $stmt_find->bind_param("isis", $idChat, $type, $idMandante, $message);
+            $stmt_find->execute();
+            $res_report = $stmt_find->get_result()->fetch_assoc();
+            $stmt_find->close();
+            if (!$res_report) {
+                throw new Exception("Report not found based on provided criteria.");
+            }
+            $idSegnalazione = $res_report['idSegnalazione'];
+            $sql_update = "UPDATE segnalazione SET stato = 'approvata', idAdmin = ? WHERE idSegnalazione = ?";
+            $stmt_update = $this->db->prepare($sql_update);
+            if (!$stmt_update) {
+                throw new Exception("Prepare failed (update report): " . $this->db->error);
+            }
+            $stmt_update->bind_param("ii", $idAdmin, $idSegnalazione);
+            if (!$stmt_update->execute()) {
+                throw new Exception("Execute failed (update report): " . $stmt_update->error);
+            }
+            $stmt_update->close();
+            $sql_ban = "INSERT INTO ban (email, PASSWORD, stato, testo) VALUES (?, ?, ?, ?)";
+            $stmt_ban = $this->db->prepare($sql_ban);
+            if (!$stmt_ban) {
+                throw new Exception("Prepare failed (insert ban): " . $this->db->error);
+            }
+            $stmt_ban->bind_param("ssss", $email, $pass, $type, $message);
+            if (!$stmt_ban->execute()) {
+                throw new Exception("Execute failed (insert ban): " . $stmt_ban->error);
+            }
+            $stmt_ban->close();
+            $sql_del = "DELETE FROM utente WHERE idUtente = ?";
+            $stmt_del = $this->db->prepare($sql_del);
+            if (!$stmt_del) {
+                throw new Exception("Prepare failed (delete user): " . $this->db->error);
+            }
+            $stmt_del->bind_param("i", $idReported);
+            if (!$stmt_del->execute()) {
+                throw new Exception("Execute failed (delete user): " . $stmt_del->error);
+            }
+            $stmt_del->close();
+            $this->db->commit();
+
+        } catch (Exception $e) {
+            $this->db->rollback();
+            throw $e;
+        }
+    }
 
 }
 ?>

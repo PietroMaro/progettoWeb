@@ -12,6 +12,28 @@
 <?php
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if(isset($_POST['current_chat_refuse'])){
+            $dbHandler->deleteSegnalazione(
+                $_SESSION['user_id'],
+                $_SESSION['idChatSelected'],
+                $_SESSION['typeReportChatSelected'],
+                $_SESSION['reporterIdChatSelected'],
+                $_SESSION['messageReportChatSelected']
+            );
+            unset($_SESSION['idChatSelected']);
+        } 
+        else if(isset($_POST['current_chat_accept'])){
+            $dbHandler->banUserFromSegnalazione(
+                $_SESSION['user_id'],
+                $_SESSION['idChatSelected'],
+                $_SESSION['typeReportChatSelected'],
+                $_SESSION['reporterIdChatSelected'],
+                $_SESSION['messageReportChatSelected'],
+                $_SESSION['reportedIdChatSelected'],
+            );
+            unset($_SESSION['idChatSelected']);
+        }
+
     }
 ?>
 
@@ -19,6 +41,8 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['admin_new_selected_chat_list_id'])) {
         if(isset($_POST['admin_new_selected_chat_id'])){$_SESSION['idChatSelected'] = $_POST['admin_new_selected_chat_id'];}
         if(isset($_POST['admin_new_selected_chat_list_id'])){$_SESSION['listIdChatSelected'] = $_POST['admin_new_selected_chat_list_id'];}
+        if(isset($_POST['admin_new_selected_chat_reporter_id'])){  $_SESSION['reporterIdChatSelected']   = $_POST['admin_new_selected_chat_reporter_id'];}
+        if(isset($_POST['admin_new_selected_chat_reported_id'])){  $_SESSION['reportedIdChatSelected']   = $_POST['admin_new_selected_chat_reported_id'];}
         if(isset($_POST['admin_new_selected_chat_reporter_name'])){$_SESSION['reporterNameChatSelected'] = $_POST['admin_new_selected_chat_reporter_name'];}
         if(isset($_POST['admin_new_selected_chat_reported_name'])){$_SESSION['reportedNameChatSelected'] = $_POST['admin_new_selected_chat_reported_name'];}
         if(isset($_POST['admin_new_selected_chat_reporter_blob'])){$_SESSION['reporterBlobChatSelected'] = $_POST['admin_new_selected_chat_reporter_blob'];}
@@ -46,13 +70,15 @@
                     $chatBlocksHtml .= chatBlock(
                         $chatData['imageReporter'] ?? '', 
                         $chatData['imageReported'] ?? '', 
+                        $chatData['idReporter'] ?? '', 
+                        $chatData['idReported'] ?? '', 
                         $chatData['nomeReporter'] ?? '', 
                         $chatData['nomeReported'] ?? '', 
                         $chatData['tipoSegnalazione'] ?? '', 
                         $chatData['testo'] ?? '', 
                         $chatData['idChat'] ?? '', 
                         $listIdChat, 
-                        $_SESSION['listIdChatSelected'] === $listIdChat
+                        ($_SESSION['listIdChatSelected'] ?? null) == $listIdChat
                     );
                     $listIdChat += 1;
                 }
@@ -76,7 +102,7 @@
 <?=segnalaChatModal()?>
 
 <?php
-function chatBlock($blobReporter, $blobReported, $nomeReporter, $nomeReported, $typeReport, $messageReport, $chatId ,$chatListId ,$isSelected){
+function chatBlock($blobReporter, $blobReported, $idReporter, $idReported, $nomeReporter, $nomeReported, $typeReport, $messageReport, $chatId ,$chatListId ,$isSelected){
     $ariaLabel = $nomeReporter . "segnala " . $nomeReported;
     $currentAttr = $isSelected ? 'aria-current="true"' : '';
     return <<<HTML
@@ -85,6 +111,8 @@ function chatBlock($blobReporter, $blobReported, $nomeReporter, $nomeReported, $
             
             <input type="hidden" name="admin_new_selected_chat_id" value="{$chatId}">
             <input type="hidden" name="admin_new_selected_chat_list_id" value="{$chatListId}">
+            <input type="hidden" name="admin_new_selected_chat_reporter_id" value="{$idReporter}">
+            <input type="hidden" name="admin_new_selected_chat_reported_id" value="{$idReported}">
             <input type="hidden" name="admin_new_selected_chat_reporter_name" value="{$nomeReporter}">
             <input type="hidden" name="admin_new_selected_chat_reported_name" value="{$nomeReported}">
             <input type="hidden" name="admin_new_selected_chat_reporter_blob" value="{$blobReporter}">
@@ -254,17 +282,18 @@ HTML;
         if(!isset($_SESSION['idChatSelected'])){
             return "";
         }
-        $blobUser = $_SESSION['userBlobChatSelected'] ?? null;
-        $blobProduct= $_SESSION['productBlobChatSelected'] ?? null;
-        $nameUser = $_SESSION['userNameChatSelected'] ?? null;
+        $blobReporter = $_SESSION['reporterBlobChatSelected'] ?? null;
+        $blobReported = $_SESSION['reportedBlobChatSelected'] ?? null;
+        $nameReporter = $_SESSION['reporterNameChatSelected'] ?? null;
+        $nameReported = $_SESSION['reportedNameChatSelected'] ?? null;
         return <<<HTML
         <header class="d-flex justify-content-between align-items-center p-3 border-bottom bg-white">
             <div class="user-info d-flex align-items-center">
                 <div aria-hidden="true" class="d-flex align-items-center gap-2 me-3">
-                    <img src="{$blobProduct}" alt="ALT" class="rounded-circle border">
-                    <img src="{$blobUser}" alt="ALT" class="rounded-circle border border-2 border-white">
+                    <img src="{$blobReporter}" alt="ALT" class="rounded-circle border">
+                    <img src="{$blobReported}" alt="ALT" class="rounded-circle border border-2 border-white">
                 </div>
-                <h2 class="h5 m-0">{$nameUser}</h2>
+                <h2 class="h5 m-0">{$nameReporter} Segnala {$nameReported}</h2>
             </div>
         </header>
         HTML;
@@ -279,15 +308,15 @@ HTML;
                 <div class="d-flex justify-content-center align-items-center w-100 gap-3 py-2">
                     
                     <form action="" method="POST" style="margin: 0;">
-                        <input type="hidden" name="offer_action" value="refuse">
-                        <button type="submit" class="btn btn-danger px-4 py-2 fw-bold shadow-sm" style="border-radius: 25px; min-width: 130px;">
+                        <input type="hidden" name="current_chat_refuse" value="refuse">
+                        <button type="submit" class="btn btn-danger px-4 py-2 fw-bold shadow-sm">
                             <i class="bi bi-x-circle me-2"></i>Rifiuta
                         </button>
                     </form>
     
                     <form action="" method="POST" style="margin: 0;">
-                        <input type="hidden" name="offer_action" value="accept">
-                        <button type="submit" class="btn btn-success px-4 py-2 fw-bold shadow-sm" style="border-radius: 25px; min-width: 130px;">
+                        <input type="hidden" name="current_chat_accept" value="accept">
+                        <button type="submit" class="btn btn-success px-4 py-2 fw-bold shadow-sm">
                             <i class="bi bi-check-circle me-2"></i>Accetta
                         </button>
                     </form>

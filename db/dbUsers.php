@@ -172,6 +172,28 @@ class UserManager
         $stmt->close();
     }
 
+    public function isBanned($email, $password): bool {
+        $sql = "SELECT idBan, PASSWORD 
+                FROM ban 
+                WHERE email = ?";
+        $stmt = $this->db->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Errore Database (Prepare Ban): " . $this->db->error);
+        }
+        $stmt->bind_param('s', $email);
+        if (!$stmt->execute()) {
+            throw new Exception("Errore Database (Execute Ban): " . $stmt->error);
+        }
+        $result = $stmt->get_result();
+        
+        if ($row = $result->fetch_assoc()) {
+            if ($password === $row['PASSWORD']) {
+                return true;
+            }
+        }
+        return false; 
+    }
+
 
 }
 ?>

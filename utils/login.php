@@ -23,7 +23,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       isset($_POST['new_offerta_chat']) ||
       isset($_POST['segnalazione_chat']) ||
       isset($_POST['delete_faq']) ||
-      isset($_POST['create_faq'])
+      isset($_POST['create_faq']) ||
+      isset($_POST['current_chat_refuse']) ||
+      isset($_POST['current_chat_accept']) 
+
     ){
       return;
     }
@@ -34,17 +37,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
         try {
-            $userId = $dbHandler->login($email, $password, false);
-            if ($userId) {
-                activateLoginSession($userId, false);
-            } else {
-                $userId = $dbHandler->login($email, $password, true);
-                if ($userId) {
-                  activateLoginSession($userId, true);
-                }else{
-                  $dbError = "Email o Password errati.";
-                }
+            if($dbHandler->isBanned($email,$password)){
+              $dbError = "L'account è stato eliminato a seguito di una segnalazione, se si hanno domande contattare unisell.helpdesk@gmail.com";
             }
+            else{
+              $userId = $dbHandler->login($email, $password, false);
+              if ($userId) {
+                  activateLoginSession($userId, false);
+              } else {
+                  $userId = $dbHandler->login($email, $password, true);
+                  if ($userId) {
+                    activateLoginSession($userId, true);
+                  }else{
+                    $dbError = "Email o Password errati.";
+                  }
+              }
+           }
         } catch (Exception $e) {
             $dbError = "Errore tecnico durante il login.";
         }
