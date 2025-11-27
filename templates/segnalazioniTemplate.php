@@ -1,4 +1,7 @@
 <?php
+
+    require_once "utils/chatUtils.php";
+
     $chatBlocksHtml = "";
     $idChatSelected = null;
     $dbHandler = null; 
@@ -39,16 +42,16 @@
 
 <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['admin_new_selected_chat_list_id'])) {
-        if(isset($_POST['admin_new_selected_chat_id'])){$_SESSION['idChatSelected'] = $_POST['admin_new_selected_chat_id'];}
-        if(isset($_POST['admin_new_selected_chat_list_id'])){$_SESSION['listIdChatSelected'] = $_POST['admin_new_selected_chat_list_id'];}
-        if(isset($_POST['admin_new_selected_chat_reporter_id'])){  $_SESSION['reporterIdChatSelected']   = $_POST['admin_new_selected_chat_reporter_id'];}
-        if(isset($_POST['admin_new_selected_chat_reported_id'])){  $_SESSION['reportedIdChatSelected']   = $_POST['admin_new_selected_chat_reported_id'];}
-        if(isset($_POST['admin_new_selected_chat_reporter_name'])){$_SESSION['reporterNameChatSelected'] = $_POST['admin_new_selected_chat_reporter_name'];}
-        if(isset($_POST['admin_new_selected_chat_reported_name'])){$_SESSION['reportedNameChatSelected'] = $_POST['admin_new_selected_chat_reported_name'];}
-        if(isset($_POST['admin_new_selected_chat_reporter_blob'])){$_SESSION['reporterBlobChatSelected'] = $_POST['admin_new_selected_chat_reporter_blob'];}
-        if(isset($_POST['admin_new_selected_chat_reported_blob'])){$_SESSION['reportedBlobChatSelected'] = $_POST['admin_new_selected_chat_reported_blob'];}
-        if(isset($_POST['admin_new_selected_chat_type_report'])){$_SESSION['typeReportChatSelected'] = $_POST['admin_new_selected_chat_type_report'];}
-        if(isset($_POST['admin_new_selected_chat_message_report'])){$_SESSION['messageReportChatSelected'] = $_POST['admin_new_selected_chat_message_report'];}
+        ifPostSetSession('admin_new_selected_chat_id','idChatSelected');
+        ifPostSetSession('admin_new_selected_chat_list_id','listIdChatSelected');
+        ifPostSetSession('admin_new_selected_chat_reporter_id','reporterIdChatSelected');
+        ifPostSetSession('admin_new_selected_chat_reported_id','reportedIdChatSelected');
+        ifPostSetSession('admin_new_selected_chat_reporter_name','reporterNameChatSelected');
+        ifPostSetSession('admin_new_selected_chat_reported_name','reportedNameChatSelected');
+        ifPostSetSession('admin_new_selected_chat_reporter_blob','reporterBlobChatSelected');
+        ifPostSetSession('admin_new_selected_chat_reported_blob','reportedBlobChatSelected');
+        ifPostSetSession('admin_new_selected_chat_type_report','typeReportChatSelected');
+        ifPostSetSession('admin_new_selected_chat_message_report','messageReportChatSelected');
     }
 ?>
 
@@ -139,115 +142,6 @@ function chatBlock($blobReporter, $blobReported, $idReporter, $idReported, $nome
         </form>
     </li>
     HTML;
-}
-function noChatBlock() {
-    return <<<HTML
-    <div class="alert alert-warning text-center p-5" style="background-color: #fff3cd; color:rgb(0, 0, 0); border: 1px solid #ffeeba; border-radius: 5px;">
-        <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Nessuna Chat disponibile</h2>
-        <p style="margin-bottom: 1.5rem;">Al momento non hai chat aperte, aspetta di esserre contattato se sei un venditore, o esplora i prodotti se vuoi contattare qualcuno</p>
-    </div>
-HTML;
-}
-function errorBlock() {
-    return <<<HTML
-    <div class="alert alert-warning text-center p-5" style="background-color: #fff3cd; color:rgb(0, 0, 0); border: 1px solid #ffeeba; border-radius: 5px;">
-        <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Nessuna Chat disponibile</h2>
-        <p style="margin-bottom: 1.5rem;">Al momento il servizio è temporaneamente non disponibile. Ci scusiamo per il disagio.</p>
-    </div>
-HTML;
-}
-?>
-
-<?php
-
-    function noChatSelectBlock() {
-        return <<<HTML
-        <div class="alert alert-warning text-center p-5" style="background-color:rgb(211, 211, 211); color:rgb(0, 0, 0); border: 1px solid #ffeeba; border-radius: 5px;">
-            <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Nessuna Chat disponibile</h2>
-            <p style="margin-bottom: 1.5rem;">Seleziona una chat per visualizzare i messaggi</p>
-        </div>
-        HTML;
-    }
-
-    function currentChat(){
-        $header = currentChatHeader();
-        $body = currentChatBody();
-        $footer = currentChatFooter(); 
-
-        if($body == errorBlock()){
-            $footer = "";
-        }
-        return <<<HTML
-            <main role="main" aria-label="Conversazione corrente">
-                        {$header}
-                        {$body} 
-                        {$footer} 
-                    </main>
-        HTML;
-    }
-
-    function currentChatBody(){
-        try {
-            $dbHandler = new ChatManager();
-        } catch (Exception $e) {
-            $dbHandler = null;
-        }
-
-        if (!isset($_SESSION['idChatSelected'])) {
-            return noChatSelectBlock(); 
-        } else {
-            $idChat = $_SESSION['idChatSelected'];
-            $result= "";
-            try {
-                if(!$dbHandler){
-                    return errorBlock();
-                }
-                $history = $dbHandler->getChatHistory($idChat);
-                if(empty($history)){
-                    $result = noMessagesBlock();
-                }else{
-                    foreach($history as $row){
-                        $isMine = ($row['idMandante'] != $_SESSION['user_id']);
-                        $image_data = $row['image'] ?? null;
-                        $messageProgressivo = $row['progressivo'] ?? null;
-                        if($row['type'] === 'message'){
-                            $result .= singleChatMessage($isMine,$row['content'],$image_data,$messageProgressivo);
-                        } else if($row['type'] === 'offer'){
-                            $result .= singleChatOffer($isMine,$row['content'],$messageProgressivo);
-                        }
-                    }
-                }
-            } catch (Throwable $e) {
-                $result .= "<div style='color:red; padding: 20px;'>Error: " . $e->getMessage() . "</div>";
-            }
-            return <<<HTML
-                <section aria-live="polite" aria-label="Cronologia messaggi">
-                    {$result}
-                </section>
-            HTML;
-        }
-    }
-
-    function singleChatMessage($isMine, $content, $image_data = null, $messageProgressivo = 0){
-        $whoSent = $isMine ? "sent" : "received";
-        $imageHtml = '';
-        if ($image_data !== null && $image_data !== '') {
-            $base64Image = base64_encode($image_data);
-            $mimeType = 'image/jpeg'; 
-            $imageSrc = 'data:' . $mimeType . ';base64,' . $base64Image;
-            $imageHtml = <<<IMG
-                <img src="{$image_data}" alt="C'è stato un errore nel caricare l'immagine, ci scusiamo per il disagio. Prova a ricarcare la pagina" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 5px;">
-            IMG;
-        }
-        $textHtml = !empty($content) ? "<p>{$content}</p>" : '';
-        return <<<HTML
-            <article data-type={$whoSent} data-progressivo={$messageProgressivo}>
-                <div>
-                    {$imageHtml}
-                    {$textHtml}
-                </div>
-            </article>
-        HTML;
     }
 
     function singleChatOffer($isMine, $content, $messageProgressivo = 0){
@@ -323,24 +217,6 @@ HTML;
     
                 </div>
             </footer>
-        HTML;
-    }
-
-    function noMessagesBlock() {
-        return <<<HTML
-        <div class="alert alert-warning text-center p-5" style="background-color:rgb(199, 199, 199); color:rgb(0, 0, 0); border: 1px solid #ffeeba; border-radius: 5px;">
-            <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Nessun messagio</h2>
-            <p style="margin-bottom: 1.5rem;">Al momento non ci sono messaggi in questa chat, non essere timido :)</p>
-        </div>
-    HTML;
-    }
-    
-    function errorChatBlock() {
-        return <<<HTML
-        <div class="alert alert-warning text-center p-5" style="background-color: #fff3cd; color:rgb(0, 0, 0); border: 1px solid #ffeeba; border-radius: 5px;">
-            <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Chat non disponibile</h2>
-            <p style="margin-bottom: 1.5rem;">Al momento il servizio è temporaneamente non disponibile. Ci scusiamo per il disagio.</p>
-        </div>
         HTML;
     }
 ?>
