@@ -12,7 +12,7 @@ class ChatManager
         }
     }
 
-    public function getUserChats($userId)
+    public function getUserChats($userId): array
     {
         try {
             $queryChat = "SELECT * FROM CHAT WHERE idUtente1 = ? OR idUtente2 = ?";
@@ -49,7 +49,7 @@ class ChatManager
         }
     }
 
-    public function getOpenReports()
+    public function getOpenReports(): array
     {
         try {
             $query = "
@@ -493,7 +493,7 @@ class ChatManager
         }
     }
 
-    public function createChat($productId, $sellerId)
+    public function createChat($productId, $sellerId): mixed
     {
         if ($this->db === null) {
             throw new Exception("Database connection is missing.");

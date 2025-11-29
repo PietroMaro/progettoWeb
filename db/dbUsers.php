@@ -15,7 +15,7 @@ class UserManager
     }
 
 
-    public function getUserInfo($userId)
+    public function getUserInfo($userId): mixed
     {
 
         try {

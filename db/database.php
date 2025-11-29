@@ -22,7 +22,7 @@ class Database
         }
     }
 
-    public static function getInstance()
+    public static function getInstance(): mixed
     {
         if (self::$instance === null) {
             self::$instance = new Database();

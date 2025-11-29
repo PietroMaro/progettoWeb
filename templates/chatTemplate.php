@@ -4,13 +4,19 @@ $idChatSelected = null;
 $dbHandler = null;
 try {
     $dbHandler = new ChatManager();
+    $productHandler = new ProductManager();
 } catch (Exception $e) {
     $chatBlocksHtml = errorBlock();
 }
 
+$chatFinished = $productHandler->isProductSoldByChat($_SESSION['idChatSelected'])
+
+    ?>
 
 
-?>
+
+
+
 
 <?php
 
@@ -55,6 +61,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['is_new_chat_message'])
         error_log("Missing required IDs for new chat message.");
     }
 }
+
+
+
+
 ?>
 
 <?php
@@ -107,7 +117,7 @@ if ($dbHandler) {
             <?= $chatBlocksHtml ?>
         </ul>
     </aside>
-    <?= currentChat() ?>
+    <?= currentChat($chatFinished) ?>
 </div>
 
 <?= offertaChatModal() ?>
@@ -234,9 +244,9 @@ function currentChatHeader()
         HTML;
 }
 
-function currentChatFooter()
+function currentChatFooter($chatFinished)
 {
-    if (!isset($_SESSION['idChatSelected'])) {
+    if (!isset($_SESSION['idChatSelected']) || $chatFinished) {
         return "";
     }
     return <<<HTML

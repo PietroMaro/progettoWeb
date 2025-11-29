@@ -18,7 +18,7 @@ class ProductManager
         }
     }
 
-    public function saveProduct($formData, $loadedFile)
+    public function saveProduct($formData, $loadedFile): void
     {
 
         if ($this->db === null) {
@@ -71,7 +71,7 @@ class ProductManager
     }
 
 
-    public function saveImages($productId, $images)
+    public function saveImages($productId, $images): void
     {
 
 
@@ -91,7 +91,7 @@ class ProductManager
 
 
 
-    public function getProductsForUser()
+    public function getProductsForUser(): array
     {
 
 
@@ -136,7 +136,7 @@ class ProductManager
     }
 
 
-    public function getFilteredProducts($filters, $isAdmin)
+    public function getFilteredProducts($filters, $isAdmin): array
     {
 
         if ($this->db === null) {
@@ -252,7 +252,7 @@ class ProductManager
 
 
 
-    public function deleteProduct($formData)
+    public function deleteProduct($formData): bool
     {
 
         if ($this->db === null) {
@@ -283,7 +283,7 @@ class ProductManager
     }
 
 
-    public function updateProduct($formData, $loadedFile)
+    public function updateProduct($formData, $loadedFile): void
     {
 
         if ($this->db === null) {
@@ -325,7 +325,7 @@ class ProductManager
         }
     }
 
-    public function changeProductStatus($productId, $decision, $rejectionReason = null)
+    public function changeProductStatus($productId, $decision, $rejectionReason = null): bool
     {
 
         $adminId = $_SESSION['user_id'];
@@ -375,7 +375,7 @@ class ProductManager
     }
 
 
-    public function acceptOffer($idChat)
+    public function acceptOffer($idChat): mixed
     {
         try {
 
@@ -422,7 +422,7 @@ class ProductManager
 
 
 
-    public function getProductById($productId)
+    public function getProductById($productId): array|bool|null
     {
 
         if ($this->db === null) {
@@ -437,14 +437,14 @@ class ProductManager
         return $result->fetch_assoc();
     }
 
-    public function deleteImagesByProductId($productId)
+    public function deleteImagesByProductId($productId): void
     {
         $sql = "DELETE FROM immagini WHERE idProdotto = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param("i", $productId);
         $stmt->execute();
     }
-    public function getProfileImageByProductId($productId)
+    public function getProfileImageByProductId($productId): mixed
     {
 
         if ($this->db === null) {
@@ -474,7 +474,7 @@ class ProductManager
 
     }
 
-    public function getImagesByProductId($productId)
+    public function getImagesByProductId($productId): array
     {
 
         if ($this->db === null) {
@@ -503,7 +503,7 @@ class ProductManager
     }
 
 
-    public function getUserIdByProductId($productId)
+    public function getUserIdByProductId($productId): mixed
     {
         try {
             $query = "SELECT idUtente FROM prodotto WHERE idProdotto = ?";
@@ -528,6 +528,43 @@ class ProductManager
         }
     }
 
+
+    function isProductSoldByChat($idChat): bool
+    {
+        if ($this->db === null) {
+            return false;
+        }
+
+        $sql = "SELECT p.stato 
+            FROM prodotto p
+            JOIN chat c ON p.idProdotto = c.idProdotto
+            WHERE c.idChat = ?";
+
+        $stmt = $this->db->prepare($sql);
+
+        if ($stmt === false) {
+            error_log("Errore prepare statement: " . $this->db->error);
+            return false;
+        }
+
+        $stmt->bind_param("i", $idChat);
+
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        $isSold = false;
+
+        if ($row = $result->fetch_assoc()) {
+            if ($row['stato'] === 'venduto') {
+                $isSold = true;
+            }
+        }
+
+        $stmt->close();
+
+        return $isSold;
+    }
 }
 
 
