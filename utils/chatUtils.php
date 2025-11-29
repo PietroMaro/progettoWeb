@@ -30,8 +30,8 @@
         return genericErrorBlock("#fff3cd","rgb(0, 0, 0)","Chat non disponibile","Al momento il servizio è temporaneamente non disponibile. Ci scusiamo per il disagio");
     }
 
-    function currentChat($chatFinished){
-        $header = currentChatHeader();
+    function currentChat($chatFinished = true, $disableOfferButton = true){
+        $header = currentChatHeader($disableOfferButton);
         $body = currentChatBody();
         $footer = currentChatFooter($chatFinished); 
 

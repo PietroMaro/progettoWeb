@@ -9,9 +9,22 @@ try {
     $chatBlocksHtml = errorBlock();
 }
 
-$chatFinished = $productHandler->isProductSoldByChat($_SESSION['idChatSelected'])
+$chatFinished = false;
+$disableOfferButton = false;
 
-    ?>
+$chatStatus = $productHandler->productStatus($_SESSION['idChatSelected']);
+
+if ($chatStatus === "venduto") {
+    $chatFinished = true;
+    $disableOfferButton = true;
+
+} elseif ($chatStatus === "asta") {
+    $disableOfferButton = true;
+} elseif ($chatStatus === "astaDeserta") {
+    $chatFinished = true;
+}
+
+?>
 
 
 
@@ -117,7 +130,7 @@ if ($dbHandler) {
             <?= $chatBlocksHtml ?>
         </ul>
     </aside>
-    <?= currentChat($chatFinished) ?>
+    <?= currentChat($chatFinished, $disableOfferButton) ?>
 </div>
 
 <?= offertaChatModal() ?>
@@ -212,7 +225,7 @@ function singleChatOffer($isMine, $content, $messageProgressivo = 0)
         HTML;
 }
 
-function currentChatHeader()
+function currentChatHeader($disableOfferButton)
 {
     if (!isset($_SESSION['idChatSelected'])) {
         return "";
@@ -220,6 +233,17 @@ function currentChatHeader()
     $blobUser = $_SESSION['userBlobChatSelected'] ?? null;
     $blobProduct = $_SESSION['productBlobChatSelected'] ?? null;
     $nameUser = $_SESSION['userNameChatSelected'] ?? null;
+    $offerButtonHtml = "";
+
+
+    if ($disableOfferButton == false) {
+        $offerButtonHtml = <<<BTN
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalOfferta">
+                Offerta
+            </button>
+        BTN;
+    }
+
     return <<<HTML
         <header class="d-flex justify-content-between align-items-center p-3 border-bottom bg-white">
             <div class="user-info d-flex align-items-center">
@@ -231,14 +255,14 @@ function currentChatHeader()
             </div>
 
             <nav class="d-flex gap-2">
-                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalOfferta">
-                    Offerta
-                </button>
+                {$offerButtonHtml}
 
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalSegnala">
                     Segnala
                 </button>
             </nav>
+
+            
 
         </header>
         HTML;

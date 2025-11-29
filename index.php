@@ -5,6 +5,7 @@ $products = [];
 $isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
 try {
     $handler = new ProductManager();
+    $handler->updateAuctions();
     $filters = [];
     if (isset($_GET['search'])) {
         $filters['search'] = $_GET['search'];
@@ -25,8 +26,8 @@ try {
 $templateParams["titolo"] = "Unisell - Home";
 $templateParams["nome"] = "./templates/homeTemplate.php";
 $templateParams["stylesheet"] = "css/homePage.css";
-$templateParams["searchBar"] = "utils/searchBar.php"; 
-$templateParams["products"] = $products; 
+$templateParams["searchBar"] = "utils/searchBar.php";
+$templateParams["products"] = $products;
 
 require './templates/baseTemplate.php';
 ?>
