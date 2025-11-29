@@ -374,6 +374,50 @@ class ProductManager
         return $esito;
     }
 
+
+    public function acceptOffer($idChat)
+    {
+        try {
+
+
+
+            $sqlCerca = "SELECT idProdotto FROM chat WHERE idChat = ?";
+
+            $stmtCerca = $this->db->prepare($sqlCerca);
+
+            $stmtCerca->bind_param('i', $idChat);
+            $stmtCerca->execute();
+
+            $result = $stmtCerca->get_result();
+            $dati = $result->fetch_assoc();
+
+            $stmtCerca->close();
+
+
+
+            $idProdotto = $dati['idProdotto'];
+
+            $sqlAggiorna = "UPDATE prodotto 
+                        SET stato = 'venduto' 
+                        WHERE idProdotto = ?";
+
+            if ($stmtAggiorna = $this->db->prepare($sqlAggiorna)) {
+                $stmtAggiorna->bind_param('i', $idProdotto);
+                $stmtAggiorna->execute();
+                $stmtAggiorna->close();
+
+                return $idProdotto;
+            } else {
+                return false;
+            }
+
+        } catch (Exception $e) {
+            error_log("Errore MySQLi: " . $this->db->error);
+            return false;
+        }
+    }
+
+
     //Funzioni di utility
 
 

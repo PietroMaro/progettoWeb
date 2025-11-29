@@ -1,10 +1,10 @@
 <?php
 
 if (!isset($userInfo)): ?>
-      <div class="alert alert-warning text-center p-5">
-            <p>Al momento il servizio è temporaneamente non disponibile.</p>
-            <button onclick="location.reload()" class="btn btn-outline-secondary mt-3">Riprova</button>
-        </div>
+    <div class="alert alert-warning text-center p-5">
+        <p>Al momento il servizio è temporaneamente non disponibile.</p>
+        <button onclick="location.reload()" class="btn btn-outline-secondary mt-3">Riprova</button>
+    </div>
 <?php else: ?>
 
     <div class="container mt-5">
@@ -68,10 +68,9 @@ if (!isset($userInfo)): ?>
                             ?>
                             <div class="col-6 col-sm-4 col-lg-3 text-center">
                                 <div class="card shadow-sm mb-1">
-                                    <a href="prodotto.php?id=<?php echo $product['idProdotto']; ?>">
-                                        <img src="<?php echo $imgProd; ?>" class="card-img-top p-2"
-                                            alt="<?php echo htmlspecialchars($product['nome']); ?>">
-                                    </a>
+
+                                    <img src="<?php echo $imgProd; ?>" class="card-img-top p-2"
+                                        alt="<?php echo htmlspecialchars($product['nome']); ?>">
                                 </div>
                                 <small><?php echo htmlspecialchars($product['nome']); ?></small>
                             </div>

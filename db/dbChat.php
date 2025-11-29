@@ -25,7 +25,7 @@ class ChatManager
                 throw new Exception("Execute failed: " . $stmt->error);
             }
             $result = $stmt->get_result();
-            $chats = []; 
+            $chats = [];
             while ($row = $result->fetch_assoc()) {
                 $notYouId = null;
                 if ($row['idUtente1'] === $userId) {
@@ -49,7 +49,8 @@ class ChatManager
         }
     }
 
-    public function getOpenReports(){
+    public function getOpenReports()
+    {
         try {
             $query = "
                 SELECT 
@@ -77,18 +78,18 @@ class ChatManager
             while ($row = $result->fetch_assoc()) {
                 $idReporter = $row['idMandante'];
                 $idReported = ($row['idUtente1'] == $idReporter) ? $row['idUtente2'] : $row['idUtente1'];
-                $row['idReporter']    = $idReporter;
-                $row['nomeReporter']  = $this->getNomeUtenteFromId($idReporter);
+                $row['idReporter'] = $idReporter;
+                $row['nomeReporter'] = $this->getNomeUtenteFromId($idReporter);
                 $row['imageReporter'] = $this->getImmageOfUserFromId($idReporter);
-                $row['idReported']    = $idReported;
-                $row['nomeReported']  = $this->getNomeUtenteFromId($idReported);
+                $row['idReported'] = $idReported;
+                $row['nomeReported'] = $this->getNomeUtenteFromId($idReported);
                 $row['imageReported'] = $this->getImmageOfUserFromId($idReported);
                 if (isset($row['idProdotto'])) {
-                    $row['nomeProdotto']   = $this->getNomeProdottoFromId($row['idProdotto']);
-                    $row['imageProdotto']  = $this->getImmageOfProdottoFromId($row['idProdotto']);
+                    $row['nomeProdotto'] = $this->getNomeProdottoFromId($row['idProdotto']);
+                    $row['imageProdotto'] = $this->getImmageOfProdottoFromId($row['idProdotto']);
                 } else {
-                    $row['nomeProdotto']   = "Prodotto sconosciuto";
-                    $row['imageProdotto']  = null;
+                    $row['nomeProdotto'] = "Prodotto sconosciuto";
+                    $row['imageProdotto'] = null;
                 }
 
                 $reports[] = $row;
@@ -102,7 +103,8 @@ class ChatManager
     }
 
     // Blob of the immage
-    private function getImmageOfUserFromId($userId): ?string {
+    public function getImmageOfUserFromId($userId): ?string
+    {
         $sql = "SELECT i.immagine 
                 FROM utente u 
                 JOIN immagini i ON u.idImmagine = i.idImmagine 
@@ -119,11 +121,12 @@ class ChatManager
         if ($row = $result->fetch_assoc()) {
             return "data:image/jpeg;base64," . base64_encode($row['immagine']);
         }
-        return null; 
+        return null;
     }
 
     // Blob of the immage
-    private function getImmageOfProdottoFromId($prodottoId): ?string {
+    public function getImmageOfProdottoFromId($prodottoId): ?string
+    {
         $sql = "SELECT i.immagine 
                 FROM immagini i 
                 WHERE i.idProdotto = ?";
@@ -139,13 +142,14 @@ class ChatManager
         if ($row = $result->fetch_assoc()) {
             return "data:image/jpeg;base64," . base64_encode($row['immagine']);
         }
-        return null; 
+        return null;
     }
 
-    private function getNomeProdottoFromId(int $prodottoId): ?string {
+    public function getNomeProdottoFromId(int $prodottoId): ?string
+    {
         $sql = "SELECT nome
                 FROM prodotto 
-                WHERE idProdotto = ?"; 
+                WHERE idProdotto = ?";
         $stmt = $this->db->prepare($sql);
         if (!$stmt) {
             throw new Exception("Prepare failed: " . $this->db->error);
@@ -156,15 +160,16 @@ class ChatManager
         }
         $result = $stmt->get_result();
         if ($row = $result->fetch_assoc()) {
-            return $row['nome']; 
+            return $row['nome'];
         }
-        return null; 
+        return null;
     }
 
-    private function getNomeUtenteFromId(int $userId): ?string {
+    public function getNomeUtenteFromId(int $userId): ?string
+    {
         $sql = "SELECT nome
                 FROM utente 
-                WHERE idUtente = ?"; 
+                WHERE idUtente = ?";
         $stmt = $this->db->prepare($sql);
         if (!$stmt) {
             throw new Exception("Prepare failed: " . $this->db->error);
@@ -175,12 +180,13 @@ class ChatManager
         }
         $result = $stmt->get_result();
         if ($row = $result->fetch_assoc()) {
-            return $row['nome']; 
+            return $row['nome'];
         }
-        return null; 
+        return null;
     }
 
-    public function getChatHistory($chatId): array {
+    public function getChatHistory($chatId): array
+    {
         $sql = "SELECT 
                     'message' AS type,
                     m.idMessaggio AS id,
@@ -218,18 +224,19 @@ class ChatManager
                 $formattedImage = "data:image/jpeg;base64," . base64_encode($row['immagine']);
             }
             $history[] = [
-                'type'        => $row['type'],
-                'id'          => $row['id'],
-                'content'     => $row['content'],
+                'type' => $row['type'],
+                'id' => $row['id'],
+                'content' => $row['content'],
                 'progressivo' => $row['progressivo'],
                 'idMandante' => $row['idMandante'],
-                'image'       => $formattedImage
+                'image' => $formattedImage
             ];
         }
         return $history;
     }
 
-    private function getNextProgressivo(int $idChat): int {
+    private function getNextProgressivo(int $idChat): int
+    {
         $sql = "
             SELECT GREATEST(
                 COALESCE((SELECT MAX(progressivo) FROM messaggio WHERE idChat = ?), 0),
@@ -250,12 +257,13 @@ class ChatManager
         return ($result['max_prog'] ?? 0) + 1;
     }
 
-    public function addMessage(int $idSender, int $idChat, ?string $messageContent, $immage = null) : void {
-        
+    public function addMessage(int $idSender, int $idChat, ?string $messageContent, $immage = null): void
+    {
+
         $progressivo = $this->getNextProgressivo($idChat);
 
         if (empty($messageContent) && $immage === null) {
-            return; 
+            return;
         }
 
         $sql_message = "
@@ -278,7 +286,7 @@ class ChatManager
 
         if ($immage !== null) {
             $file_data = $immage;
-            
+
             if ($file_data === FALSE) {
                 $this->db->query("DELETE FROM messaggio WHERE idMessaggio = $idMessaggio");
                 throw new Exception("Could not read uploaded file data.");
@@ -286,14 +294,14 @@ class ChatManager
 
             $sql_image = "INSERT INTO immagini (immagine, idMessaggio) VALUES (?, ?)";
             $stmt_img = $this->db->prepare($sql_image);
-            
+
             if (!$stmt_img) {
                 $this->db->query("DELETE FROM messaggio WHERE idMessaggio = $idMessaggio");
                 throw new Exception("Prepare failed (immagini): " . $this->db->error);
             }
 
-            $null = NULL; 
-            $stmt_img->bind_param("bi", $null, $idMessaggio); 
+            $null = NULL;
+            $stmt_img->bind_param("bi", $null, $idMessaggio);
             $stmt_img->send_long_data(0, $file_data);
 
             if (!$stmt_img->execute()) {
@@ -304,7 +312,8 @@ class ChatManager
         }
     }
 
-    public function addNewOffertaChat(int $idChat, int $idMandante, int $valore) : void {
+    public function addNewOffertaChat(int $idChat, int $idMandante, int $valore): void
+    {
         $progressivo = $this->getNextProgressivo($idChat);
 
         $sql_offer = "
@@ -327,7 +336,8 @@ class ChatManager
     }
 
 
-    public function addNewSegnalazione(String $tipoSegnalazione, String $testo, int $idMandante, int $idChat) : void {
+    public function addNewSegnalazione(string $tipoSegnalazione, string $testo, int $idMandante, int $idChat): void
+    {
         $sql_offer = "
             INSERT INTO segnalazione (tipoSegnalazione, testo, idMandante, stato, idChat) 
             VALUES (?, ?, ?, ?, ?)
@@ -339,7 +349,7 @@ class ChatManager
         }
 
         $stato = "aperta";
-        $stmt_off->bind_param("ssisi", $tipoSegnalazione, $testo, $idMandante,$stato,$idChat);
+        $stmt_off->bind_param("ssisi", $tipoSegnalazione, $testo, $idMandante, $stato, $idChat);
 
         if (!$stmt_off->execute()) {
             throw new Exception("Execute failed (offertaChat): " . $stmt_off->error);
@@ -349,7 +359,8 @@ class ChatManager
 
     }
 
-    public function getNewMessages(int $idChat, int $idUser, int $lastProgressivo): array {
+    public function getNewMessages(int $idChat, int $idUser, int $lastProgressivo): array
+    {
         $sql = "
             (
                 -- 1. SELECT MESSAGES
@@ -378,22 +389,23 @@ class ChatManager
             -- 3. ORDER EVERYTHING BY TIME
             ORDER BY progressivo ASC
         ";
-    
+
         $stmt = $this->db->prepare($sql);
         if (!$stmt) {
             throw new Exception("Prepare failed: " . $this->db->error);
         }
-    
+
         $stmt->bind_param("iiii", $idChat, $lastProgressivo, $idChat, $lastProgressivo);
-        
+
         $stmt->execute();
         $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         $stmt->close();
-    
+
         return $result;
     }
 
-    public function deleteSegnalazione(int $idAdmin, int $idChat, String $type, int $idMandante, String $message) : void {
+    public function deleteSegnalazione(int $idAdmin, int $idChat, string $type, int $idMandante, string $message): void
+    {
         if ($this->db === null) {
             throw new Exception("Database connection is missing.");
         }
@@ -402,14 +414,15 @@ class ChatManager
         if (!$stmt_msg) {
             throw new Exception("Prepare failed (delete msg): " . $this->db->error);
         }
-        $stmt_msg->bind_param("iisis",$idAdmin ,$idChat, $type, $idMandante, $message);
+        $stmt_msg->bind_param("iisis", $idAdmin, $idChat, $type, $idMandante, $message);
         if (!$stmt_msg->execute()) {
             throw new Exception("Execute failed (delete msg): " . $stmt_msg->error);
         }
         $stmt_msg->close();
     }
 
-    public function banUserFromSegnalazione(int $idAdmin, int $idChat, String $type, int $idMandante, String $message, int $idReported) : void {
+    public function banUserFromSegnalazione(int $idAdmin, int $idChat, string $type, int $idMandante, string $message, int $idReported): void
+    {
         if ($this->db === null) {
             throw new Exception("Database connection is missing.");
         }
@@ -428,7 +441,7 @@ class ChatManager
                 throw new Exception("User to ban not found.");
             }
             $email = $res_user['email'];
-            $pass  = $res_user['PASSWORD'];
+            $pass = $res_user['PASSWORD'];
             $sql_find_report = "SELECT idSegnalazione FROM segnalazione WHERE idChat = ? AND tipoSegnalazione = ? AND idMandante = ? AND testo = ?";
             $stmt_find = $this->db->prepare($sql_find_report);
             if (!$stmt_find) {
@@ -478,6 +491,61 @@ class ChatManager
             $this->db->rollback();
             throw $e;
         }
+    }
+
+    public function createChat($productId, $sellerId)
+    {
+        if ($this->db === null) {
+            throw new Exception("Database connection is missing.");
+        }
+
+
+        $idUtente1 = $_SESSION['user_id'];
+
+        $idUtente2 = $sellerId;
+
+
+
+        $sqlCheck = "SELECT idChat FROM chat 
+                     WHERE idProdotto = ? 
+                     AND (
+                        (idUtente1 = ? AND idUtente2 = ?) 
+                        OR 
+                        (idUtente1 = ? AND idUtente2 = ?)
+                     )";
+
+        $stmtCheck = $this->db->prepare($sqlCheck);
+        if (!$stmtCheck) {
+            throw new Exception("Prepare check failed: " . $this->db->error);
+        }
+
+        $stmtCheck->bind_param("iiiii", $productId, $idUtente1, $idUtente2, $idUtente2, $idUtente1);
+        $stmtCheck->execute();
+        $result = $stmtCheck->get_result();
+
+        if ($row = $result->fetch_assoc()) {
+            $stmtCheck->close();
+            return $row['idChat'];
+        }
+        $stmtCheck->close();
+
+        $sqlInsert = "INSERT INTO chat (idUtente1, idUtente2, idProdotto, eliminata) VALUES (?, ?, ?, 0)";
+
+        $stmtInsert = $this->db->prepare($sqlInsert);
+        if (!$stmtInsert) {
+            throw new Exception("Prepare insert failed: " . $this->db->error);
+        }
+
+        $stmtInsert->bind_param("iii", $idUtente1, $idUtente2, $productId);
+
+        if (!$stmtInsert->execute()) {
+            throw new Exception("Errore durante la creazione della chat: " . $stmtInsert->error);
+        }
+
+        $newChatId = $this->db->insert_id;
+        $stmtInsert->close();
+
+        return $newChatId;
     }
 
 }

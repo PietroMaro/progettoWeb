@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return; 
         }
         try {
-            const response = await fetch(`../utils/getMessages.php?last_prog=${lastReceivedProgressivo}`);
+            const response = await fetch(`utils/getMessages.php?last_prog=${lastReceivedProgressivo}`);
             
             if(!response.ok){ 
                 // FIXED: Actually inject the HTML instead of returning a string
@@ -162,6 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p style="margin-bottom: 1.5rem;">Al momento il servizio è temporaneamente non disponibile. Ci scusiamo per il disagio.</p>
                     </div>
                 `; 
+
                 messageContainer.insertAdjacentHTML('beforeend', errorHtml);
                 messageContainer.scrollTop = messageContainer.scrollHeight;
                 

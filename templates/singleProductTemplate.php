@@ -1,3 +1,29 @@
+<?php
+
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+
+
+    $chatManager = new ChatManager();
+    $idChat = $chatManager->createChat($productId, $sellerId);
+
+    if ($idChat) {
+        $_SESSION['idChatSelected'] = $idChat;
+        $_SESSION['userNameChatSelected'] = $chatManager->getNomeUtenteFromId($sellerId);
+        $_SESSION['userBlobChatSelected'] = $chatManager->getImmageOfUserFromId($sellerId);
+        $_SESSION['productNameChatSelected'] = $chatManager->getNomeProdottoFromId($productId);
+        $_SESSION['productBlobChatSelected'] = $chatManager->getImmageOfProdottoFromId($productId);
+
+        $_SESSION['listIdChatSelected'] = null;
+
+        header("Location: chat.php");
+        exit();
+    }
+}
+?>
+
+
 <div class="container-fluid d-flex justify-content-center my-4">
 
     <?php if (isset($fatalError)): ?>
@@ -132,10 +158,11 @@
 
                                 <?php else: ?>
 
-                                    <button type="button" class="btn btn-success btn-lg w-100 rounded-pill">
-                                        Contatta il venditore
-                                    </button>
-
+                                    <form method="POST" action="">
+                                        <button type="submit" class="btn btn-success btn-lg w-100 rounded-pill">
+                                            Contatta il venditore
+                                        </button>
+                                    </form>
                                 <?php endif; ?>
 
                             </div>

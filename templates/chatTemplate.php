@@ -1,117 +1,121 @@
 <?php
-    $chatBlocksHtml = "";
-    $idChatSelected = null;
-    $dbHandler = null; 
+$chatBlocksHtml = "";
+$idChatSelected = null;
+$dbHandler = null;
+try {
+    $dbHandler = new ChatManager();
+} catch (Exception $e) {
+    $chatBlocksHtml = errorBlock();
+}
+
+
+
+?>
+
+<?php
+
+require_once __DIR__ . "/../utils/chatUtils.php";
+require_once __DIR__ . '/../utils/offertaChat.php';
+require_once __DIR__ . '/../utils/segnalaChat.php';
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['is_new_chat_message'])) {
+
+    if (!$dbHandler) {
+        return;
+    }
+
+    $idSender = $_SESSION['user_id'] ?? null;
+    $idChat = $_SESSION['idChatSelected'] ?? null;
+    $messageContent = $_POST['chat-message'] ?? null;
+
+    $immage_blob = null;
+    if (isset($_FILES['chat-image']) && $_FILES['chat-image']['error'] == UPLOAD_ERR_OK) {
+
+        $immage_blob = file_get_contents($_FILES['chat-image']['tmp_name']);
+
+        if ($immage_blob === FALSE || $immage_blob === "") {
+            error_log("Failed to read image content or file was empty for chat ID: " . $idChat);
+            $immage_blob = null;
+        }
+    }
+
+    if ($idSender !== null && $idChat !== null) {
+
+        $hasContent = (!empty($messageContent) || $immage_blob !== null);
+
+        if ($hasContent) {
+            try {
+                $dbHandler->addMessage($idSender, $idChat, $messageContent, $immage_blob);
+                $_POST['chat-image'] = null;
+                $_POST['chat-message'] = null;
+            } catch (Exception $e) {
+                error_log("Error adding message: " . $e->getMessage());
+            }
+        }
+    } else {
+        error_log("Missing required IDs for new chat message.");
+    }
+}
+?>
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['new_selected_chat_list_id'])) {
+    ifPostSetSession('new_selected_chat_id', 'idChatSelected');
+    ifPostSetSession('new_selected_chat_list_id', 'listIdChatSelected');
+    ifPostSetSession('new_selected_chat_product_name', 'productNameChatSelected');
+    ifPostSetSession('new_selected_chat_product_blob', 'productBlobChatSelected');
+    ifPostSetSession('new_selected_chat_user_name', 'userNameChatSelected');
+    ifPostSetSession('new_selected_chat_user_blob', 'userBlobChatSelected');
+}
+?>
+
+<?php
+if ($dbHandler) {
     try {
-        $dbHandler = new ChatManager();
-    } catch (Exception $e) {
+        $userChats = $dbHandler->getUserChats($_SESSION['user_id']);
+        $chatBlocksHtml = '';
+        if (empty($userChats)) {
+            $chatBlocksHtml = noChatBlock();
+        } else {
+            $listIdChat = 0;
+            foreach ($userChats as $chatData) {
+                $blobUtente = $chatData['immageNotYou'] ?? '';
+                $blobProdotto = $chatData['immageProdotto'] ?? '';
+                $nomeUtente = $chatData['nomeNotYou'] ?? '';
+                $nomeProdotto = $chatData['nomeProdotto'] ?? '';
+                $idChat = $chatData['idChat'] ?? '';
+                $chatBlocksHtml .= chatBlock(
+                    $blobUtente,
+                    $blobProdotto,
+                    $nomeUtente,
+                    $nomeProdotto,
+                    $idChat,
+                    $listIdChat,
+                    $listIdChat == ($_SESSION['listIdChatSelected'] ?? null)
+                );
+                $listIdChat += 1;
+            }
+        }
+    } catch (Throwable $e) {
         $chatBlocksHtml = errorBlock();
     }
-?>
-
-<?php
-
-    require_once __DIR__ . "/../utils/chatUtils.php";
-    require_once __DIR__ . '/../utils/offertaChat.php';
-    require_once __DIR__ . '/../utils/segnalaChat.php';
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['is_new_chat_message'])) {
-        
-        if(!$dbHandler){
-            return; 
-        }
-
-        $idSender = $_SESSION['user_id'] ?? null;
-        $idChat = $_SESSION['idChatSelected'] ?? null; 
-        $messageContent = $_POST['chat-message'] ?? null;
-        
-        $immage_blob = null;
-        if (isset($_FILES['chat-image']) && $_FILES['chat-image']['error'] == UPLOAD_ERR_OK) {
-            
-            $immage_blob = file_get_contents($_FILES['chat-image']['tmp_name']);
-            
-            if ($immage_blob === FALSE || $immage_blob === "") {
-                 error_log("Failed to read image content or file was empty for chat ID: " . $idChat);
-                 $immage_blob = null; 
-            }
-        }
-        
-        if ($idSender !== null && $idChat !== null) {
-            
-            $hasContent = (!empty($messageContent) || $immage_blob !== null);
-            
-            if ($hasContent) {
-                try {
-                    $dbHandler->addMessage($idSender, $idChat, $messageContent, $immage_blob);
-                    $_POST['chat-image'] = null;
-                    $_POST['chat-message'] = null;
-                } catch (Exception $e) {
-                    error_log("Error adding message: " . $e->getMessage());
-                }
-            }
-        } else {
-            error_log("Missing required IDs for new chat message.");
-        }
-    }
-?>
-
-<?php
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['new_selected_chat_list_id'])) {
-        ifPostSetSession('new_selected_chat_id','idChatSelected');
-        ifPostSetSession('new_selected_chat_list_id','listIdChatSelected');
-        ifPostSetSession('new_selected_chat_product_name','productNameChatSelected');
-        ifPostSetSession('new_selected_chat_product_blob','productBlobChatSelected');
-        ifPostSetSession('new_selected_chat_user_name','userNameChatSelected');
-        ifPostSetSession('new_selected_chat_user_blob','userBlobChatSelected');
-    }
-?>
-
-<?php
-    if($dbHandler){
-        try {
-            $userChats = $dbHandler->getUserChats($_SESSION['user_id']);
-            $chatBlocksHtml = '';
-            if (empty($userChats)) {
-                $chatBlocksHtml = noChatBlock();
-            } else {
-                $listIdChat = 0;
-                foreach ($userChats as $chatData) {
-                    $blobUtente   = $chatData['immageNotYou'] ?? '';     
-                    $blobProdotto = $chatData['immageProdotto'] ?? '';   
-                    $nomeUtente   = $chatData['nomeNotYou'] ?? ''; 
-                    $nomeProdotto = $chatData['nomeProdotto'] ?? ''; 
-                    $idChat = $chatData['idChat'] ?? ''; 
-                    $chatBlocksHtml .= chatBlock(
-                        $blobUtente, 
-                        $blobProdotto, 
-                        $nomeUtente, 
-                        $nomeProdotto,
-                        $idChat,
-                        $listIdChat,
-                        $listIdChat == ($_SESSION['listIdChatSelected'] ?? null)
-                    );
-                    $listIdChat += 1;
-                }
-            }
-        } catch (Throwable $e) {
-            $chatBlocksHtml = errorBlock();
-        }
-    }
+}
 ?>
 
 <div id="chat-app">
     <aside aria-label="Lista contatti">
         <ul>
-            <?=$chatBlocksHtml?>
+            <?= $chatBlocksHtml ?>
         </ul>
     </aside>
-    <?=currentChat()?>
+    <?= currentChat() ?>
 </div>
 
-<?=offertaChatModal()?>
-<?=segnalaChatModal()?>
+<?= offertaChatModal() ?>
+<?= segnalaChatModal() ?>
 
 <?php
-function chatBlock($blobUtente, $blobProdotto, $nomeUtente, $nomeProdotto, $chatId ,$chatListId ,$isSelected){
+function chatBlock($blobUtente, $blobProdotto, $nomeUtente, $nomeProdotto, $chatId, $chatListId, $isSelected)
+{
     $ariaLabel = "Chat con " . $nomeUtente;
     $currentAttr = $isSelected ? 'aria-current="true"' : '';
     return <<<HTML
@@ -146,30 +150,37 @@ function chatBlock($blobUtente, $blobProdotto, $nomeUtente, $nomeProdotto, $chat
 ?>
 
 <?php
-    function singleChatOffer($isMine, $content, $messageProgressivo = 0){
-        $whoSent = $isMine ? "sent" : "received";
-    
-        if (!$isMine) {
-            $headerText = "La tua offerta";
-            $icon = '<i class="fas fa-arrow-up text-secondary"></i>';
-            $footerHtml = <<<HTML
+function singleChatOffer($isMine, $content, $messageProgressivo = 0)
+{
+    $whoSent = $isMine ? "sent" : "received";
+
+    if (!$isMine) {
+        $headerText = "La tua offerta";
+        $icon = '<i class="fas fa-arrow-up text-secondary"></i>';
+        $footerHtml = <<<HTML
                 <div class="mt-2 pt-2 border-top border-secondary-subtle text-muted small fst-italic text-center">
                     <i class="fas fa-clock me-1"></i> In attesa di risposta...
                 </div>
             HTML;
-        } else {
-            $headerText = "Offerta ricevuta";
-            $icon = '<i class="fas fa-tag text-success"></i>';
-            $footerHtml = <<<HTML
+    } else {
+        $headerText = "Offerta ricevuta";
+        $icon = '<i class="fas fa-tag text-success"></i>';
+        $footerHtml = <<<HTML
                 <div class="mt-3">
-                    <button type="button" class="btn btn-success btn-sm w-100 fw-bold shadow-sm" style="border-radius: 20px;">
-                        Accetta Offerta
-                    </button>
+                    <form method="POST" action="utils/acceptOffer.php">
+
+            <input type="hidden" name="chatId" value="{$_SESSION['idChatSelected']}">
+
+                     <button type="submit" class="btn btn-success btn-sm w-100 fw-bold shadow-sm" style="border-radius: 20px;">
+                            Accetta Offerta
+                        </button>
+                    </form>
+
                 </div>
             HTML;
-        }
-    
-        return <<<HTML
+    }
+
+    return <<<HTML
         <article data-type="{$whoSent}" data-progressivo="{$messageProgressivo}">
             <div style="min-width: 220px;">
                 
@@ -189,16 +200,17 @@ function chatBlock($blobUtente, $blobProdotto, $nomeUtente, $nomeProdotto, $chat
             </div>
         </article>
         HTML;
-    }
+}
 
-    function currentChatHeader(){
-        if(!isset($_SESSION['idChatSelected'])){
-            return "";
-        }
-        $blobUser = $_SESSION['userBlobChatSelected'] ?? null;
-        $blobProduct= $_SESSION['productBlobChatSelected'] ?? null;
-        $nameUser = $_SESSION['userNameChatSelected'] ?? null;
-        return <<<HTML
+function currentChatHeader()
+{
+    if (!isset($_SESSION['idChatSelected'])) {
+        return "";
+    }
+    $blobUser = $_SESSION['userBlobChatSelected'] ?? null;
+    $blobProduct = $_SESSION['productBlobChatSelected'] ?? null;
+    $nameUser = $_SESSION['userNameChatSelected'] ?? null;
+    return <<<HTML
         <header class="d-flex justify-content-between align-items-center p-3 border-bottom bg-white">
             <div class="user-info d-flex align-items-center">
                 <div aria-hidden="true" class="d-flex align-items-center gap-2 me-3">
@@ -220,13 +232,14 @@ function chatBlock($blobUtente, $blobProdotto, $nomeUtente, $nomeProdotto, $chat
 
         </header>
         HTML;
-    }
+}
 
-    function currentChatFooter(){
-        if(!isset($_SESSION['idChatSelected'])){
-            return "";
-        }
-        return <<<HTML
+function currentChatFooter()
+{
+    if (!isset($_SESSION['idChatSelected'])) {
+        return "";
+    }
+    return <<<HTML
             <footer>
                 <form id="chat-form" action="" method="POST" enctype="multipart/form-data">
 
@@ -257,7 +270,7 @@ function chatBlock($blobUtente, $blobProdotto, $nomeUtente, $nomeProdotto, $chat
                 </form>
             </footer>
         HTML;
-    }
+}
 ?>
 
 <script>
