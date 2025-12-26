@@ -1,3 +1,28 @@
+img {
+    width: 100%;
+    height: 20rem !important;
+    object-fit: contain;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    padding: 1rem;
+}
+
+article.card {
+    border: 3px solid var(--colore-principale);
+    border-radius: 15px;
+    overflow: hidden;
+    height: 100%;
+}
+
+header {
+    min-height: 8rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 article.card-hover {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
@@ -8,36 +33,3 @@ article.card-hover:hover {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
     border-color: var(--colore-principale) !important;
 }
-
-a.text-decoration-none:hover .card-title {
-    color: var(--colore-principale);
-}
-
-
-img {
-    width: 100%;
-    height: 30rem;
-    object-fit: contain;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-    padding: 1rem;
-}
-
-
-article.card {
-    border: 3px solid var(--colore-principale);
-    border-radius: 15px;
-    overflow: hidden;
-}
-
-
-header {
-    height: 10rem;
-}
-
-article>div>div {
-    font-size: 0.8rem
-}
-

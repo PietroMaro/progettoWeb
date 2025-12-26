@@ -12,22 +12,9 @@ try {
 $chatFinished = false;
 $disableOfferButton = false;
 
-$chatStatus = $productHandler->productStatus($_SESSION['idChatSelected']);
 
-if ($chatStatus === "venduto") {
-    $chatFinished = true;
-    $disableOfferButton = true;
-
-} elseif ($chatStatus === "asta") {
-    $disableOfferButton = true;
-} elseif ($chatStatus === "astaDeserta") {
-    $chatFinished = true;
-}
 
 ?>
-
-
-
 
 
 
@@ -88,6 +75,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['new_selected_chat_list
     ifPostSetSession('new_selected_chat_product_blob', 'productBlobChatSelected');
     ifPostSetSession('new_selected_chat_user_name', 'userNameChatSelected');
     ifPostSetSession('new_selected_chat_user_blob', 'userBlobChatSelected');
+
+
+
+    $chatStatus = $productHandler->productStatus($_SESSION['idChatSelected']);
+
+    if ($chatStatus === "venduto") {
+        $chatFinished = true;
+        $disableOfferButton = true;
+
+    } elseif ($chatStatus === "asta") {
+        $disableOfferButton = true;
+    } elseif ($chatStatus === "astaDeserta") {
+        $chatFinished = true;
+    }
+
 }
 ?>
 
@@ -105,7 +107,11 @@ if ($dbHandler) {
                 $blobProdotto = $chatData['immageProdotto'] ?? '';
                 $nomeUtente = $chatData['nomeNotYou'] ?? '';
                 $nomeProdotto = $chatData['nomeProdotto'] ?? '';
-                $idChat = $chatData['idChat'] ?? '';
+                $idChat = $chatData['idChat'] ?? ''; 
+
+                
+                $isSelected = ($idChat == ($_SESSION['idChatSelected'] ?? null));
+
                 $chatBlocksHtml .= chatBlock(
                     $blobUtente,
                     $blobProdotto,
@@ -113,7 +119,7 @@ if ($dbHandler) {
                     $nomeProdotto,
                     $idChat,
                     $listIdChat,
-                    $listIdChat == ($_SESSION['listIdChatSelected'] ?? null)
+                    $isSelected 
                 );
                 $listIdChat += 1;
             }

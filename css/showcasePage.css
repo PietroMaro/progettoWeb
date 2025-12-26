@@ -1,6 +1,6 @@
 img {
     width: 100%;
-    height: 30rem;
+    height: 20rem !important;
     object-fit: contain;
     background-color: #f8f9fa;
     border-bottom: 1px solid #dee2e6;
@@ -16,4 +16,8 @@ header>span {
 article.card {
     border: 3px solid var(--colore-principale);
     border-radius: 15px;
+    overflow: hidden;
+    height: 100%;
+
+
 }

@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (chatForm) {
         const fileInput = document.getElementById('image-upload');
         const messageInput = document.getElementById('message-input');
-        const sendButton = chatForm.querySelector('[type="submit"]'); 
+        const sendButton = chatForm.querySelector('[type="submit"]');
         const previewContainer = document.getElementById('image-preview');
         const previewImage = document.getElementById('preview-image');
         const removeBtn = document.getElementById('remove-image-btn');
@@ -17,17 +17,17 @@ document.addEventListener('DOMContentLoaded', () => {
         function checkFormValidity() {
             const hasText = messageInput.value.trim().length > 0;
             const hasImage = fileInput.files.length > 0;
-            if(sendButton) sendButton.disabled = !(hasText || hasImage);
+            if (sendButton) sendButton.disabled = !(hasText || hasImage);
         }
 
         checkFormValidity();
         messageInput.addEventListener('input', checkFormValidity);
 
-        fileInput.addEventListener('change', function() {
+        fileInput.addEventListener('change', function () {
             const file = this.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     previewImage.src = e.target.result;
                     previewContainer.style.display = 'flex';
                 }
@@ -35,13 +35,13 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 previewContainer.style.display = 'none';
             }
-            checkFormValidity(); 
+            checkFormValidity();
             messageInput.focus();
         });
 
         removeBtn.addEventListener('click', (e) => {
-            e.preventDefault(); 
-            fileInput.value = ''; 
+            e.preventDefault();
+            fileInput.value = '';
             previewContainer.style.display = 'none';
             previewImage.src = '';
             checkFormValidity();
@@ -50,8 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 4. POLLING LOGIC ---
     let lastReceivedProgressivo = 0;
-    const POLLING_INTERVAL = 1000; 
-    let isPollingActive = true; 
+    const POLLING_INTERVAL = 1000;
+    let isPollingActive = true;
 
     const base64ToBlob = (base64, mimeType = 'image/jpeg') => {
         try {
@@ -81,9 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderMessage = (row, idCurrentUser) => {
         // Loose equality (==) to handle string vs int comparison
-        const isMine = (row.idMandante == idCurrentUser); 
+        const isMine = (row.idMandante == idCurrentUser);
         const whoSent = !isMine ? "sent" : "received";
-    
+
         // A. HANDLE OFFERS
         if (row.type === 'offer') {
             let headerText, icon, footerHtml;
@@ -98,12 +98,18 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 headerText = "Offerta ricevuta";
                 icon = '<i class="fas fa-tag text-success"></i>';
+
+            
+
                 footerHtml = `
-                    <div class="mt-3">
-                        <button type="button" class="btn btn-success btn-sm w-100 fw-bold shadow-sm" style="border-radius: 20px;">
-                            Accetta Offerta
-                        </button>
-                    </div>`;
+        <div class="mt-3">
+            <form method="POST" action="utils/acceptOffer.php">
+                <input type="hidden" name="chatId" value="${idChat}">
+                <button type="submit" class="btn btn-success btn-sm w-100 fw-bold shadow-sm" style="border-radius: 20px;">
+                    Accetta Offerta
+                </button>
+            </form>
+        </div>`;
             }
 
             return `
@@ -125,9 +131,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // B. HANDLE MESSAGES
         let content = row.content || '';
-        let base64String = row.immage_blob || null; 
+        let base64String = row.immage_blob || null;
         let imageHtml = '';
-    
+
         if (base64String) {
             const blobUrl = base64ToBlob(base64String, 'image/jpeg');
             if (blobUrl) {
@@ -149,24 +155,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const pollForNewMessages = async () => {
         if (!messageContainer || !idChat || !isPollingActive) {
-            return; 
+            return;
         }
         try {
             const response = await fetch(`utils/getMessages.php?last_prog=${lastReceivedProgressivo}`);
-            
-            if(!response.ok){ 
-                // FIXED: Actually inject the HTML instead of returning a string
+
+            if (!response.ok) {
                 const errorHtml = `      
                     <div class="alert alert-warning text-center p-5" style="background-color: #fff3cd; color:rgb(0, 0, 0); border: 1px solid #ffeeba; border-radius: 5px; margin-top: 20px;">
                         <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Chat non disponibile</h2>
                         <p style="margin-bottom: 1.5rem;">Al momento il servizio è temporaneamente non disponibile. Ci scusiamo per il disagio.</p>
                     </div>
-                `; 
+                `;
 
+                console.log(response)
                 messageContainer.insertAdjacentHTML('beforeend', errorHtml);
                 messageContainer.scrollTop = messageContainer.scrollHeight;
-                
-                isPollingActive = false; // Stop polling so we don't spam the server
+
+                isPollingActive = false;
                 return;
             }
 
@@ -175,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 data.messages.forEach(msg => {
                     const newMessageHtml = renderMessage(msg, currentUserId);
                     messageContainer.insertAdjacentHTML('beforeend', newMessageHtml);
-                    
+
                     if (msg.progressivo > lastReceivedProgressivo) {
                         lastReceivedProgressivo = msg.progressivo;
                     }
@@ -185,8 +191,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Polling failed:', error);
         }
-        
-        if(isPollingActive) {
+
+        if (isPollingActive) {
             setTimeout(pollForNewMessages, POLLING_INTERVAL);
         }
     };

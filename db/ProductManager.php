@@ -34,7 +34,6 @@ class ProductManager
 
             $stmt = $this->db->prepare($sql);
 
-            // Definisco le variabili per i parametri nullabili o stringhe fisse
             $stato = 'attesa';
             $ragione = null;
             $admin = null;
@@ -83,7 +82,7 @@ class ProductManager
                     ORDER BY p.idProdotto DESC";
 
             $stmt = $this->db->prepare($sql);
-            $stmt->bind_param("i", $userId); // Aggiunto il bind_param mancante o corretto array execute
+            $stmt->bind_param("i", $userId); 
             $stmt->execute();
             $result = $stmt->get_result();
             return $result->fetch_all(MYSQLI_ASSOC);
@@ -103,7 +102,7 @@ class ProductManager
             $userId = $_SESSION['user_id'];
         } else {
            
-            $userId = $_SESSION['user_id'] ?? -1;
+            $userId =  -1;
         }
 
         try {
@@ -160,7 +159,6 @@ class ProductManager
             $stmt->execute();
             $result = $stmt->get_result();
 
-            // CORRETTO QUI: rimosso "mode:" per compatibilità
             return $result->fetch_all(MYSQLI_ASSOC);
 
         } catch (Exception $e) {
@@ -180,7 +178,7 @@ class ProductManager
             $this->deleteImagesByProductId($productId);
             $sql_product = "DELETE FROM prodotto WHERE idProdotto = ?";
             $stmt_product = $this->db->prepare($sql_product);
-            $stmt_product->bind_param("i", $productId); // Aggiunto bind_param
+            $stmt_product->bind_param("i", $productId); 
             $stmt_product->execute();
             $this->db->commit();
             return true;
@@ -432,7 +430,7 @@ class ProductManager
         $sqlDeserte = "
             UPDATE prodotto p
             SET p.stato = 'astaDeserta'
-            WHERE p.stato = 'asta' 
+           WHERE p.stato IN ('asta', 'attesa')
             AND p.fineAsta < NOW()
             AND NOT EXISTS (
                 SELECT 1 

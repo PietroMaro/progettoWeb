@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['userBlobChatSelected'] = $chatManager->getImmageOfUserFromId($sellerId);
             $_SESSION['productNameChatSelected'] = $chatManager->getNomeProdottoFromId($productId);
             $_SESSION['productBlobChatSelected'] = $chatManager->getImmageOfProdottoFromId($productId);
-            
+
 
             $_SESSION['listIdChatSelected'] = null;
 
@@ -167,7 +167,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </article>
         </div>
 
-        <?php if (!$isAdmin && $product['stato'] === 'asta'): ?>
+        <?php if ($product['stato'] === 'asta'): ?>
             <?php
             $currentPrice = (float) $product["prezzo"];
             $minBid = $currentPrice + 0.5;
@@ -177,14 +177,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="modal fade" id="bidModal" tabindex="-1" aria-labelledby="bidModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header bg-warning text-white">
+                        <div class="modal-header bg-success text-white">
                             <h5 class="modal-title fw-bold" id="bidModalLabel">Fai la tua offerta</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
 
                         <form method="POST" action="">
                             <div class="modal-body p-4">
-                                <div class="alert alert-info d-flex align-items-center" role="alert">
+                                <div class="alert alert-success d-flex align-items-center" role="alert">
                                     <i class="bi bi-info-circle-fill me-2"></i>
                                     <div>
                                         L'offerta minima è il prezzo attuale + 0.50€ .
@@ -193,17 +194,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                                 <div class="text-center mb-4">
                                     <span class="text-muted d-block">Prezzo Attuale</span>
-                                    <span class="display-6 fw-bold"><?= number_format($currentPrice, 2, ',', '') ?> €</span>
+                                    <span class="display-6 fw-bold text-success"><?= number_format($currentPrice, 2, ',', '') ?>
+                                        €</span>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="bidAmount" class="form-label fw-bold">La tua offerta (€)</label>
                                     <div class="input-group input-group-lg">
                                         <span class="input-group-text">€</span>
-                                        <input type="number" class="form-control fw-bold" id="bidAmount" name="bid_amount"
-                                            step="0.01" min="<?= $minBidFormatted ?>" value="<?= $minBidFormatted ?>" required>
+                                        <input type="number" class="form-control fw-bold border-success" id="bidAmount"
+                                            name="bid_amount" step="0.01" min="<?= $minBidFormatted ?>"
+                                            value="<?= $minBidFormatted ?>" required>
                                     </div>
-                                    <div class="form-text text-danger mt-2">
+                                    <div class="form-text text-success mt-2">
                                         Minimo richiesto: <strong><?= $minBidDisplay ?> €</strong>
                                     </div>
                                 </div>
@@ -213,7 +216,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-                                <button type="submit" class="btn btn-warning fw-bold text-white w-50">Conferma Offerta</button>
+                                <button type="submit" class="btn btn-success fw-bold text-white w-50">Conferma Offerta</button>
                             </div>
                         </form>
                     </div>
