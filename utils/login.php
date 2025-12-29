@@ -1,66 +1,51 @@
 <?php
 require_once __DIR__ . "/signup.php";
 
-global $dbError; 
-$activeView = 'login'; 
+global $dbError;
+$activeView = 'login';
 try {
-    $dbHandler = new UserManager();
+  $dbHandler = new UserManager();
 } catch (Exception $e) {
-    $dbHandler = null;
-    if (empty($dbError)) {
-        $dbError = "Servizio non disponibile: Impossibile connettersi al Database.";
-    }
+  $dbHandler = null;
+  if (empty($dbError)) {
+    $dbError = "Servizio non disponibile: Impossibile connettersi al Database.";
+  }
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if(
-      isset($_POST['new_selected_chat_list_id']) ||
-      isset($_POST['admin_new_selected_chat_list_id']) ||
-      isset($_POST['productName']) ||
-      isset($_POST['chat-image']) ||
-      isset($_POST['chat-message'])  ||
-      isset($_POST['is_new_chat_message']) || 
-      isset($_POST['new_offerta_chat']) ||
-      isset($_POST['segnalazione_chat']) ||
-      isset($_POST['delete_faq']) ||
-      isset($_POST['create_faq']) ||
-      isset($_POST['current_chat_refuse']) ||
-      isset($_POST['current_chat_accept']) ||
-      isset($_POST['idProdotto']) 
+  if (
 
-
-    ){
-      return;
-    }
-    $isLogin = !isset($_POST['nome']) ;
-    if ($dbHandler) {
-      if($isLogin){
-        $activeView = 'login'; 
-        $email = $_POST['email'] ?? '';
-        $password = $_POST['password'] ?? '';
-        try {
-            if($dbHandler->isBanned($email,$password)){
-              $dbError = "L'account è stato eliminato a seguito di una segnalazione, se si hanno domande contattare unisell.helpdesk@gmail.com";
+    !isset($_POST['isLogin'])
+  ) {
+    return;
+  }
+  $isLogin = !isset($_POST['nome']);
+  if ($dbHandler) {
+    if ($isLogin) {
+      $activeView = 'login';
+      $email = $_POST['email'] ?? '';
+      $password = $_POST['password'] ?? '';
+      try {
+        if ($dbHandler->isBanned($email, $password)) {
+          $dbError = "L'account è stato eliminato a seguito di una segnalazione, se si hanno domande contattare unisell.helpdesk@gmail.com";
+        } else {
+          $userId = $dbHandler->login($email, $password, false);
+          if ($userId) {
+            activateLoginSession($userId, false);
+          } else {
+            $userId = $dbHandler->login($email, $password, true);
+            if ($userId) {
+              activateLoginSession($userId, true);
+            } else {
+              $dbError = "Email o Password errati.";
             }
-            else{
-              $userId = $dbHandler->login($email, $password, false);
-              if ($userId) {
-                  activateLoginSession($userId, false);
-              } else {
-                  $userId = $dbHandler->login($email, $password, true);
-                  if ($userId) {
-                    activateLoginSession($userId, true);
-                  }else{
-                    $dbError = "Email o Password errati.";
-                  }
-              }
-           }
-        } catch (Exception $e) {
-            $dbError = "Errore tecnico durante il login.";
+          }
         }
-    }
-    else{
-      $activeView = 'register'; 
+      } catch (Exception $e) {
+        $dbError = "Errore tecnico durante il login.";
+      }
+    } else {
+      $activeView = 'register';
       $nomeForm = $_POST['nome'] ?? '';
       $cognome = $_POST['cognome'] ?? '';
       $username = $_POST['username'] ?? '';
@@ -69,36 +54,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $password = $_POST['password'] ?? '';
       $propic = $_FILES['propic'] ?? null;
       try {
-          $dbHandler->registerUser(
-              $propic, 
-              $nomeForm , 
-              $cognome, 
-              $username, 
-              $descrizione, 
-              $email, 
-              $password
-          );
-          $userId = $dbHandler->login($email, $password, false);
-          if ($userId) {
-              activateLoginSession($userId, false);
-          } else {
-              header("Location: index.php");
-              exit();
-          }
+        $dbHandler->registerUser(
+          $propic,
+          $nomeForm,
+          $cognome,
+          $username,
+          $descrizione,
+          $email,
+          $password
+        );
+        $userId = $dbHandler->login($email, $password, false);
+        if ($userId) {
+          activateLoginSession($userId, false);
+        } else {
+          header("Location: index.php");
+          exit();
+        }
       } catch (Exception $e) {
-          if ($e->getMessage() === "Questa email è già registrata.") {
-              $dbError = "L'email inserita è già in uso. Scegline un'altra.";
-          } else {
-              $dbError = "Errore tecnico durante la registrazione. Riprova più tardi.";
-          }
+        if ($e->getMessage() === "Questa email è già registrata.") {
+          $dbError = "L'email inserita è già in uso. Scegline un'altra.";
+        } else {
+          $dbError = "Errore tecnico durante la registrazione. Riprova più tardi.";
+        }
       }
-    } 
+    }
   }
 }
 
-function activateLoginSession($userId, $isAdmin){
-  if (session_status() === PHP_SESSION_NONE) session_start();
-  $_SESSION['user_id'] = $userId; 
+function activateLoginSession($userId, $isAdmin)
+{
+  if (session_status() === PHP_SESSION_NONE)
+    session_start();
+  $_SESSION['user_id'] = $userId;
   $_SESSION['login_success'] = true;
   $_SESSION['is_admin'] = $isAdmin;
   header(header: "Location: index.php");
@@ -107,18 +94,18 @@ function activateLoginSession($userId, $isAdmin){
 
 function loginForm($errorMessage = null, $view = 'login')
 {
-    $alertHtml = "";
-    $autoOpenScript = "";
-    $isPostRequest = ($_SERVER["REQUEST_METHOD"] === "POST");
-    if ($errorMessage && $isPostRequest) {
-        $alertHtml = <<<HTML
+  $alertHtml = "";
+  $autoOpenScript = "";
+  $isPostRequest = ($_SERVER["REQUEST_METHOD"] === "POST");
+  if ($errorMessage && $isPostRequest) {
+    $alertHtml = <<<HTML
             <div class="alert alert-danger d-flex align-items-center" role="alert">
                 <div>
                     $errorMessage
                 </div>
             </div>
         HTML;
-        $autoOpenScript = <<<JS
+    $autoOpenScript = <<<JS
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     var myModal = new bootstrap.Modal(document.getElementById('loginModal'));
@@ -130,10 +117,10 @@ function loginForm($errorMessage = null, $view = 'login')
                 });
             </script>
         JS;
-    }
-    $signUpForm = signUpForm($alertHtml);
+  }
+  $signUpForm = signUpForm($alertHtml);
 
-    return <<<HTML
+  return <<<HTML
       <link rel="stylesheet" href="css/style.css"> 
       <link rel="stylesheet" href="css/login.css"> 
 
@@ -148,6 +135,8 @@ function loginForm($errorMessage = null, $view = 'login')
                 $alertHtml
 
                 <form action="index.php" method="POST" class="needs-validation" novalidate>
+
+                  <input type="hidden" name="isLogin" value="true">
                   <div class="mb-3">
                       <label for="modal-email" class="form-label">Email</label>
                       <input type="email" class="form-control" id="modal-email" name="email" required placeholder="Inserisci la tua email">
