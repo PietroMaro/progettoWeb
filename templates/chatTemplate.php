@@ -102,8 +102,8 @@ if ($dbHandler) {
             $chatBlocksHtml = noChatBlock();
         } else {
             $listIdChat = 0;
-            $reversedChats = array_reverse($userChats);
-            foreach ($userChats as $reversedChats) {
+            $reversedChats = array_reverse( $userChats );
+            foreach ($reversedChats as $chatData) {
                 $blobUtente = $chatData['immageNotYou'] ?? '';
                 $blobProdotto = $chatData['immageProdotto'] ?? '';
                 $nomeUtente = $chatData['nomeNotYou'] ?? '';

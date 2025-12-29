@@ -25,7 +25,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       isset($_POST['delete_faq']) ||
       isset($_POST['create_faq']) ||
       isset($_POST['current_chat_refuse']) ||
-      isset($_POST['current_chat_accept']) 
+      isset($_POST['current_chat_accept']) ||
+      isset($_POST['idProdotto']) 
+
 
     ){
       return;
