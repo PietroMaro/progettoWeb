@@ -14,19 +14,7 @@ try {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if(
-      isset($_POST['new_selected_chat_list_id']) ||
-      isset($_POST['admin_new_selected_chat_list_id']) ||
-      isset($_POST['productName']) ||
-      isset($_POST['chat-image']) ||
-      isset($_POST['chat-message'])  ||
-      isset($_POST['is_new_chat_message']) || 
-      isset($_POST['new_offerta_chat']) ||
-      isset($_POST['segnalazione_chat']) ||
-      isset($_POST['delete_faq']) ||
-      isset($_POST['create_faq']) ||
-      isset($_POST['current_chat_refuse']) ||
-      isset($_POST['current_chat_accept']) 
-
+      !isset($_POST['isLogin']) 
     ){
       return;
     }
@@ -146,6 +134,8 @@ function loginForm($errorMessage = null, $view = 'login')
                 $alertHtml
 
                 <form action="index.php" method="POST" class="needs-validation" novalidate>
+
+                  <input type="hidden" name="isLogin" value="true">
                   <div class="mb-3">
                       <label for="modal-email" class="form-label">Email</label>
                       <input type="email" class="form-control" id="modal-email" name="email" required placeholder="Inserisci la tua email">
