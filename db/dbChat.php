@@ -548,5 +548,26 @@ class ChatManager
         return $newChatId;
     }
 
+    
+    public function deleteChat($idChat)
+    {
+        try {
+            $sql = "DELETE FROM chat WHERE idChat = ?";
+            if ($stmt = $this->db->prepare($sql)) {
+                $stmt->bind_param('i', $idChat);
+                $stmt->execute();
+                $success = $stmt->affected_rows > 0;
+                $stmt->close();
+
+                return $success;
+            } else {
+                return false;
+            }
+        } catch (Exception $e) {
+            error_log("Errore Unisell (deleteChat): " . $e->getMessage());
+            return false;
+        }
+    }
+
 }
 ?>

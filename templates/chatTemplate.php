@@ -142,6 +142,7 @@ if ($dbHandler) {
 
 <?= offertaChatModal() ?>
 <?= segnalaChatModal() ?>
+<?= deleteChatModal() ?>
 
 <?php
 function chatBlock($blobUtente, $blobProdotto, $nomeUtente, $nomeProdotto, $chatId, $chatListId, $isSelected)
@@ -180,7 +181,7 @@ function chatBlock($blobUtente, $blobProdotto, $nomeUtente, $nomeProdotto, $chat
 ?>
 
 <?php
-function singleChatOffer($isMine, $content, $messageProgressivo = 0)
+function singleChatOffer($isMine, $content, $messageProgressivo = 0,$chatFinished)
 {
     $whoSent = $isMine ? "sent" : "received";
 
@@ -206,6 +207,14 @@ function singleChatOffer($isMine, $content, $messageProgressivo = 0)
                         </button>
                     </form>
 
+                </div>
+            HTML;
+    }
+
+    if($chatFinished){
+        $footerHtml = <<<HTML
+                <div class="mt-2 pt-2 border-top border-secondary-subtle text-muted small fst-italic text-center">
+                    <i class="fas fa-clock me-1"></i> L'offerta è stata accettata!
                 </div>
             HTML;
     }
@@ -267,6 +276,10 @@ function currentChatHeader($disableOfferButton)
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalSegnala">
                     Segnala
                 </button>
+
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalCancella">
+                    Cancella Chat
+                </button>
             </nav>
 
             
@@ -311,6 +324,32 @@ function currentChatFooter($chatFinished)
                 </form>
             </footer>
         HTML;
+}
+function deleteChatModal(){
+    return <<<HTML
+    <div class="modal fade" id="modalCancella" tabindex="-1" aria-labelledby="modalCancellaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCancellaLabel">Conferma Cancellazione</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Sei sicuro di voler cancellare questa chat? <br>
+                <span class="text-danger"><strong>Attenzione:</strong> l'azione è irreversibile e tutti i messaggi verranno eliminati.</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, annulla</button>
+                
+                <form action="../utils/deleteChat.php" method="POST" style="display: inline;">
+                    <input type="hidden" name="idChat" value="<?php echo $idChat; ?>">
+                    <button type="submit" class="btn btn-danger">Sì, cancella</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+    HTML;
 }
 ?>
 

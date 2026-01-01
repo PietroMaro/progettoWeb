@@ -32,7 +32,7 @@
 
     function currentChat($chatFinished = true, $disableOfferButton = true){
         $header = currentChatHeader($disableOfferButton);
-        $body = currentChatBody();
+        $body = currentChatBody($chatFinished);
         $footer = currentChatFooter($chatFinished); 
 
         if($body == errorBlock()){
@@ -47,7 +47,7 @@
         HTML;
     }
 
-    function currentChatBody(){
+    function currentChatBody($chatFinished){
         try {
             $dbHandler = new ChatManager();
         } catch (Exception $e) {
@@ -74,7 +74,7 @@
                         if($row['type'] === 'message'){
                             $result .= singleChatMessage($isMine,$row['content'],$image_data,$messageProgressivo);
                         } else if($row['type'] === 'offer'){
-                            $result .= singleChatOffer($isMine,$row['content'],$messageProgressivo);
+                            $result .= singleChatOffer($isMine,$row['content'],$messageProgressivo,$chatFinished);
                         }
                     }
                 }
