@@ -5,14 +5,14 @@
             <div class="card-body p-3">
                 <div class="row g-3 align-items-center">
 
-                    <div class="col-12 col-md-5">
+                    <div class="col-12 col-lg-5">
                         <div class="input-group">
-                            <input type="text" class="form-control border-start-0 ps-0" name="search"
+                            <input type="text" class="form-control " name="search"
                                 placeholder="Cerca un prodotto" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
                         </div>
                     </div>
 
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-lg-3">
                         <select class="form-select" name="filter_type" id="filterType">
                             <option value="all" <?= (isset($_GET['filter_type']) && $_GET['filter_type'] == 'all') ? 'selected' : '' ?>>
                                 Tutto
@@ -26,7 +26,7 @@
                         </select>
                     </div>
 
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-lg-3">
                         <select class="form-select" name="sort" id="sortSelect">
                             <option value="newest" <?= (isset($_GET['sort']) && $_GET['sort'] == 'newest') ? 'selected' : '' ?>>
                                 Più recenti
@@ -43,7 +43,7 @@
                         </select>
                     </div>
 
-                    <div class="col-12 col-md-1">
+                    <div class="col-12 col-lg-1">
                         <button type="submit" class="btn btn-success w-100">
                             Vai
                         </button>
