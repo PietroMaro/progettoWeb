@@ -16,11 +16,9 @@ body {
 }
 
 
-nav>a>div {
-  width: 30px;
-  height: 30px;
-  background-color: var(--colore-principale);
-}
+
+
+
 
 nav div[id="navbarNav"]>ul:first-of-type>li>a {
   color: var(--colore-principale) !important;
@@ -40,9 +38,25 @@ nav div[id="navbarNav"]>ul:last-of-type>li>a {
   border-radius: 5px;
   padding: 6px 16px !important;
   transition: all 0.3s ease;
+  width: fit-content;
 }
 
 nav div[id="navbarNav"]>ul:last-of-type>li>a:hover {
   background-color: var(--colore-principale);
   color: #ffffff !important;
+}
+
+
+nav>div>a {
+  color: var(--colore-principale) !important;
+  top: 20px;
+}
+
+@media (max-width: 767px) {
+  nav div[id="navbarNav"]>ul:last-of-type {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 15px;
+  }
 }

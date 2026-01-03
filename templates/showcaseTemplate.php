@@ -1,3 +1,15 @@
+
+<?php
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $productId = $_POST['idProdotto'];
+    $handler->deleteProduct( $productId);
+    header("Location: " . $_SERVER['PHP_SELF']);
+
+}
+
+?>
+
 <div class="container my-4">
 
     <?php if (empty($products)): ?>

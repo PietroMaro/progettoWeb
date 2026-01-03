@@ -106,8 +106,8 @@ function navbar()
       </script>
       JS;
     unset($_SESSION['login_success']);
-  } else if(isset($_SESSION['report_sent']) && $_SESSION['report_sent'] === true){
-      $toastScript = <<<JS
+  } else if (isset($_SESSION['report_sent']) && $_SESSION['report_sent'] === true) {
+    $toastScript = <<<JS
       <script>
       document.addEventListener('DOMContentLoaded', function() {
         var toastEl = document.getElementById('reportToast');
@@ -120,13 +120,11 @@ function navbar()
   }
 
   return <<<HTML
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-      <div class="container-fluid">
+    <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom">
+      
+      <div class="container-fluid position-relative">
         
-        <a class="navbar-brand" href="index.php">
-           </a>
-
-        <button class="navbar-toggler" type="button" 
+        <button class="navbar-toggler collapsed" type="button" 
                 data-bs-toggle="collapse" 
                 data-bs-target="#navbarNav" 
                 aria-controls="navbarNav" 
@@ -134,6 +132,11 @@ function navbar()
                 aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
+
+        <a class="navbar-brand d-md-none position-absolute start-50 translate-middle fw-bold" 
+           href="index.php" >
+           Unisell
+        </a>
 
         <div class="collapse navbar-collapse" id="navbarNav">
           
@@ -146,6 +149,7 @@ function navbar()
           </ul>
 
         </div>
+
       </div>
     </nav>
 

@@ -43,7 +43,7 @@ CREATE TABLE utente(
     progressivo INT NOT NULL
 ); CREATE TABLE immagini(
     idImmagine INT PRIMARY KEY AUTO_INCREMENT,
-    immagine BLOB NOT NULL,
+    immagine MEDIUMBLOB NOT NULL,
     idProdotto INT,
     idMessaggio INT,
     FOREIGN KEY(idMessaggio) REFERENCES messaggio(idMessaggio) ON DELETE CASCADE,

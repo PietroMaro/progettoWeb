@@ -167,11 +167,10 @@ class ProductManager
         }
     }
 
-    public function deleteProduct($formData): bool
+    public function deleteProduct($productId): bool
     {
         if ($this->db === null)
             throw new Exception("Servizio temporaneamente non disponibile.");
-        $productId = $formData['idProdotto'];
 
         $this->db->begin_transaction();
         try {
