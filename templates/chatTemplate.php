@@ -150,6 +150,7 @@ function chatBlock($blobUtente, $blobProdotto, $nomeUtente, $nomeProdotto, $chat
 {
     $ariaLabel = "Chat con " . $nomeUtente;
     $currentAttr = $isSelected ? 'aria-current="true"' : '';
+
     return <<<HTML
     <li {$currentAttr}>
         <form action="#" method="POST" style="margin: 0; padding: 0; display: block;">
@@ -162,18 +163,21 @@ function chatBlock($blobUtente, $blobProdotto, $nomeUtente, $nomeProdotto, $chat
             <input type="hidden" name="new_selected_chat_user_blob" value="{$blobUtente}">
 
             <button type="submit" aria-label="{$ariaLabel}" style="width: 100%; border: none; background: none; padding: 0; cursor: pointer;">
-                <div style="display: flex; align-items: center; padding: 12px 15px; width: 100%;">
-                    <div aria-hidden="true" style="margin-right: 15px;">
+                <span style="display: flex; align-items: center; padding: 12px 15px; width: 100%;">
+                    
+                    <span aria-hidden="true" style="margin-right: 15px; display: block; position: relative;">
                         <img src="{$blobProdotto}" alt="{$nomeProdotto}">
                         <img src="{$blobUtente}" alt="{$nomeUtente}">
-                    </div>
-                    <div class="text-info" style="text-align: left; flex-grow: 1;">
-                        <div class="name-row">
+                    </span>
+                    
+                    <span class="text-info" style="text-align: left; flex-grow: 1; display: block;">
+                        <span class="name-row" style="display: block;">
                             <strong>{$nomeUtente}</strong>
-                        </div>
+                        </span>
                         <small><strong> Prodotto: {$nomeProdotto}</strong></small>
-                    </div>
-                </div>
+                    </span>
+
+                </span>
             </button>
         </form>
     </li>

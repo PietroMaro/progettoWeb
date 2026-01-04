@@ -1,15 +1,14 @@
-
 body {
     margin: 0;
     padding: 0;
-    overflow: hidden; 
+    overflow: hidden;
     background-color: #d1d7db;
 }
 
 
 #chat-app {
     display: flex;
-    height: calc(100vh - 60px); 
+    height: calc(100vh - 60px);
     width: 100vw;
     background-color: white;
     font-family: "Segoe UI", Helvetica, Arial, sans-serif;
@@ -83,7 +82,10 @@ body {
 .currentChat::before {
     content: "";
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
     opacity: 0.4;
     z-index: 0;
@@ -115,10 +117,10 @@ body {
     margin-bottom: 8px;
 }
 
-#chat-app article > div {
+#chat-app article>div {
     padding: 6px 7px 8px 9px;
     border-radius: 7.5px;
-    box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+    box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
     max-width: 65%;
     position: relative;
     display: flex;
@@ -135,7 +137,8 @@ body {
 #chat-app article[data-type="received"] {
     justify-content: flex-start;
 }
-#chat-app article[data-type="received"] > div {
+
+#chat-app article[data-type="received"]>div {
     background-color: white;
     border-top-left-radius: 0;
 }
@@ -143,7 +146,8 @@ body {
 #chat-app article[data-type="sent"] {
     justify-content: flex-end;
 }
-#chat-app article[data-type="sent"] > div {
+
+#chat-app article[data-type="sent"]>div {
     background-color: #d9fdd3;
     border-top-right-radius: 0;
 }
@@ -166,31 +170,35 @@ body {
 
 /* FIX: Combine button and new label trigger styles */
 #chat-app footer button,
-#chat-app footer .input-trigger-btn { 
+#chat-app footer .input-trigger-btn {
     background: none;
     border: none;
     font-size: 24px;
     color: #54656f;
     cursor: pointer;
     padding: 5px;
-    
+
     /* Ensure the label behaves like a flex item */
-    display: flex; 
+    display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 1; 
+    line-height: 1;
     flex-shrink: 0;
 }
 
 #chat-app footer label {
     position: absolute;
-    width: 1px; height: 1px; margin: -1px;
-    overflow: hidden; clip: rect(0,0,0,0);
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
 }
 
 /* FIX: New container for input and preview to manage flex growth */
 #chat-app footer #chat-input-container {
-    flex-grow: 1; /* <-- This makes the container take up space */
+    flex-grow: 1;
+    /* <-- This makes the container take up space */
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -198,7 +206,8 @@ body {
 
 /* FIX: Input field now needs its flex-grow *inside* the container */
 #chat-app footer input[type="text"] {
-    flex-grow: 1; /* <-- Stretches the text box within the container */
+    flex-grow: 1;
+    /* <-- Stretches the text box within the container */
     border: none;
     border-radius: 8px;
     padding: 9px 12px;
@@ -215,7 +224,7 @@ body {
     display: flex;
     align-items: center;
     padding: 5px 10px;
-    background-color: #e9edef; 
+    background-color: #e9edef;
     border-radius: 8px;
     gap: 10px;
 }
@@ -230,34 +239,34 @@ body {
 #chat-app footer #remove-image-btn {
     all: unset;
     cursor: pointer;
-    font-size: 18px; 
+    font-size: 18px;
     color: #8696a0;
     margin-left: auto;
 }
 
-#chat-app footer label.input-trigger-btn { 
+#chat-app footer label.input-trigger-btn {
     /* Overrides position: absolute; and the 1x1 size */
-    position: relative !important; 
+    position: relative !important;
     width: 30px !important;
     height: 30px !important;
     margin: 0 !important;
     padding: 5px !important;
     overflow: visible !important;
     clip: auto !important;
-    
+
     /* Ensure flex item behavior */
-    display: flex !important; 
+    display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     flex-shrink: 0 !important;
-    
+
     /* Apply button aesthetics */
     background: none;
     border: none;
     cursor: pointer;
     color: #54656f;
     font-size: 24px;
-    line-height: 1; 
+    line-height: 1;
 }
 
 /* 2. ENSURE ICON COLOR/SIZE (as a backup) */
@@ -265,35 +274,41 @@ body {
     color: #54656f !important;
     font-size: 24px !important;
 }
-/* ------------------------------------------- */
-/* --- 4. AVATAR STYLING --- */
-/* ------------------------------------------- */
 
-#chat-app aside div[aria-hidden="true"], 
+
+#chat-app aside span[aria-hidden="true"],
+#chat-app header span[aria-hidden="true"],
 #chat-app header div[aria-hidden="true"] {
     position: relative;
-    width: 50px;
-    height: 50px;
+    width: 50px !important;
+    height: 50px !important;
     margin-right: 15px;
     flex-shrink: 0;
+    display: block;
 }
 
-#chat-app div[aria-hidden="true"] img {
-    width: 35px;
-    height: 35px;
+#chat-app aside span[aria-hidden="true"] img,
+#chat-app header span[aria-hidden="true"] img,
+#chat-app header div[aria-hidden="true"] img {
+    width: 35px !important;
+    height: 35px !important;
     border-radius: 50%;
     border: 2px solid white;
     position: absolute;
     object-fit: cover;
 }
 
-#chat-app div[aria-hidden="true"] img:first-of-type {
+#chat-app aside span[aria-hidden="true"] img:first-of-type,
+#chat-app header span[aria-hidden="true"] img:first-of-type,
+#chat-app header div[aria-hidden="true"] img:first-of-type {
     top: 0;
     right: 0;
     z-index: 1;
 }
 
-#chat-app div[aria-hidden="true"] img:last-of-type {
+#chat-app aside span[aria-hidden="true"] img:last-of-type,
+#chat-app header span[aria-hidden="true"] img:last-of-type,
+#chat-app header div[aria-hidden="true"] img:last-of-type {
     bottom: 0;
     left: 0;
     z-index: 2;
