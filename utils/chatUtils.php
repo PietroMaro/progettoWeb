@@ -97,7 +97,7 @@
             $mimeType = 'image/jpeg'; 
             $imageSrc = 'data:' . $mimeType . ';base64,' . $base64Image;
             $imageHtml = <<<IMG
-                <img src="{$image_data}" alt="C'è stato un errore nel caricare l'immagine, ci scusiamo per il disagio. Prova a ricarcare la pagina" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 5px;">
+                <img src="{$image_data}" alt="Immagine-messaggio:$messageProgressivo">
             IMG;
         }
         $textHtml = !empty($content) ? "<p>{$content}</p>" : '';

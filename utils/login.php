@@ -124,7 +124,7 @@ function loginForm($errorMessage = null, $view = 'login')
       <link rel="stylesheet" href="css/login.css"> 
       <script src="utils\login.js"></script>
 
-      <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+      <div class="modal fade" id="loginModal" tabindex="-1" aria-label="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-body p-4"> 

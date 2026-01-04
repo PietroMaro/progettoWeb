@@ -15,9 +15,9 @@ function signUpForm($alertHtml)
             <div class="row mb-3">
                 
                 <div class="col-4 d-flex flex-column align-items-center">
-                    <label class="form-label" style="color: #212529; font-weight: 500;">profile Photo</label>
+                    <label for="propic-input" class="form-label" style="color: #212529; font-weight: 500;">profile Photo</label>
                     
-                    <div class="mt-1 position-relative" style="cursor: pointer;" onclick="document.getElementById('propic-input').click();">
+                    <div class="mt-1 position-relative" style="cursor: pointer;" onclick="document.getElementById('propic-input').click();" >
                         
                         $profileIcon
                         

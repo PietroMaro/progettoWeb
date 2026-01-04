@@ -15,7 +15,7 @@ body {
 }
 #faq-page h1 {
     font-family: "Courier New", Courier, monospace;
-    color: #00a884; 
+    color:  var(--colore-principale); 
     font-size: 3rem;
     font-weight: bold;
     margin: 0;
@@ -44,7 +44,7 @@ body {
 #faq-page h2 {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #00a884; /* Green text for questions */
+    color: var(--colore-principale);/* Green text for questions */
     margin: 0;
     font-family: inherit;
 }
@@ -62,4 +62,16 @@ body {
     line-height: 1.5;
     color: #111b21;
     font-size: 1rem;
+}
+
+#faq-page h3 {
+
+    color: var(--colore-hover) !important;
+}
+
+
+
+#faq-page label {
+
+    color: var(--colore-hover) !important;
 }

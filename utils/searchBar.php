@@ -7,13 +7,14 @@
 
                     <div class="col-12 col-lg-5">
                         <div class="input-group">
-                            <input type="text" class="form-control " name="search"
+                            <input type="text" class="form-control" name="search" aria-label="Cerca un prodotto"
                                 placeholder="Cerca un prodotto" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
                         </div>
                     </div>
 
                     <div class="col-6 col-lg-3">
-                        <select class="form-select" name="filter_type" id="filterType">
+                        <select class="form-select" name="filter_type" id="filterType"
+                            aria-label="Filtra per tipo vendita">
                             <option value="all" <?= (isset($_GET['filter_type']) && $_GET['filter_type'] == 'all') ? 'selected' : '' ?>>
                                 Tutto
                             </option>
@@ -27,7 +28,7 @@
                     </div>
 
                     <div class="col-6 col-lg-3">
-                        <select class="form-select" name="sort" id="sortSelect">
+                        <select class="form-select" name="sort" id="sortSelect" aria-label="Ordina i risultati">
                             <option value="newest" <?= (isset($_GET['sort']) && $_GET['sort'] == 'newest') ? 'selected' : '' ?>>
                                 Più recenti
                             </option>

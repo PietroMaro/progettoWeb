@@ -16,7 +16,7 @@ function navbar()
     $menuItems = <<<HTML
             <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="segnalazioni.php">Segnalazioni</a></li>
-            <li class="nav-item"><a class="nav-link" href="faqAdmin.php">faq</a></li>
+            <li class="nav-item"><a class="nav-link" href="faqAdmin.php">FAQ</a></li>
         HTML;
   } else if ($isUser) {
     $menuItems = <<<HTML
@@ -133,8 +133,7 @@ function navbar()
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <a class="navbar-brand d-md-none position-absolute start-50 translate-middle fw-bold" 
-           href="index.php" >
+        <a class="navbar-brand d-md-none position-absolute start-50 translate-middle fw-bold" >
            Unisell
         </a>
 

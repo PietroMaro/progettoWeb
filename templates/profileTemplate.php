@@ -11,9 +11,9 @@ if (!isset($userInfo)): ?>
 
         <header class="row mb-4">
             <div class="col-md-4 text-center">
-                <h4 class="mb-3">
+                <h1 class="mb-3">
                     <?php echo htmlspecialchars($userInfo['nome']); ?>
-                </h4>
+                </h1>
 
 
                 <img src="<?= $userInfo['imgSrc'];
@@ -51,14 +51,14 @@ if (!isset($userInfo)): ?>
                 </div>
                 <div class="mb-3">
                     <strong>Email</strong><br>
-                    <a href="mailto:<?php echo htmlspecialchars($userInfo['email']); ?>" class="text-decoration-none">
+                    <a href="mailto:<?php echo htmlspecialchars($userInfo['email']); ?>">
                         <?php echo htmlspecialchars($userInfo['email']); ?>
                     </a>
                 </div>
             </section>
 
             <aside class="col-md-8">
-                <h5 class="mb-4 text-end">Has sold</h5>
+                <h2 class="mb-4 text-end">Has sold</h2>
 
                 <div class="row g-3 justify-content-end">
                     <?php

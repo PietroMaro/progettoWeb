@@ -67,13 +67,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <?php if (count($productImages) > 1): ?>
                                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselProduct"
                                     data-bs-slide="prev">
-                                    <span class="carousel-control-prev-icon p-3 bg-dark rounded-circle bg-opacity-25"
+                                    <span class="carousel-control-prev-icon p-3 bg-dark rounded-circle bg-opacity-75"
                                         aria-hidden="true"></span>
                                     <span class="visually-hidden">Precedente</span>
                                 </button>
+
                                 <button class="carousel-control-next" type="button" data-bs-target="#carouselProduct"
                                     data-bs-slide="next">
-                                    <span class="carousel-control-next-icon p-3 bg-dark rounded-circle bg-opacity-25"
+                                    <span class="carousel-control-next-icon p-3 bg-dark rounded-circle bg-opacity-75"
                                         aria-hidden="true"></span>
                                     <span class="visually-hidden">Successivo</span>
                                 </button>
@@ -122,6 +123,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 class="btn btn-success btn-lg flex-grow-1 rounded-pill">
                                                 Approva
                                             </button>
+                                        </div>
+
+
+                                        <div class="modal fade" id="rejectModal" tabindex="-1"
+                                            aria-labelledby="rejectModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <strong class="modal-title" id="rejectModalLabel">Motivazione
+                                                            Rifiuto</strong>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label for="ragioneRifiuto" class="form-label">Perché stai
+                                                                rifiutando questo prodotto?</label>
+                                                            <textarea class="form-control" id="ragioneRifiuto"
+                                                                name="ragione_rifiuto" rows="3" maxlength="200"
+                                                                placeholder="Massimo 200 caratteri..."></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Annulla</button>
+                                                        <button type="submit" name="decision" value="reject"
+                                                            class="btn btn-danger">Conferma Rifiuto</button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </form>
 

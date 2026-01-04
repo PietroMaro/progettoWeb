@@ -106,34 +106,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <div class="mb-3">
                     <?php if ($isEditing && !empty($existingImages)): ?>
-                        <div class="card p-3 mb-3 bg-light">
-                            <p class="small text-muted mb-2">Seleziona le immagini che vuoi <strong>eliminare</strong>:</p>
-                            <div class="row row-cols-2 row-cols-md-4 g-3">
-                                <?php foreach ($existingImages as $img): ?>
-                                    <div class="col position-relative">
-                                        <div class="card h-100 border-0 shadow-sm">
-                                            <div class="position-absolute top-0 end-0 p-1">
-                                                <div class="form-check">
-                                                    <input class="form-check-input border-danger" type="checkbox"
-                                                        name="delete_images[]" value="<?= $img['idImmagine'] ?>"
-                                                        id="img-<?= $img['idImmagine'] ?>">
+                        <?php
+
+                        $numero = 0;
+                        ?>
+
+                        <fieldset>
+                            <legend>
+                                Selezione delle immagini da eliminare
+
+                            </legend>
+                            <div class="card p-3 mb-3 bg-light">
+                                <p class="small text-muted mb-2">Seleziona le immagini che vuoi <strong>eliminare</strong>:
+                                </p>
+                                <div class="row row-cols-2 row-cols-md-4 g-3">
+                                    <?php foreach ($existingImages as $img): ?>
+                                        <div class="col position-relative">
+                                            <div class="card h-100 border-0 shadow-sm">
+                                                <div class="position-absolute top-0 end-0 p-1">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input border-danger" type="checkbox"
+                                                            name="delete_images[]" value="<?= $img['idImmagine'] ?>"
+                                                            id="img-<?= $img['idImmagine'] ?>">
+                                                    </div>
                                                 </div>
+
+                                                <label for="img-<?= $img['idImmagine'] ?>" class="cursor-pointer h-100">
+                                                    <img src="data:image/jpeg;base64,<?= base64_encode($img['immagine']) ?>"
+                                                        class="card-img-top h-100 object-fit-cover rounded"
+                                                        alt=<?= "Immagine_prodotto:$numero " ?>>
+                                                </label>
+                                                <?php
+
+                                                $numero++;
+                                                ?>
+
                                             </div>
-
-                                            <label for="img-<?= $img['idImmagine'] ?>" class="cursor-pointer h-100">
-                                                <img src="data:image/jpeg;base64,<?= base64_encode($img['immagine']) ?>"
-                                                    class="card-img-top h-100 object-fit-cover rounded" alt="Immagine prodotto">
-                                            </label>
-
-
                                         </div>
-                                    </div>
-                                <?php endforeach; ?>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
-                        </div>
+                        </fieldset>
                     <?php endif; ?>
 
-                    <label class="form-label">Aggiungi nuove immagini</label>
                     <div data-role="image-preview-wrapper" class="row row-cols-4 g-2 mb-3"></div>
 
                     <label for="fileUpload" class="btn btn-outline-success w-100">
@@ -147,8 +162,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="mb-3" data-role="auctionDateContainer">
                     <label for="auctionEndDate" class="form-label">Inserisci la data e ora di fine dell'asta</label>
                     <input type="datetime-local" class="form-control" id="auctionEndDate" name="auctionEndDate"
-                        min="<?= date('Y-m-d\TH:i', strtotime('+15 minutes')) ?>"
-                        value="<?php if(!empty($productToEdit['fineAsta'])){ echo date('Y-m-d\TH:i', strtotime($productToEdit['fineAsta'])); } ?>">
+                        min="<?= date('Y-m-d\TH:i', strtotime('+15 minutes')) ?>" value="<?php if (!empty($productToEdit['fineAsta'])) {
+                               echo date('Y-m-d\TH:i', strtotime($productToEdit['fineAsta']));
+                           } ?>">
                 </div>
 
                 <div class="row g-2 mt-4">
@@ -169,4 +185,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </div>
 
 <script src="scripts/sellPageScript.js"></script>
-

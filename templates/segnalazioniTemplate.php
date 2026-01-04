@@ -184,8 +184,8 @@ function chatBlock($blobReporter, $blobReported, $idReporter, $idReported, $nome
         <header class="d-flex justify-content-between align-items-center p-3 border-bottom bg-white">
             <div class="user-info d-flex align-items-center">
                 <div aria-hidden="true" class="d-flex align-items-center gap-2 me-3">
-                    <img src="{$blobReporter}" alt="ALT" class="rounded-circle border">
-                    <img src="{$blobReported}" alt="ALT" class="rounded-circle border border-2 border-white">
+                    <img src="{$blobReporter}" alt="Image reporter" class="rounded-circle border">
+                    <img src="{$blobReported}" alt="Image reported" class="rounded-circle border border-2 border-white">
                 </div>
                 <h2 class="h5 m-0">{$nameReporter} Segnala {$nameReported}</h2>
             </div>

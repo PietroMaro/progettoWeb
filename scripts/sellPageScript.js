@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (event.target.files && event.target.files.length > 0) {
             const files = Array.from(event.target.files).slice(0, 4);
 
+            let pos = 0;
+
             files.forEach(file => {
                 const reader = new FileReader();
                 reader.onload = function (e) {
@@ -40,6 +42,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     img.className = 'img-fluid rounded';
+                    img.alt = "Immagine "+ pos;
+                    pos+=1;
 
                     col.appendChild(img);
                     previewWrapper.appendChild(col);

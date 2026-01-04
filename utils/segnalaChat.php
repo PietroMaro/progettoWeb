@@ -24,7 +24,7 @@ function segnalaChatModal(){
             <div class="modal-content border-0 shadow-lg">
                 
                 <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold text-danger">Segnala Utente</h5>
+                    <h2 class="modal-title fw-bold text-danger">Segnala Utente</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
@@ -34,7 +34,7 @@ function segnalaChatModal(){
                     <div class="modal-body pt-2">
                         
                         <p class="text-center fw-bold text-dark mb-4 mt-2" 
-                           style="font-size: 1.1rem; text-decoration: underline; text-decoration-color: #0d6efd;">
+                           style="font-size: 1.1rem; text-decoration-color: #0d6efd;">
                            <span class="text-danger">Mandando questa segnalazione accetti in piena consapevolezza che gli admin potranno guardare la tua chat</span>
                         </p>
 

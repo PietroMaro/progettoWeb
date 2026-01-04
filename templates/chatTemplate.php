@@ -102,15 +102,15 @@ if ($dbHandler) {
             $chatBlocksHtml = noChatBlock();
         } else {
             $listIdChat = 0;
-            $reversedChats = array_reverse( $userChats );
+            $reversedChats = array_reverse($userChats);
             foreach ($reversedChats as $chatData) {
                 $blobUtente = $chatData['immageNotYou'] ?? '';
                 $blobProdotto = $chatData['immageProdotto'] ?? '';
                 $nomeUtente = $chatData['nomeNotYou'] ?? '';
                 $nomeProdotto = $chatData['nomeProdotto'] ?? '';
-                $idChat = $chatData['idChat'] ?? ''; 
+                $idChat = $chatData['idChat'] ?? '';
 
-                
+
                 $isSelected = ($idChat == ($_SESSION['idChatSelected'] ?? null));
 
                 $chatBlocksHtml .= chatBlock(
@@ -120,7 +120,7 @@ if ($dbHandler) {
                     $nomeProdotto,
                     $idChat,
                     $listIdChat,
-                    $isSelected 
+                    $isSelected
                 );
                 $listIdChat += 1;
             }
@@ -170,7 +170,7 @@ function chatBlock($blobUtente, $blobProdotto, $nomeUtente, $nomeProdotto, $chat
                         <div class="name-row">
                             <strong>{$nomeUtente}</strong>
                         </div>
-                        <small>Prodotto: {$nomeProdotto}</small>
+                        <small><strong> Prodotto: {$nomeProdotto}</strong></small>
                     </div>
                 </div>
             </button>
@@ -181,7 +181,7 @@ function chatBlock($blobUtente, $blobProdotto, $nomeUtente, $nomeProdotto, $chat
 ?>
 
 <?php
-function singleChatOffer($isMine, $content, $messageProgressivo = 0,$chatFinished)
+function singleChatOffer($isMine, $content, $messageProgressivo = 0, $chatFinished)
 {
     $whoSent = $isMine ? "sent" : "received";
 
@@ -211,7 +211,7 @@ function singleChatOffer($isMine, $content, $messageProgressivo = 0,$chatFinishe
             HTML;
     }
 
-    if($chatFinished){
+    if ($chatFinished) {
         $footerHtml = <<<HTML
                 <div class="mt-2 pt-2 border-top border-secondary-subtle text-muted small fst-italic text-center">
                     <i class="fas fa-clock me-1"></i> L'offerta è stata accettata!
@@ -264,8 +264,8 @@ function currentChatHeader($disableOfferButton)
         <header class="d-flex justify-content-between align-items-center p-3 border-bottom bg-white">
             <div class="user-info d-flex align-items-center">
                 <div aria-hidden="true" class="d-flex align-items-center gap-2 me-3">
-                    <img src="{$blobProduct}" alt="ALT" class="rounded-circle border">
-                    <img src="{$blobUser}" alt="ALT" class="rounded-circle border border-2 border-white">
+                    <img src="{$blobProduct}" alt="Image product" class="rounded-circle border">
+                    <img src="{$blobUser}" alt="Image user" class="rounded-circle border border-2 border-white">
                 </div>
                 <h2 class="h5 m-0">{$nameUser}</h2>
             </div>
@@ -325,13 +325,14 @@ function currentChatFooter($chatFinished)
             </footer>
         HTML;
 }
-function deleteChatModal(){
+function deleteChatModal()
+{
     return <<<HTML
     <div class="modal fade" id="modalCancella" tabindex="-1" aria-labelledby="modalCancellaLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalCancellaLabel">Conferma Cancellazione</h5>
+                <h2 class="modal-title" id="modalCancellaLabel">Conferma Cancellazione</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

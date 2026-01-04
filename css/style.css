@@ -1,6 +1,6 @@
 :root {
-  --colore-principale: #17A24C;
-  --colore-hover: #218838;
+  --colore-principale: #0F853C;
+  --colore-hover: rgb(37, 129, 57);
   --colore-principale-lieve: rgba(23, 162, 76, 0.1);
   --colore-bordo: #ced4da;
   --colore-testo: #212529;
@@ -51,6 +51,7 @@ nav>div>a {
   color: var(--colore-principale) !important;
   top: 20px;
 }
+
 
 @media (max-width: 767px) {
   nav div[id="navbarNav"]>ul:last-of-type {

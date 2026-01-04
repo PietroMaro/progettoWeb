@@ -19,7 +19,7 @@ function offertaChatModal(){
           <div class="modal-dialog modal-dialog-centered">
              <div class="modal-content">
                 <div class="modal-header">
-                   <h5 class="modal-title">Fai un'offerta</h5>
+                   <h1 class="modal-title">Fai un'offerta</h1>
                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 

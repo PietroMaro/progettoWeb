@@ -1,10 +1,10 @@
 <div class="container my-4">
     <?php if (empty($products)): ?>
 
-        <div class="alert alert-warning text-center p-5">
-            <h3>Nessun prodotto disponibile</h3>
+        <div class="alert alert-warning text-center p-5 ">
+            <h1>Nessun prodotto disponibile</h1>
             <p>Al momento non ci sono prodotti da visualizzare o il servizio è temporaneamente non disponibile.</p>
-            <button onclick="location.reload()" class="btn btn-outline-secondary mt-3">Riprova</button>
+            <button onclick="location.reload()" class="btn btn-outline-secondary mt-3 text-dark">Riprova</button>
         </div>
 
     <?php else: ?>
