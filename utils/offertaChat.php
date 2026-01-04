@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['new_offerta_chat'])) {
 }
 function offertaChatModal(){
     return <<<HTML
-      <div class="modal fade" id="modalOfferta" tabindex="-1" aria-hidden="true">
+      <div class="modal fade" id="modalOfferta" tabindex="-1" role="dialog" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered">
              <div class="modal-content">
                 <div class="modal-header">
@@ -23,7 +23,7 @@ function offertaChatModal(){
                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 
-                <form action="" method="POST">
+                <form action="#" method="POST">
                     <input type="hidden" name="new_offerta_chat" value="true">
                     <div class="modal-body">
                         <label for="offerAmount" class="visually-hidden">Prezzo</label>

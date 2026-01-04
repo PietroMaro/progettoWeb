@@ -10,8 +10,8 @@ function signUpForm($alertHtml)
         
         $alertHtml
         
-        <form action="" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
-            
+        <form action="#" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <input type="hidden" name="isSignUp" value="true"> 
             <div class="row mb-3">
                 
                 <div class="col-4 d-flex flex-column align-items-center">
@@ -21,7 +21,7 @@ function signUpForm($alertHtml)
                         
                         $profileIcon
                         
-                        <img id="profile-preview" src="" alt="Preview" style="display: none; width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                        <img id="profile-preview" src="placeholder" alt="Preview" style="display: none; width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
                         
                         <div style="font-size: 0.7rem; color: var(--colore-principale); margin-top: 5px; text-align: center;">
                             Clicca per caricare
@@ -72,7 +72,7 @@ function signUpForm($alertHtml)
         </div>
     </div>
 
-    <script src="utils\signup.js"></script>
+    <script src="utils/signup.js"></script>
 HTML;
 }
 ?>

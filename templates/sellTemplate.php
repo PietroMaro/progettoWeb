@@ -60,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-            <form action="" method="POST" enctype="multipart/form-data"
+            <form action="#" method="POST" enctype="multipart/form-data"
                 class="card shadow-sm border-success p-4 p-md-5">
 
                 <h1 class="h2 text-center text-success fw-bold mb-4">

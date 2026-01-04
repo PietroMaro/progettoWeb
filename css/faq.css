@@ -1,6 +1,7 @@
 body {
     background-color: #ffffff !important;
 }
+
 #faq-page {
     width: 100%;
     max-width: 800px;
@@ -9,54 +10,65 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     background-color: white;
 }
+
 #faq-page header {
     text-align: center;
     margin-bottom: 50px;
 }
+
 #faq-page h1 {
     font-family: "Courier New", Courier, monospace;
-    color:  var(--colore-principale); 
+    color: var(--colore-principale);
     font-size: 3rem;
     font-weight: bold;
     margin: 0;
     letter-spacing: 2px;
 }
+
 #faq-page details {
     border-bottom: 1px solid #e9edef;
     margin-bottom: 10px;
     padding-bottom: 10px;
 }
+
 #faq-page details[open] {
     padding: 10px;
     border-bottom: none;
 }
+
+
 #faq-page summary {
-    list-style: none; /* Hides default triangle */
-    display: flex;
-    justify-content: space-between;
+    list-style: none;
+    display: block;
     align-items: center;
     cursor: pointer;
     padding: 10px 0;
 }
+
+#faq-page summary strong {
+    display: inline-block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--colore-principale);
+    margin: 0;
+    vertical-align: middle;
+}
+
 #faq-page summary::-webkit-details-marker {
     display: none;
 }
-#faq-page h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--colore-principale);/* Green text for questions */
-    margin: 0;
-    font-family: inherit;
-}
+
 #faq-page svg {
     width: 32px;
     height: 32px;
     color: #111b21;
     transition: transform 0.3s ease;
 }
+
 #faq-page details[open] summary svg {
     transform: rotate(180deg);
 }
+
 #faq-page p {
     margin: 10px 0 0 0;
     line-height: 1.5;

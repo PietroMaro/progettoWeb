@@ -94,6 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['new_selected_chat_list
 ?>
 
 <?php
+$idChat = -1;
 if ($dbHandler) {
     try {
         $userChats = $dbHandler->getUserChats($_SESSION['user_id']);
@@ -142,7 +143,7 @@ if ($dbHandler) {
 
 <?= offertaChatModal() ?>
 <?= segnalaChatModal() ?>
-<?= deleteChatModal() ?>
+<?= deleteChatModal($idChat) ?>
 
 <?php
 function chatBlock($blobUtente, $blobProdotto, $nomeUtente, $nomeProdotto, $chatId, $chatListId, $isSelected)
@@ -151,7 +152,7 @@ function chatBlock($blobUtente, $blobProdotto, $nomeUtente, $nomeProdotto, $chat
     $currentAttr = $isSelected ? 'aria-current="true"' : '';
     return <<<HTML
     <li {$currentAttr}>
-        <form action="" method="POST" style="margin: 0; padding: 0; display: block;">
+        <form action="#" method="POST" style="margin: 0; padding: 0; display: block;">
             
             <input type="hidden" name="new_selected_chat_id" value="{$chatId}">
             <input type="hidden" name="new_selected_chat_list_id" value="{$chatListId}">
@@ -224,8 +225,12 @@ function singleChatOffer($isMine, $content, $messageProgressivo = 0, $chatFinish
             <div style="min-width: 220px;">
                 
                 <div class="d-flex align-items-center justify-content-between mb-2">
-                    <small class="fw-bold text-uppercase text-secondary" style="font-size: 0.7rem; letter-spacing: 0.5px;">
-                        {$headerText}
+                    <small class="fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+                    <strong>
+                        {$headerText}                                         
+                
+                    </strong>    
+
                     </small>
                     {$icon}
                 </div>
@@ -295,12 +300,12 @@ function currentChatFooter($chatFinished)
     }
     return <<<HTML
             <footer>
-                <form id="chat-form" action="" method="POST" enctype="multipart/form-data">
+                <form id="chat-form" action="#" method="POST" enctype="multipart/form-data">
 
                     <div id="chat-input-container"> 
 
                         <div id="image-preview" style="display: none;">
-                            <img id="preview-image" src="" alt="Selected Photo" style="max-height: 50px; border-radius: 4px; object-fit: cover;">
+                            <img id="preview-image" src="placeholder" alt="Selected Photo" style="max-height: 50px; border-radius: 4px; object-fit: cover;">
                             <button type="button" id="remove-image-btn" aria-label="Rimuovi immagine">
                                 <i class="bi-x-circle-fill"></i>
                             </button>
@@ -312,10 +317,11 @@ function currentChatFooter($chatFinished)
                         <input type="text" id="message-input" name="chat-message" placeholder="Scrivi un messaggio" autocomplete="off">
                     </div>
 
-                    <label for="image-upload" class="input-trigger-btn" aria-label="Allega Foto/Immagine">
-                        <i class="bi-camera"></i> 
-                    </label>
-
+                    <label for="image-upload" class="input-trigger-btn">
+                    <i class="bi-camera" aria-hidden="true"></i>
+    
+                    <span class="visually-hidden">Allega Foto o Immagine</span>
+                        </label>
                     <input type="hidden" name="is_new_chat_message" value="true">
 
                     <button type="submit" aria-label="Invia Messaggio">
@@ -325,10 +331,10 @@ function currentChatFooter($chatFinished)
             </footer>
         HTML;
 }
-function deleteChatModal()
+function deleteChatModal($idChat)
 {
     return <<<HTML
-    <div class="modal fade" id="modalCancella" tabindex="-1" aria-labelledby="modalCancellaLabel" aria-hidden="true">
+    <div class="modal fade" id="modalCancella" tabindex="-1" aria-labelledby="modalCancellaLabel" aria-hidden="true" role="dialog">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -342,7 +348,7 @@ function deleteChatModal()
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, annulla</button>
                 
-                <form action="../utils/deleteChat.php" method="POST" style="display: inline;">
+                <form action="utils/deleteChat.php" method="POST" style="display: inline;">
                     <input type="hidden" name="idChat" value="<?php echo $idChat; ?>">
                     <button type="submit" class="btn btn-danger">Sì, cancella</button>
                 </form>

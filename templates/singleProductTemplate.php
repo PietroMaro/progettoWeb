@@ -127,7 +127,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
                                         <div class="modal fade" id="rejectModal" tabindex="-1"
-                                            aria-labelledby="rejectModalLabel" aria-hidden="true">
+                                            aria-labelledby="rejectModalLabel" aria-hidden="true" role="dialog">
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -205,11 +205,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $minBidFormatted = number_format($minBid, 2, '.', '');
             $minBidDisplay = number_format($minBid, 2, ',', '');
             ?>
-            <div class="modal fade" id="bidModal" tabindex="-1" aria-labelledby="bidModalLabel" aria-hidden="true">
+            <div class="modal fade" id="bidModal" tabindex="-1" aria-labelledby="bidModalLabel" aria-hidden="true" role="dialog">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header bg-success text-white">
-                            <h5 class="modal-title fw-bold" id="bidModalLabel">Fai la tua offerta</h5>
+                            <h2 class="modal-title fw-bold" id="bidModalLabel">Fai la tua offerta</h2>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>

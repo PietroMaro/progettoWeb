@@ -30,11 +30,11 @@
         <h1>Unisell FAQ</h1>
     </header>
 
-    <main>
+  
         
         <?=$contentToDisplay?>
         
-    </main>
+   
 </div>
 
 <?php

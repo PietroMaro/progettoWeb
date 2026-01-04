@@ -15,7 +15,7 @@ try {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (
 
-    !isset($_POST['isLogin'])
+    !isset($_POST['isLogin']) && !isset($_POST['isSignUp'])
   ) {
     return;
   }
@@ -122,9 +122,9 @@ function loginForm($errorMessage = null, $view = 'login')
 
   return <<<HTML
       <link rel="stylesheet" href="css/login.css"> 
-      <script src="utils\login.js"></script>
+      <script src="utils/login.js"></script>
 
-      <div class="modal fade" id="loginModal" tabindex="-1" aria-label="loginModalLabel" aria-hidden="true">
+      <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-label="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-body p-4"> 

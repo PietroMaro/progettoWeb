@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['segnalazione_chat'])) 
 }
 function segnalaChatModal(){
     return <<<HTML
-    <div class="modal fade" id="modalSegnala" tabindex="-1" aria-hidden="true" style="z-index: 10055;">
+    <div class="modal fade" id="modalSegnala" tabindex="-1" aria-hidden="true" role="dialog" style="z-index: 10055;">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg">
                 
@@ -28,7 +28,7 @@ function segnalaChatModal(){
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <form action="" method="POST">
+                <form action="#" method="POST">
                     <input type="hidden" name="new_segnalazione" value="true">
                     
                     <div class="modal-body pt-2">
