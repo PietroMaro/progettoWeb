@@ -72,7 +72,7 @@ function signUpForm($alertHtml)
         </div>
     </div>
 
-    <script src="utils/signup.js"></script>
+    <script src="scripts/signup.js"></script>
 HTML;
 }
 ?>

@@ -122,7 +122,7 @@ function loginForm($errorMessage = null, $view = 'login')
 
   return <<<HTML
       <link rel="stylesheet" href="css/login.css"> 
-      <script src="utils/login.js"></script>
+      <script src="scripts/login.js"></script>
 
       <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-label="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">

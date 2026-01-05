@@ -371,4 +371,4 @@ function deleteChatModal($idChat)
     };
 </script>
 
-<script src="templates/chatTemplate.js"></script>
+<script src="scripts/chatTemplate.js"></script>
