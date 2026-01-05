@@ -20,7 +20,7 @@ function signUpForm($alertHtml)
                         
                         $profileIcon
                         
-                        <img id="profile-preview" src="placeholder" alt="Preview" class="rounded-circle shadow-sm;"
+                        <img id="profile-preview" src="upload/placeholder.jpg" alt="Preview" class="rounded-circle shadow-sm;"
                         style="display: none; width: 120px !important; height: 120px !important; object-fit: cover !important;">
                         
                         <span style="font-size: 0.7rem; color: var(--colore-principale); margin-top: 5px; text-align: center;">
