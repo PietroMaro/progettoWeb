@@ -27,7 +27,7 @@ class UserManager
             if (!$stmt) {
                 throw new Exception("Prepare failed: " . $this->db->error);
             }
-            
+
             $stmt->bind_param("i", $userId);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -61,9 +61,9 @@ class UserManager
             $soldProducts = [];
             while ($row = $resProd->fetch_assoc()) {
                 if (!empty($row['immagine'])) {
-                     $row['imgSrc'] = "data:image/jpeg;base64," . base64_encode($row['immagine']);
+                    $row['imgSrc'] = "data:image/jpeg;base64," . base64_encode($row['immagine']);
                 } else {
-                     $row['imgSrc'] = null; // Handle cases with no image
+                    $row['imgSrc'] = null; // Handle cases with no image
                 }
 
                 unset($row['immagine']);
@@ -76,7 +76,7 @@ class UserManager
         } catch (Exception $e) {
             error_log("Error: " . $e->getMessage());
             return null;
-        } 
+        }
     }
 
     public function login($email, $password, $isAdmin): ?int
@@ -134,7 +134,7 @@ class UserManager
             throw new Exception("Questa email è già registrata.");
         }
         $stmt->close();
-        $idImmagine = null;
+        $idImmagine = 0;
         if (isset($propic) && $propic['error'] === 0) {
             $imageData = file_get_contents($propic['tmp_name']);
             $imgSql = "INSERT INTO immagini (immagine) VALUES (?)";
@@ -148,13 +148,15 @@ class UserManager
             }
             $idImmagine = $stmtImg->insert_id;
             $stmtImg->close();
-        }
+        } 
         $insertSql = "INSERT INTO utente (nome, cognome, username, descrizione, email, PASSWORD, idImmagine) 
                       VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($insertSql);
         if (!$stmt) {
             throw new Exception("Errore Database (Prepare Insert): " . $this->db->error);
         }
+
+
         $stmt->bind_param(
             'ssssssi',
             $nome,
@@ -171,7 +173,8 @@ class UserManager
         $stmt->close();
     }
 
-    public function isBanned($email, $password): bool {
+    public function isBanned($email, $password): bool
+    {
         $sql = "SELECT idBan, PASSWORD 
                 FROM ban 
                 WHERE email = ?";
@@ -184,13 +187,13 @@ class UserManager
             throw new Exception("Errore Database (Execute Ban): " . $stmt->error);
         }
         $result = $stmt->get_result();
-        
+
         if ($row = $result->fetch_assoc()) {
             if ($password === $row['PASSWORD']) {
                 return true;
             }
         }
-        return false; 
+        return false;
     }
 
 
