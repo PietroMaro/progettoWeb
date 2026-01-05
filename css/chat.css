@@ -67,9 +67,7 @@ body {
     text-overflow: ellipsis;
 }
 
-/* ------------------------------------------- */
-/* --- 2. MAIN CHAT AREA & MESSAGE CSS --- */
-/* ------------------------------------------- */
+
 
 .currentChat {
     width: 70%;
@@ -152,9 +150,6 @@ body {
     border-top-right-radius: 0;
 }
 
-/* ------------------------------------------- */
-/* --- 3. FOOTER & INPUT/PREVIEW FIXES --- */
-/* ------------------------------------------- */
 
 #chat-app footer {
     background-color: #f0f2f5;
@@ -168,7 +163,6 @@ body {
     gap: 10px;
 }
 
-/* FIX: Combine button and new label trigger styles */
 #chat-app footer button,
 #chat-app footer .input-trigger-btn {
     background: none;
@@ -178,7 +172,6 @@ body {
     cursor: pointer;
     padding: 5px;
 
-    /* Ensure the label behaves like a flex item */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -195,19 +188,15 @@ body {
     clip: rect(0, 0, 0, 0);
 }
 
-/* FIX: New container for input and preview to manage flex growth */
 #chat-app footer #chat-input-container {
     flex-grow: 1;
-    /* <-- This makes the container take up space */
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
 
-/* FIX: Input field now needs its flex-grow *inside* the container */
 #chat-app footer input[type="text"] {
     flex-grow: 1;
-    /* <-- Stretches the text box within the container */
     border: none;
     border-radius: 8px;
     padding: 9px 12px;
@@ -219,7 +208,6 @@ body {
     background-color: white;
 }
 
-/* Styles for the image preview area */
 #chat-app footer #image-preview {
     display: flex;
     align-items: center;
@@ -245,7 +233,6 @@ body {
 }
 
 #chat-app footer label.input-trigger-btn {
-    /* Overrides position: absolute; and the 1x1 size */
     position: relative !important;
     width: 30px !important;
     height: 30px !important;
@@ -254,13 +241,11 @@ body {
     overflow: visible !important;
     clip: auto !important;
 
-    /* Ensure flex item behavior */
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     flex-shrink: 0 !important;
 
-    /* Apply button aesthetics */
     background: none;
     border: none;
     cursor: pointer;
@@ -269,7 +254,6 @@ body {
     line-height: 1;
 }
 
-/* 2. ENSURE ICON COLOR/SIZE (as a backup) */
 #chat-app footer label.input-trigger-btn i.bi-camera {
     color: #54656f !important;
     font-size: 24px !important;

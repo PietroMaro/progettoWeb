@@ -19,5 +19,5 @@ aside img {
 }
 
 section a {
-  color: var(--colore-hover) !important;
+    color: var(--colore-hover) !important;
 }

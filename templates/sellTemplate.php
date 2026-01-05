@@ -87,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <label for="productName" class="form-label">Nome prodotto</label>
                     <input type="text" class="form-control" id="productName" name="productName"
                         placeholder="Inserisci il nome del prodotto" required maxlength="50"
-                        value="<?= htmlspecialchars($productToEdit['nome'] ?? "") ?> ">
+                        value="<?= htmlspecialchars($productToEdit['nome'] ?? '') ?>">
                 </div>
 
                 <div class="mb-3">
@@ -114,6 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <fieldset>
                             <legend>
                                 Selezione delle immagini da eliminare
+
                             </legend>
                             <div class="card p-3 mb-3 bg-light">
                                 <p class="small text-muted mb-2">Seleziona le immagini che vuoi <strong>eliminare</strong>:

@@ -4,9 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const auctionDateContainer = document.querySelector('div[data-role="auctionDateContainer"]');
     const auctionDateInput = document.getElementById('auctionEndDate');
     const form = document.querySelector('form');
-    const fileInput = document.getElementById('fileUpload');
+    const fileInput = document.getElementById('fileUpload'); 
     const previewWrapper = document.querySelector('div[data-role="image-preview-wrapper"]');
-
 
     auctionSwitch.addEventListener('change', function () {
         if (this.checked) {
@@ -15,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             auctionDateContainer.style.display = 'none';
             auctionDateInput.required = false;
-
         }
     });
 
@@ -23,14 +21,11 @@ document.addEventListener('DOMContentLoaded', function () {
         auctionSwitch.dispatchEvent(new Event('change'));
     }
 
-
-
     fileInput.addEventListener('change', function (event) {
         previewWrapper.innerHTML = '';
 
         if (event.target.files && event.target.files.length > 0) {
             const files = Array.from(event.target.files).slice(0, 4);
-
             let pos = 0;
 
             files.forEach(file => {
@@ -53,45 +48,42 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-   
-    form.addEventListener('submit', function (event) {
+    function validateSellData() {
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
 
-        if (!form.checkValidity()) {
-            event.preventDefault()
-            event.stopPropagation()
-            form.classList.add('was-validated')
-            return;
-        }
+                    const allDeleteCheckboxes = document.querySelectorAll('input[name="delete_images[]"]');
+                    const totalExistingImages = allDeleteCheckboxes.length;
 
+                    const checkedDeleteCheckboxes = document.querySelectorAll('input[name="delete_images[]"]:checked');
+                    const imagesToDelete = checkedDeleteCheckboxes.length;
 
-        const allDeleteCheckboxes = document.querySelectorAll('input[name="delete_images[]"]');
-        const totalExistingImages = allDeleteCheckboxes.length;
+                    let newImages = 0;
+                    if (fileInput.files) {
+                        newImages = fileInput.files.length;
+                    }
 
-        const checkedDeleteCheckboxes = document.querySelectorAll('input[name="delete_images[]"]:checked');
-        const imagesToDelete = checkedDeleteCheckboxes.length;
+                    const finalCount = (totalExistingImages - imagesToDelete) + newImages;
 
-        let newImages = 0;
-        if (fileInput.files) {
-            newImages = fileInput.files.length;
-        }
+                    console.log("Final Image Count:", finalCount);
 
-        const finalCount = (totalExistingImages - imagesToDelete) + newImages;
+                    if (finalCount <= 0) {
+                        event.preventDefault();
+                        event.stopPropagation(); 
+                        alert("Attenzione: Non puoi salvare il prodotto senza immagini.");
+                        fileInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, false)
+            })
+    }
 
-        console.log(finalCount)
-
-        if (finalCount <= 0) {
-            event.preventDefault();
-
-            alert("Attenzione: Non puoi salvare il prodotto senza immagini.");
-
-            fileInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    });
-
-
-
+    validateSellData();
 
 });
-
-
-

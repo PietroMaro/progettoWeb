@@ -79,7 +79,6 @@ class UserManager
         } 
     }
 
-    // id | null
     public function login($email, $password, $isAdmin): ?int
     {
         if ($isAdmin === false) {

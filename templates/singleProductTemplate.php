@@ -205,7 +205,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $minBidFormatted = number_format($minBid, 2, '.', '');
             $minBidDisplay = number_format($minBid, 2, ',', '');
             ?>
-            <div class="modal fade" id="bidModal" tabindex="-1" aria-labelledby="bidModalLabel" aria-hidden="true" role="dialog">
+            <div class="modal fade" id="bidModal" tabindex="-1" aria-labelledby="bidModalLabel" aria-hidden="true"
+                role="dialog">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header bg-success text-white">

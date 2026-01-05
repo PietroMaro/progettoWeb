@@ -1,19 +1,21 @@
 <?php
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['new_offerta_chat'])) {
-    if(!$dbHandler){
-        return; 
+    if (!$dbHandler) {
+        return;
     }
 
-    try{
+    try {
         $dbHandler->addNewOffertaChat(
             $_SESSION['idChatSelected'],
             $_SESSION['user_id'],
             $_POST['offer_amount']
         );
-    } catch (Exception $e) {}
+    } catch (Exception $e) {
+    }
 }
-function offertaChatModal(){
+function offertaChatModal()
+{
     return <<<HTML
       <div class="modal fade" id="modalOfferta" tabindex="-1" role="dialog" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered">

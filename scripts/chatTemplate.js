@@ -48,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 4. POLLING LOGIC ---
     let lastReceivedProgressivo = 0;
     const POLLING_INTERVAL = 1000;
     let isPollingActive = true;
@@ -80,11 +79,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderMessage = (row, idCurrentUser) => {
-        // Loose equality (==) to handle string vs int comparison
         const isMine = (row.idMandante == idCurrentUser);
         const whoSent = !isMine ? "sent" : "received";
 
-        // A. HANDLE OFFERS
         if (row.type === 'offer') {
             let headerText, icon, footerHtml;
 
@@ -129,7 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </article>`;
         }
 
-        // B. HANDLE MESSAGES
         let content = row.content || '';
         let base64String = row.immage_blob || null;
         let imageHtml = '';
@@ -197,7 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- 5. INITIALIZE ---
     if (messageContainer) {
         initializeLastProgressivo();
         if (idChat !== null) {

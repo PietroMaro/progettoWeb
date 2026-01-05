@@ -5,7 +5,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['segnalazione_chat'])) 
         return; 
     }
 
-    //try{
         $dbHandler->addNewSegnalazione(
             $_POST['segnalazione_chat'],
             $_POST['segnalazione_desc'],
@@ -15,7 +14,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['segnalazione_chat'])) 
         $_SESSION['report_sent'] = true;
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
-    //} catch (Exception $e) {}
 }
 function segnalaChatModal(){
     return <<<HTML

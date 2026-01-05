@@ -75,7 +75,7 @@ class ProductManager
 
         try {
             $userId = $_SESSION['user_id'];
-            $sql = "SELECT p.idProdotto, p.nome, p.prezzo, p.stato, p.fineAsta, 
+            $sql = "SELECT p.idProdotto, p.nome, p.prezzo, p.stato, p.fineAsta, p.ragioneRifiuto,
                            (SELECT i.immagine FROM immagini i WHERE i.idProdotto = p.idProdotto LIMIT 1) AS immagineData
                     FROM prodotto p
                     WHERE p.idUtente = ?
@@ -287,7 +287,6 @@ class ProductManager
         }
     }
 
-    // UTILITY FUNCTIONS
 
     public function getProductById($productId): array|bool|null
     {
@@ -400,7 +399,6 @@ class ProductManager
         return false;
     }
 
-    // --- CORRETTO QUI SOTTO ---
     function updateAuctions(): array|bool
     {
         if ($this->db === null)

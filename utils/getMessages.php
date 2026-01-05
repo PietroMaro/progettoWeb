@@ -3,7 +3,7 @@ require_once __DIR__ . '/../db/dbChat.php';
 header('Content-Type: application/json');
 session_start();
 
-$dbHandler = null; 
+$dbHandler = null;
 try {
     $dbHandler = new ChatManager();
 } catch (Exception $e) {
@@ -14,7 +14,7 @@ try {
 
 $idChat = $_SESSION['idChatSelected'] ?? null;
 $idUser = $_SESSION['user_id'] ?? null;
-$lastProgressivo = $_GET['last_prog'] ?? 0; 
+$lastProgressivo = $_GET['last_prog'] ?? 0;
 
 if ($idChat === null || $idUser === null) {
     http_response_code(400);

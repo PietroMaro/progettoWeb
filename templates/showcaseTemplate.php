@@ -32,8 +32,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $msgElimina = "Il prodotto verrà eliminato cosi come le chat legate ad esso.";
                 ?>
 
-                <div class="col-12 col-md-4 mb-4">
-                    <article class="card h-100">
+         <div class="col-12 col-md-6 col-lg-4 mb-4">                    
+                <article class="card h-100">
 
                         <img src="data:image/jpeg;base64,<?= base64_encode($product['immagineData']) ?>" class="card-img-top"
                             style="height: 200px; object-fit: cover;" alt="<?= htmlspecialchars($product['nome']) ?>">
@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <?php elseif ($product['stato'] == 'attesa'): ?>
                                     <span class="badge bg-secondary rounded-pill">In attesa</span>
                                 <?php elseif ($product['stato'] == 'rifiutato'): ?>
-                                    <span class="badge bg-danger rounded-pill">No</span>
+                                    <span class="badge bg-danger rounded-pill">Rifiutato</span>
                                 <?php elseif ($product['stato'] == 'astaDeserta'): ?>
                                     <span class="badge bg-danger rounded-pill">Deserta</span>
                                 <?php elseif ($product['stato'] == 'asta' || $product['stato'] == 'esposto'): ?>
@@ -66,6 +66,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <span class="text-muted small">Scadenza: <?= $product['fineAsta'] ?></span>
                                 <?php endif; ?>
                             </p>
+
+                            <?php if ($product['stato'] == 'rifiutato' && !empty($product['ragioneRifiuto'])): ?>
+                                <div class="alert alert-danger p-2 small mb-2">
+                                    <strong>Motivo rifiuto:</strong><br>
+                                    <?= htmlspecialchars($product['ragioneRifiuto']) ?>
+                                </div>
+                            <?php endif; ?>
 
                             <div class="mt-auto d-flex gap-2 justify-content-end align-items-center" style="min-height: 38px;">
 

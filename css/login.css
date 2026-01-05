@@ -1,61 +1,70 @@
 .page-center {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-        .login-card {
-            background-color: #fff;
-            padding: 2.5rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
-            width: 100%;
-            max-width: 400px;
-        }
-        .unisell-title {
-            color: var(--colore-principale); 
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-        .form-label {
-            color: var(--colore-testo); 
-            margin-bottom: 0.25rem;
-            font-size: 0.9rem;
-        }
-        .form-control {
-            border-color: var(--colore-bordo);
-        }
-        .btn-unisell-primary {
-            background-color: var(--colore-principale); 
-            border-color: var(--colore-principale);
-            color: #fff;
-            padding: 0.75rem 1.25rem;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 5px;
-            width: 100%;
-            margin-top: 1.5rem;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-        .btn-unisell-primary:hover {
-            background-color: var(--colore-hover); 
-            border-color: var(--colore-hover);
-        }
-        .register-link {
-            text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.95rem;
-            color: var(--colore-testo);
-        }
-        .register-link a {
-            color: var(--colore-principale);
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .register-link a:hover {
-            text-decoration: underline;
-            color: var(--colore-hover);
-        }
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.login-card {
+    background-color: #fff;
+    padding: 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.unisell-title {
+    color: var(--colore-principale);
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.form-label {
+    color: var(--colore-testo);
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.form-control {
+    border-color: var(--colore-bordo);
+}
+
+.btn-unisell-primary {
+    background-color: var(--colore-principale);
+    border-color: var(--colore-principale);
+    color: #fff;
+    padding: 0.75rem 1.25rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    width: 100%;
+    margin-top: 1.5rem;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.btn-unisell-primary:hover {
+    background-color: var(--colore-hover);
+    border-color: var(--colore-hover);
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+    color: var(--colore-testo);
+}
+
+.register-link a {
+    color: var(--colore-principale);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+    color: var(--colore-hover);
+}

@@ -102,7 +102,6 @@ class ChatManager
         }
     }
 
-    // Blob of the immage
     public function getImmageOfUserFromId($userId): ?string
     {
         $sql = "SELECT i.immagine 
@@ -124,7 +123,6 @@ class ChatManager
         return null;
     }
 
-    // Blob of the immage
     public function getImmageOfProdottoFromId($prodottoId): ?string
     {
         $sql = "SELECT i.immagine 

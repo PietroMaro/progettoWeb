@@ -1,44 +1,45 @@
 <?php
-    $contentToDisplay = "";
+$contentToDisplay = "";
+try {
+    $dbHandler = new FaqManager();
+} catch (Exception $e) {
+    $dbHandler = null;
+    $contentToDisplay = errorBlock();
+}
+
+if ($dbHandler) {
     try {
-        $dbHandler = new FaqManager();
+        $faqsMap = $dbHandler->getFaqs();
+        if (empty($faqsMap)) {
+            $contentToDisplay = errorBlock();
+        } else {
+            foreach ($faqsMap as $titolo => $descrizione) {
+                $contentToDisplay .= faqBlock($titolo, $descrizione);
+            }
+        }
     } catch (Exception $e) {
-        $dbHandler = null;
         $contentToDisplay = errorBlock();
     }
-
-    if($dbHandler){
-        try {
-            $faqsMap = $dbHandler->getFaqs();
-            if (empty($faqsMap)) {
-                $contentToDisplay = errorBlock();
-            } else {
-                foreach ($faqsMap as $titolo => $descrizione) {
-                    $contentToDisplay .= faqBlock($titolo, $descrizione);
-                }
-            }
-        } catch (Exception $e) {
-            $contentToDisplay = errorBlock();
-        }
-    }
+}
 ?>
 
 
 <div id="faq-page">
-    
+
     <header>
         <h1>Unisell FAQ</h1>
     </header>
 
-  
-        
-        <?=$contentToDisplay?>
-        
-   
+
+
+    <?= $contentToDisplay ?>
+
+
 </div>
 
 <?php
-function faqBlock($titolo,$descrizione){
+function faqBlock($titolo, $descrizione)
+{
     return <<<HTML
         <details open>
             <summary>
@@ -53,9 +54,10 @@ function faqBlock($titolo,$descrizione){
                 <p>{$descrizione}</p>
             </div>
         </details>
-    HTML; 
+    HTML;
 }
-function errorBlock() {
+function errorBlock()
+{
     return <<<HTML
     <div class="alert alert-warning text-center p-5" style="background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; border-radius: 5px;">
         <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Nessuna FAQ disponibile</h2>
