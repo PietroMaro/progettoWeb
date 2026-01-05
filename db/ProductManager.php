@@ -61,7 +61,7 @@ class ProductManager
         foreach ($images['tmp_name'] as $index => $tmp_path) {
             if ($images['error'][$index] == 0 && !empty($tmp_path)) {
                 $imageData = file_get_contents($tmp_path);
-                
+
                 $stmt->bind_param("sii", $imageData, $productId, $idMessaggio);
                 $stmt->execute();
             }
@@ -82,7 +82,7 @@ class ProductManager
                     ORDER BY p.idProdotto DESC";
 
             $stmt = $this->db->prepare($sql);
-            $stmt->bind_param("i", $userId); 
+            $stmt->bind_param("i", $userId);
             $stmt->execute();
             $result = $stmt->get_result();
             return $result->fetch_all(MYSQLI_ASSOC);
@@ -101,8 +101,8 @@ class ProductManager
         if (isset($_SESSION['user_id']) && !$isAdmin) {
             $userId = $_SESSION['user_id'];
         } else {
-           
-            $userId =  -1;
+
+            $userId = -1;
         }
 
         try {
@@ -177,7 +177,7 @@ class ProductManager
             $this->deleteImagesByProductId($productId);
             $sql_product = "DELETE FROM prodotto WHERE idProdotto = ?";
             $stmt_product = $this->db->prepare($sql_product);
-            $stmt_product->bind_param("i", $productId); 
+            $stmt_product->bind_param("i", $productId);
             $stmt_product->execute();
             $this->db->commit();
             return true;
@@ -472,7 +472,7 @@ class ProductManager
             if (new DateTime($prodotto['fineAsta']) < new DateTime())
                 throw new Exception("L'asta è scaduta.");
 
-          
+
 
             $sqlProg = "SELECT COALESCE(MAX(progressivo), 0) + 1 AS prossimo_prog 
                         FROM offertaAsta 
@@ -485,7 +485,7 @@ class ProductManager
             $nuovoProgressivo = $row['prossimo_prog'];
             $stmt->close();
 
-            $valoreIntero = (int) $bidValue; 
+            $valoreIntero = (int) $bidValue;
 
             $sqlInsert = "INSERT INTO offertaAsta (idProdotto, idUtente, progressivo, valore) VALUES (?, ?, ?, ?)";
             $stmt = $this->db->prepare($sqlInsert);
@@ -511,5 +511,44 @@ class ProductManager
             return ['success' => false, 'message' => $e->getMessage()];
         }
     }
+
+
+
+    public function getAllWonAuctions()
+    {
+        $asteVinte = [];
+
+        $sql = "SELECT 
+                P.idProdotto, 
+                P.idUtente AS idVenditore,
+                O.idUtente AS idVincitore,
+                O.valore
+            FROM prodotto P
+            INNER JOIN offertaAsta O ON P.idProdotto = O.idProdotto
+            WHERE 
+                P.fineAsta < NOW()
+                AND P.stato = 'asta'  
+                AND O.valore = (
+                    SELECT MAX(valore) 
+                    FROM offertaAsta 
+                    WHERE idProdotto = P.idProdotto
+                )";
+
+        if ($stmt = $this->db->prepare($sql)) {
+            $stmt->execute();
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $asteVinte[] = [
+                    'idProdotto' => $row['idProdotto'],
+                    'idVenditore' => $row['idVenditore'],
+                    'idVincitore' => $row['idVincitore'],
+                    'valore' => $row['valore']
+                ];
+            }
+            $stmt->close();
+        }
+        return $asteVinte;
+    }
 }
+
 ?>

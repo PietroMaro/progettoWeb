@@ -491,14 +491,19 @@ class ChatManager
         }
     }
 
-    public function createChat($productId, $sellerId): mixed
+    public function createChat($productId, $sellerId, $buyerId = -1): mixed
     {
         if ($this->db === null) {
             throw new Exception("Database connection is missing.");
         }
 
 
-        $idUtente1 = $_SESSION['user_id'];
+        if ($buyerId > -1) {
+            $idUtente1 = $buyerId;
+        } else {
+            $idUtente1 = $_SESSION['user_id'];
+
+        }
 
         $idUtente2 = $sellerId;
 
@@ -546,7 +551,7 @@ class ChatManager
         return $newChatId;
     }
 
-    
+
     public function deleteChat($idChat)
     {
         try {
@@ -567,5 +572,42 @@ class ChatManager
         }
     }
 
+
+    public function checkChatExist($idProdotto, $idUtente1, $idUtente2)
+    {
+
+
+        $chatId = false;
+
+
+        $sql = "SELECT idChat 
+            FROM chat 
+            WHERE idProdotto = ? 
+            AND eliminata = 0
+            AND (
+                (idUtente1 = ? AND idUtente2 = ?) 
+                OR 
+                (idUtente1 = ? AND idUtente2 = ?)
+            )";
+
+        if ($stmt = $this->db->prepare($sql)) {
+
+            $stmt->bind_param("iiiii", $idProdotto, $idUtente1, $idUtente2, $idUtente2, $idUtente1);
+
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($row = $result->fetch_assoc()) {
+                $chatId = $row['idChat'];
+            }
+
+            $stmt->close();
+        }
+
+        return $chatId;
+    }
+
 }
+
+
 ?>
