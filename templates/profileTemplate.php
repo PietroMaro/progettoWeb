@@ -42,11 +42,11 @@ if (!isset($userInfo)): ?>
 
             <section class="col-md-4 text-center pt-4">
                 <div class="mb-3">
-                    <strong>Name</strong><br>
+                    <strong>Nome</strong><br>
                     <span><?php echo htmlspecialchars($userInfo['nome']); ?></span>
                 </div>
                 <div class="mb-3">
-                    <strong>Surname</strong><br>
+                    <strong>Cognome</strong><br>
                     <span><?php echo htmlspecialchars($userInfo['cognome']); ?></span>
                 </div>
                 <div class="mb-3">
@@ -58,7 +58,7 @@ if (!isset($userInfo)): ?>
             </section>
 
             <aside class="col-md-8">
-                <h2 class="mb-4 text-end">Has sold</h2>
+                <h2 class="mb-4 text-end">Ha venduto</h2>
 
                 <div class="row g-3 justify-content-end">
                     <?php
