@@ -1,7 +1,6 @@
 <?php
 function signUpForm($alertHtml)
 {
-    //TODO mettere un immagine locale
     $profileIcon = '<svg id="profile-placeholder" xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="#1a1a1a" class="bi bi-person-fill" viewBox="0 0 16 16"><path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>';
 
     return <<<HTML
@@ -17,16 +16,17 @@ function signUpForm($alertHtml)
                 <div class="col-4 d-flex flex-column align-items-center">
                     <label for="propic-input" class="form-label" style="color: #212529; font-weight: 500;">profile Photo</label>
                     
-                    <div class="mt-1 position-relative" style="cursor: pointer;" onclick="document.getElementById('propic-input').click();" >
+                    <button class="mt-1 position-relative btn bg-transparent border-0 shadow-none" style="cursor: pointer;" onclick="document.getElementById('propic-input').click();" type="button">
                         
                         $profileIcon
                         
-                        <img id="profile-preview" src="placeholder" alt="Preview" style="display: none; width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                        <img id="profile-preview" src="placeholder" alt="Preview" class="rounded-circle shadow-sm;"
+                        style="display: none; width: 120px !important; height: 120px !important; object-fit: cover !important;">
                         
-                        <div style="font-size: 0.7rem; color: var(--colore-principale); margin-top: 5px; text-align: center;">
+                        <span style="font-size: 0.7rem; color: var(--colore-principale); margin-top: 5px; text-align: center;">
                             Clicca per caricare
-                        </div>
-                    </div>
+                        </span>
+                    </button>
 
                     <input type="file" id="propic-input" name="propic" accept="image/*" style="display: none;" onchange="previewProfileImage(this)">
                 </div>

@@ -42,8 +42,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     img.className = 'img-fluid rounded';
-                    img.alt = "Immagine "+ pos;
-                    pos+=1;
+                    img.alt = "Immagine " + pos;
+                    pos += 1;
 
                     col.appendChild(img);
                     previewWrapper.appendChild(col);
@@ -53,8 +53,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-
+   
     form.addEventListener('submit', function (event) {
+
+        if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+            form.classList.add('was-validated')
+            return;
+        }
+
+
         const allDeleteCheckboxes = document.querySelectorAll('input[name="delete_images[]"]');
         const totalExistingImages = allDeleteCheckboxes.length;
 
@@ -68,6 +77,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const finalCount = (totalExistingImages - imagesToDelete) + newImages;
 
+        console.log(finalCount)
+
         if (finalCount <= 0) {
             event.preventDefault();
 
@@ -76,4 +87,11 @@ document.addEventListener('DOMContentLoaded', function () {
             fileInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     });
+
+
+
+
 });
+
+
+

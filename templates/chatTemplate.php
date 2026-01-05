@@ -309,7 +309,7 @@ function currentChatFooter($chatFinished)
                     <div id="chat-input-container"> 
 
                         <div id="image-preview" style="display: none;">
-                            <img id="preview-image" src="placeholder" alt="Selected Photo" style="max-height: 50px; border-radius: 4px; object-fit: cover;">
+                            <img id="preview-image" src="upload/placeholder.jpg" alt="Selected Photo" style="max-height: 50px; border-radius: 4px; object-fit: cover;">
                             <button type="button" id="remove-image-btn" aria-label="Rimuovi immagine">
                                 <i class="bi-x-circle-fill"></i>
                             </button>
