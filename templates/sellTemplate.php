@@ -156,15 +156,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <?= $isEditing ? 'Carica altre foto' : 'Carica foto' ?>
                     </label>
 
-                    <input type="file" id="fileUpload" name="images[]" multiple accept="image/*" class="d-none"
-                        <?= (!$isEditing) ? 'required' : '' ?>>
+                    <input type="file" id="fileUpload" name="images[]" multiple accept="image/*" class="d-none">
                 </div>
                 <div class="mb-3" data-role="auctionDateContainer">
                     <label for="auctionEndDate" class="form-label">Inserisci la data e ora di fine dell'asta</label>
-                    <input type="datetime-local" class="form-control" id="auctionEndDate" name="auctionEndDate"
-                        min="<?= date('Y-m-d\TH:i', strtotime('+15 minutes')) ?>" value="<?php if (!empty($productToEdit['fineAsta'])) {
-                               echo date('Y-m-d\TH:i', strtotime($productToEdit['fineAsta']));
-                           } ?>">
+                    <input type="datetime-local" class="form-control" id="auctionEndDate" name="auctionEndDate" value="<?php if (!empty($productToEdit['fineAsta'])) {
+                        echo date('Y-m-d\TH:i', strtotime($productToEdit['fineAsta']));
+                    } ?>">
                 </div>
 
                 <div class="row g-2 mt-4">

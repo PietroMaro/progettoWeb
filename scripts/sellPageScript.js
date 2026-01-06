@@ -4,8 +4,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const auctionDateContainer = document.querySelector('div[data-role="auctionDateContainer"]');
     const auctionDateInput = document.getElementById('auctionEndDate');
     const form = document.querySelector('form');
-    const fileInput = document.getElementById('fileUpload'); 
+    const fileInput = document.getElementById('fileUpload');
     const previewWrapper = document.querySelector('div[data-role="image-preview-wrapper"]');
+    const dateInput = document.getElementById('auctionEndDate');
+
 
     auctionSwitch.addEventListener('change', function () {
         if (this.checked) {
@@ -48,6 +50,24 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+
+    if (dateInput) {
+        const now = new Date();
+
+        now.setMinutes(now.getMinutes() + 15);
+
+
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
+        const minDate = now.toISOString().slice(0, 16);
+
+        dateInput.min = minDate;
+
+        if (!dateInput.value) {
+            dateInput.value = minDate;
+        }
+    }
+
     function validateSellData() {
         var forms = document.querySelectorAll('.needs-validation')
         Array.prototype.slice.call(forms)
@@ -76,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     if (finalCount <= 0) {
                         event.preventDefault();
-                        event.stopPropagation(); 
+                        event.stopPropagation();
                         alert("Attenzione: Non puoi salvare il prodotto senza immagini.");
                         fileInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
