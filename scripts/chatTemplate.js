@@ -171,13 +171,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 isPollingActive = false;
                 return;
             }
-
-            let mBlock = document.getElementById("noMessageBlock");
-            console.log(mBlock);
-            mBlock.remove();
-
             const data = await response.json();
+
             if (data.messages && data.messages.length > 0) {
+
+                let mBlock = document.getElementById("noMessageBlock");
+                console.log(mBlock);
+                mBlock.remove();
+
                 data.messages.forEach(msg => {
                     const newMessageHtml = renderMessage(msg, currentUserId);
                     messageContainer.insertAdjacentHTML('beforeend', newMessageHtml);
