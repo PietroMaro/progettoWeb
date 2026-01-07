@@ -14,7 +14,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $idChat = $chatManager->createChat($productId, $sellerId);
         if ($idChat) {
             $_SESSION['isAsta'] = true;
-
             $_SESSION['idChatSelected'] = $idChat;
             $_SESSION['userNameChatSelected'] = $chatManager->getNomeUtenteFromId($sellerId);
             $_SESSION['userBlobChatSelected'] = $chatManager->getImmageOfUserFromId($sellerId);
