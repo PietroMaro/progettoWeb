@@ -172,7 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            document.getElementById("noMessageBlock").hidden=true;
+            let mBlock = document.getElementById("noMessageBlock");
+            console.log(mBlock);
+            mBlock.remove();
 
             const data = await response.json();
             if (data.messages && data.messages.length > 0) {
