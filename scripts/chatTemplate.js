@@ -172,6 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            document.getElementById("noMessageBlock").hidden=true;
+
             const data = await response.json();
             if (data.messages && data.messages.length > 0) {
                 data.messages.forEach(msg => {

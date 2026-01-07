@@ -15,10 +15,10 @@ function genericErrorBlockList($bgColor, $color, $title, $message)
         HTML;
 }
 
-function genericErrorBlock($bgColor, $color, $title, $message)
+function genericErrorBlock($bgColor, $color, $title, $message, $id = "errorBlock")
 {
     return <<<HTML
-        <div  class="alert alert-warning text-center p-5" style="background-color: {$bgColor}; color:{$color}; border: 1px solid #ffeeba; border-radius: 5px;">
+        <div  class="alert alert-warning text-center p-5" style="background-color: {$bgColor}; color:{$color}; border: 1px solid #ffeeba; border-radius: 5px;" id={$id}>
             <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">{$title}</h2>
             <p style="margin-bottom: 1.5rem;">{$message}</p>
         </div>
@@ -41,7 +41,7 @@ function noChatSelectBlock()
 
 function noMessagesBlock()
 {
-    return genericErrorBlock("rgb(199, 199, 199)", "rgb(0, 0, 0)", "Nessun messagio", "Al momento non ci sono messaggi in questa chat, non essere timido :)");
+    return genericErrorBlock("rgb(199, 199, 199)", "rgb(0, 0, 0)", "Nessun messagio", "Al momento non ci sono messaggi in questa chat, non essere timido :)","noMessageBlock");
 }
 
 function errorChatBlock()
