@@ -255,7 +255,7 @@ function currentChatHeader($disableOfferButton)
     $offerButtonHtml = "";
 
 
-    if ($disableOfferButton == false && true !== $_SESSION["isAsta"]) {
+    if ($disableOfferButton == false && isset($_SESSION["isAsta"])) {
         $offerButtonHtml = <<<BTN
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalOfferta">
                 Offerta
