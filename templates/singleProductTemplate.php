@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 ?>
 
-<div class="container-fluid d-flex justify-content-center my-4">
+<div class="container-fluid d-flex justify-content-center my-4" id="singleProductPage">
 
     <?php if (isset($fatalError)): ?>
         <div class="alert alert-warning text-center p-5">

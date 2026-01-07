@@ -1,4 +1,4 @@
-.page-center {
+#loginModal .page-center {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -6,7 +6,7 @@
     margin: 0;
 }
 
-.login-card {
+ #loginModal .login-card {
     background-color: #fff;
     padding: 2.5rem;
     border-radius: 10px;
@@ -15,7 +15,7 @@
     max-width: 400px;
 }
 
-.unisell-title {
+#loginModal .unisell-title {
     color: var(--colore-principale);
     font-size: 2.5rem;
     font-weight: bold;
@@ -23,17 +23,17 @@
     text-align: center;
 }
 
-.form-label {
+#loginModal .form-label {
     color: var(--colore-testo);
     margin-bottom: 0.25rem;
     font-size: 0.9rem;
 }
 
-.form-control {
+#loginModal .form-control {
     border-color: var(--colore-bordo);
 }
 
-.btn-unisell-primary {
+#loginModal .btn-unisell-primary {
     background-color: var(--colore-principale);
     border-color: var(--colore-principale);
     color: #fff;
@@ -46,25 +46,25 @@
     transition: background-color 0.3s, border-color 0.3s;
 }
 
-.btn-unisell-primary:hover {
+#loginModal .btn-unisell-primary:hover {
     background-color: var(--colore-hover);
     border-color: var(--colore-hover);
 }
 
-.register-link {
+#loginModal .register-link {
     text-align: center;
     margin-top: 1.5rem;
     font-size: 0.95rem;
     color: var(--colore-testo);
 }
 
-.register-link a {
+#loginModal .register-link a {
     color: var(--colore-principale);
     text-decoration: none;
     font-weight: bold;
 }
 
-.register-link a:hover {
+#loginModal .register-link a:hover {
     text-decoration: underline;
     color: var(--colore-hover);
 }

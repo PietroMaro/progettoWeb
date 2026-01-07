@@ -1,28 +1,28 @@
-header div>div>div {
+#singleProductPage header div>div>div {
     transition: transform 0.6s ease-in-out;
     background-color: var(--colore-sfondo);
     height: 60vh
 }
 
 
-section button {
+#singleProductPage section button {
     transition: transform 0.2s;
     letter-spacing: 2px;
 }
 
 
-section button:hover {
+#singleProductPage section button:hover {
     transform: scale(1.02);
 }
 
 
-header img {
+#singleProductPage header img {
 
     object-fit: contain;
     object-position: center;
 }
 
-section img {
+#singleProductPage section img {
 
     width: 100px;
     height: 100px;
@@ -30,18 +30,18 @@ section img {
 
 }
 
-section p {
+#singleProductPage section p {
 
     line-height: 1.6;
 }
 
-header button span {
+#singleProductPage header button span {
     color: black;
 }
 
 
 @media screen and (min-width:768px) {
-    .border-end-md {
+    #singleProductPage .border-end-md {
         border-right: 1px solid #dee2e6;
     }
 }
