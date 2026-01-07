@@ -1,7 +1,11 @@
 <?php
 
 
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    unset($_SESSION['isAsta']);
+
     if (!isset($_SESSION["user_id"])) {
         header("Location: index.php");
         exit();
@@ -13,7 +17,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $chatManager = new ChatManager();
         $idChat = $chatManager->createChat($productId, $sellerId);
         if ($idChat) {
-            $_SESSION['isAsta'] = true;
+
+            $_SESSION['isAsta'] = $product['stato'] === 'asta';
+
+
+
             $_SESSION['idChatSelected'] = $idChat;
             $_SESSION['userNameChatSelected'] = $chatManager->getNomeUtenteFromId($sellerId);
             $_SESSION['userBlobChatSelected'] = $chatManager->getImmageOfUserFromId($sellerId);

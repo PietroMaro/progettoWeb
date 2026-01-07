@@ -63,7 +63,7 @@ class UserManager
                 if (!empty($row['immagine'])) {
                     $row['imgSrc'] = "data:image/jpeg;base64," . base64_encode($row['immagine']);
                 } else {
-                    $row['imgSrc'] = null; // Handle cases with no image
+                    $row['imgSrc'] = null;  
                 }
 
                 unset($row['immagine']);
