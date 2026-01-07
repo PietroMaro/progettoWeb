@@ -80,6 +80,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['new_selected_chat_list
     } elseif ($chatStatus === "astaDeserta") {
         $chatFinished = true;
         $disableOfferButton = true;
+    } else {
+        $disableOfferButton = false;
     }
 
 }
