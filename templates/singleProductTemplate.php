@@ -13,6 +13,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $chatManager = new ChatManager();
         $idChat = $chatManager->createChat($productId, $sellerId);
         if ($idChat) {
+            $_SESSION['isAsta'] = true;
+
             $_SESSION['idChatSelected'] = $idChat;
             $_SESSION['userNameChatSelected'] = $chatManager->getNomeUtenteFromId($sellerId);
             $_SESSION['userBlobChatSelected'] = $chatManager->getImmageOfUserFromId($sellerId);
@@ -34,7 +36,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php if (isset($fatalError)): ?>
         <div class="alert alert-warning text-center p-5">
             <h3>Prodotto non disponibile</h3>
-            <p>Il prodotto potrebbe non esistere piú, essere tuo o il servizio potrebbe essere temporaneamente non disponibile.</p>
+            <p>Il prodotto potrebbe non esistere piú, essere tuo o il servizio potrebbe essere temporaneamente non
+                disponibile.</p>
             <button onclick="location.reload()" class="btn btn-outline-secondary mt-3">Riprova</button>
         </div>
 
@@ -155,7 +158,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         $tooltipText = $isUserLoggedIn ? '' : 'title="Accedi per effettuare questa operazione"';
                                         ?>
 
-                                        <form method="POST" action="" class="flex-grow-1">
+                                        <form method="POST" action="#" class="flex-grow-1">
                                             <button type="submit" class="btn btn-success btn-lg w-100 rounded-pill"
                                                 <?= $disabledAttr ?>         <?= $tooltipText ?>>
                                                 <?php if ($isUserLoggedIn): ?>
@@ -204,7 +207,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 aria-label="Close"></button>
                         </div>
 
-                        <form method="POST" action="">
+                        <form method="POST" action="#">
                             <div class="modal-body p-4">
                                 <div class="alert alert-success d-flex align-items-center" role="alert">
                                     <i class="bi bi-info-circle-fill me-2"></i>
