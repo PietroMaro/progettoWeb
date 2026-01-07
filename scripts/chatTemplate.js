@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headerText = "Offerta ricevuta";
                 icon = '<i class="fas fa-tag text-success"></i>';
 
-            
+
 
                 footerHtml = `
         <div class="mt-3">
@@ -173,11 +173,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const data = await response.json();
 
+
+
             if (data.messages && data.messages.length > 0) {
 
                 let mBlock = document.getElementById("noMessageBlock");
-                console.log(mBlock);
-                mBlock.remove();
+                if (mBlock) {
+                    mBlock.remove();
+                }
 
                 data.messages.forEach(msg => {
                     const newMessageHtml = renderMessage(msg, currentUserId);

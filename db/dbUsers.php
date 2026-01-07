@@ -134,7 +134,7 @@ class UserManager
             throw new Exception("Questa email è già registrata.");
         }
         $stmt->close();
-        $idImmagine = 0;
+        $idImmagine = 1;
         if (isset($propic) && $propic['error'] === 0) {
             $imageData = file_get_contents($propic['tmp_name']);
             $imgSql = "INSERT INTO immagini (immagine) VALUES (?)";
