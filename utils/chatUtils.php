@@ -53,7 +53,7 @@ function currentChat($chatFinished = true, $disableOfferButton = true)
 {
     $header = currentChatHeader($disableOfferButton);
     $body = currentChatBody($chatFinished);
-    $footer = currentChatFooter($chatFinished);
+    $footer = currentChatFooter();
 
     if ($body == errorBlock()) {
         $footer = "";

@@ -299,7 +299,7 @@ function currentChatHeader($disableOfferButton)
 
 function currentChatFooter($chatFinished)
 {
-    if (!isset($_SESSION['idChatSelected']) || $chatFinished) {
+    if (!isset($_SESSION['idChatSelected'])) {
         return "";
     }
     return <<<HTML
