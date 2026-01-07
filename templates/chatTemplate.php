@@ -11,15 +11,9 @@ try {
 
 $chatFinished = false;
 $disableOfferButton = false;
-
-
-
 ?>
 
-
-
 <?php
-
 require_once __DIR__ . "/../utils/chatUtils.php";
 require_once __DIR__ . '/../utils/offertaChat.php';
 require_once __DIR__ . '/../utils/segnalaChat.php';
@@ -62,9 +56,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['is_new_chat_message'])
     }
 }
 
-
-
-
 ?>
 
 <?php
@@ -88,6 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['new_selected_chat_list
         $disableOfferButton = true;
     } elseif ($chatStatus === "astaDeserta") {
         $chatFinished = true;
+        $disableOfferButton = true;
     }
 
 }
@@ -297,7 +289,7 @@ function currentChatHeader($disableOfferButton)
         HTML;
 }
 
-function currentChatFooter($chatFinished)
+function currentChatFooter()
 {
     if (!isset($_SESSION['idChatSelected'])) {
         return "";
