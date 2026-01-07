@@ -67,8 +67,6 @@ body {
     text-overflow: ellipsis;
 }
 
-
-
 .currentChat {
     width: 70%;
     display: flex;

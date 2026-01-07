@@ -5,7 +5,29 @@ $products = [];
 $isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
 try {
     $handler = new ProductManager();
+    $chatManager = new ChatManager();
+
+
+    $vincite = $handler->getAllWonAuctions();
+    if (count($vincite) > 0) {
+        foreach ($vincite as $vincita) {
+
+
+            $idChat = $chatManager->checkChatExist($vincita['idProdotto'], $vincita['idVincitore'], $vincita['idVenditore']);
+            if (!$idChat) {
+                $idChat = $chatManager->createChat($vincita['idProdotto'], $vincita['idVenditore'], $vincita['idVincitore']);
+            }
+            $chatManager->addMessage(
+                $vincita['idVincitore'],
+                $idChat,
+                "L'asta è finita e l'oggetto è stato vinto per: €" . $vincita['valore']
+            );
+        }
+    }
+
     $handler->updateAuctions();
+
+
     $filters = [];
     if (isset($_GET['search'])) {
         $filters['search'] = $_GET['search'];

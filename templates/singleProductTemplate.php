@@ -2,34 +2,23 @@
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-
-
-
     if (!isset($_SESSION["user_id"])) {
-
         header("Location: index.php");
         exit();
-
     } elseif (isset($_POST['place_bid'])) {
         $bidAmount = $_POST['bid_amount'];
         $handler->addOfferForAuction($productId, $bidAmount);
         header("Location: index.php");
-
     } else {
         $chatManager = new ChatManager();
         $idChat = $chatManager->createChat($productId, $sellerId);
-
         if ($idChat) {
             $_SESSION['idChatSelected'] = $idChat;
             $_SESSION['userNameChatSelected'] = $chatManager->getNomeUtenteFromId($sellerId);
             $_SESSION['userBlobChatSelected'] = $chatManager->getImmageOfUserFromId($sellerId);
             $_SESSION['productNameChatSelected'] = $chatManager->getNomeProdottoFromId($productId);
             $_SESSION['productBlobChatSelected'] = $chatManager->getImmageOfProdottoFromId($productId);
-
-
             $_SESSION['listIdChatSelected'] = null;
-
             header("Location: chat.php");
             exit();
         }
