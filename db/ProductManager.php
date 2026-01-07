@@ -288,16 +288,27 @@ class ProductManager
     }
 
 
-    public function getProductById($productId): array|bool|null
+    public function getProductById($productId): mixed
     {
         if ($this->db === null)
             return null;
+
         $sql = "SELECT * FROM prodotto WHERE idProdotto = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->bind_param("i", $productId);
         $stmt->execute();
         $result = $stmt->get_result();
-        return $result->fetch_assoc();
+        $row = $result->fetch_assoc();
+
+        if (!$row) {
+            return null;
+        }
+
+        if (isset($_SESSION['user_id']) && $row['idUtente'] == $_SESSION['user_id']) {
+            return false;
+        }
+
+        return $row;
     }
 
     public function deleteImagesByProductId($productId): void
@@ -345,7 +356,7 @@ class ProductManager
         }
     }
 
-    public function deleteImageById($imageId)
+    public function deleteImageById($imageId): void
     {
         $sql = "DELETE FROM immagini WHERE idImmagine = ?";
         $stmt = $this->db->prepare($sql);
@@ -449,7 +460,7 @@ class ProductManager
         ];
     }
 
-    function addOfferForAuction($idProdotto, $bidValue)
+    function addOfferForAuction($idProdotto, $bidValue): array|bool
     {
         if ($this->db === null)
             return false;
@@ -514,7 +525,7 @@ class ProductManager
 
 
 
-    public function getAllWonAuctions()
+    public function getAllWonAuctions(): array
     {
         $asteVinte = [];
 

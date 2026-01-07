@@ -33,8 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <?php if (isset($fatalError)): ?>
         <div class="alert alert-warning text-center p-5">
-            <h3>Nessun prodotto disponibile</h3>
-            <p>Al momento non ci sono prodotti da visualizzare o il servizio è temporaneamente non disponibile.</p>
+            <h3>Prodotto non disponibile</h3>
+            <p>Il prodotto potrebbe non esistere piú, essere tuo o il servizio potrebbe essere temporaneamente non disponibile.</p>
             <button onclick="location.reload()" class="btn btn-outline-secondary mt-3">Riprova</button>
         </div>
 

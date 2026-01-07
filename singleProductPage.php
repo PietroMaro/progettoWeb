@@ -11,10 +11,14 @@ try {
         throw new Exception("Nessun prodotto selezionato.");
     }
 
+
     $productId = $_GET['id'];
 
     $prodottoTrovato = $handler->getProductById($productId);
 
+    if (!$prodottoTrovato) {
+        throw new Exception("Prodotto venduto da te stesso");
+    }
 
     if ($prodottoTrovato === null) {
         throw new Exception("Prodotto non trovato o non disponibile.");
