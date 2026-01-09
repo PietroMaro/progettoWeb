@@ -41,7 +41,7 @@ function noChatSelectBlock()
 
 function noMessagesBlock()
 {
-    return genericErrorBlock("rgb(199, 199, 199)", "rgb(0, 0, 0)", "Nessun messagio", "Al momento non ci sono messaggi in questa chat, non essere timido :)","noMessageBlock");
+    return genericErrorBlock("rgb(199, 199, 199)", "rgb(0, 0, 0)", "Nessun messagio", "Al momento non ci sono messaggi in questa chat, non essere timido :)", "noMessageBlock");
 }
 
 function errorChatBlock()
@@ -88,8 +88,19 @@ function currentChatBody($chatFinished)
             if (empty($history)) {
                 $result = noMessagesBlock();
             } else {
+
                 foreach ($history as $row) {
-                    $isMine = ($row['idMandante'] != $_SESSION['user_id']);
+                    $isMine = null;
+                    if (isset($_SESSION['is_admin'] ) && $_SESSION['is_admin'] === false) {
+                        $isMine = ($row['idMandante'] != $_SESSION['user_id']);
+
+                    } else {
+                        $isMine = ($row['idMandante'] != $_SESSION['reporterIdChatSelected']);
+
+                    }
+
+
+
                     $image_data = $row['image'] ?? null;
                     $messageProgressivo = $row['progressivo'] ?? null;
                     if ($row['type'] === 'message') {

@@ -11,6 +11,24 @@ try {
 
 $chatFinished = false;
 $disableOfferButton = false;
+
+if (isset($_SESSION['idChatSelected'])) {
+    $chatStatus = $productHandler->productStatus($_SESSION['idChatSelected']);
+
+
+    if ($chatStatus === "venduto") {
+        $chatFinished = true;
+        $disableOfferButton = true;
+
+    } elseif ($chatStatus === "asta") {
+        $disableOfferButton = true;
+    } elseif ($chatStatus === "astaDeserta") {
+        $chatFinished = true;
+        $disableOfferButton = true;
+    } else {
+        $disableOfferButton = false;
+    }
+}
 ?>
 
 <?php
@@ -68,8 +86,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['new_selected_chat_list
     ifPostSetSession('new_selected_chat_user_blob', 'userBlobChatSelected');
 
 
-
     $chatStatus = $productHandler->productStatus($_SESSION['idChatSelected']);
+
 
     if ($chatStatus === "venduto") {
         $chatFinished = true;

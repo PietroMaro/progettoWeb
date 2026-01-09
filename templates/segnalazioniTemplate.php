@@ -123,26 +123,32 @@ function chatBlock($blobReporter, $blobReported, $idReporter, $idReported, $nome
             <input type="hidden" name="admin_new_selected_chat_type_report" value="{$typeReport}">
             <input type="hidden" name="admin_new_selected_chat_message_report" value="{$messageReport}">
 
-            <button type="submit" aria-label="{$ariaLabel}" style="width: 100%; border: none; background: none; padding: 0; cursor: pointer;">
-                <div style="display: flex; align-items: center; padding: 12px 15px; width: 100%;">
-                    <div aria-hidden="true" style="margin-right: 15px;">
+        <button type="submit" aria-label="{$ariaLabel}" style="width: 100%; border: none; background: none; padding: 0; cursor: pointer;">
+                <span style="display: flex; align-items: center; padding: 12px 15px; width: 100%;">
+                    
+                    <span aria-hidden="true" style="margin-right: 15px; display: block; position: relative;">
                         <img src="{$blobReporter}" alt="{$nomeReporter}">
                         <img src="{$blobReported}" alt="{$nomeReported}">
-                    </div>
-                    <div class="text-info" style="text-align: left; flex-grow: 1;">
-                        <div class="name-row">
+                    </span>
+                    
+                    <span class="text-info" style="text-align: left; flex-grow: 1; display: block;">
+                        <span class="name-row" style="display: block;">
                             <strong>{$nomeReporter}</strong>
-                        </div>
+                        </span>
                         <small> <strong>  segnala: {$nomeReported}</strong></small>
                         <small><strong>tipo: {$typeReport}</strong></small>
                         <small><strong>messaggio: {$messageReport}</strong></small>
-                    </div>
-                </div>
+                    </span>
+
+                </span>
             </button>
         </form>
     </li>
     HTML;
 }
+
+
+
 
 function singleChatOffer($isMine, $content, $messageProgressivo = 0)
 {
