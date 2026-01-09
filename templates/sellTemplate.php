@@ -12,7 +12,7 @@ if (isset($_GET['edit_id'])) {
 
     try {
         $productId = (int) $_GET['edit_id'];
-        $productToEdit = $handler->getProductById($productId);
+        $productToEdit = $handler->getProductById($productId, false);
 
 
         $isEditing = true;

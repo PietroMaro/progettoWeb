@@ -288,7 +288,7 @@ class ProductManager
     }
 
 
-    public function getProductById($productId): mixed
+    public function getProductById($productId, $allow = true): mixed
     {
         if ($this->db === null)
             return null;
@@ -304,7 +304,7 @@ class ProductManager
             return null;
         }
 
-        if (isset($_SESSION['user_id']) && $row['idUtente'] == $_SESSION['user_id']) {
+        if (isset($_SESSION['user_id']) && $row['idUtente'] == $_SESSION['user_id'] && $allow ) {
             return false;
         }
 
